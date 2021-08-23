@@ -2,17 +2,13 @@ package ca.tweetzy.tweety.conversation;
 
 import java.util.function.Consumer;
 
-import ca.tweetzy.tweety.Valid;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.entity.Player;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
+import lombok.*;
 
 /**
  * A prompt that only accepts whole or decimal numbers

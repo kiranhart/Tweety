@@ -1,7 +1,8 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import ca.tweetzy.tweety.Common;
 import org.bukkit.Bukkit;
+
+import ca.tweetzy.tweety.Common;
 
 /**
  * Wraps NMS and CRAFT classes
@@ -14,8 +15,7 @@ enum ClassWrapper {
 	CRAFT_METAITEM(PackageWrapper.CRAFTBUKKIT, "inventory.CraftMetaItem", null, null),
 	CRAFT_ENTITY(PackageWrapper.CRAFTBUKKIT, "entity.CraftEntity", null, null),
 	CRAFT_WORLD(PackageWrapper.CRAFTBUKKIT, "CraftWorld", null, null),
-	CRAFT_PERSISTENTDATACONTAINER(PackageWrapper.CRAFTBUKKIT, "persistence.CraftPersistentDataContainer",
-			MinecraftVersion.MC1_14_R1, null),
+	CRAFT_PERSISTENTDATACONTAINER(PackageWrapper.CRAFTBUKKIT, "persistence.CraftPersistentDataContainer", MinecraftVersion.MC1_14_R1, null),
 	NMS_NBTBASE(PackageWrapper.NMS, "NBTBase", null, null, "net.minecraft.nbt"),
 	NMS_NBTTAGSTRING(PackageWrapper.NMS, "NBTTagString", null, null, "net.minecraft.nbt"),
 	NMS_NBTTAGINT(PackageWrapper.NMS, "NBTTagInt", null, null, "net.minecraft.nbt"),
@@ -39,8 +39,7 @@ enum ClassWrapper {
 	NMS_IREGISTRY(PackageWrapper.NMS, "IRegistry", null, null, "net.minecraft.core"),
 	NMS_MINECRAFTKEY(PackageWrapper.NMS, "MinecraftKey", MinecraftVersion.MC1_8_R3, null, "net.minecraft.resources"),
 	NMS_GAMEPROFILESERIALIZER(PackageWrapper.NMS, "GameProfileSerializer", null, null, "net.minecraft.nbt"),
-	NMS_IBLOCKDATA(PackageWrapper.NMS, "IBlockData", MinecraftVersion.MC1_8_R3, null,
-			"net.minecraft.world.level.block.state"),
+	NMS_IBLOCKDATA(PackageWrapper.NMS, "IBlockData", MinecraftVersion.MC1_8_R3, null, "net.minecraft.world.level.block.state"),
 	GAMEPROFILE(PackageWrapper.NONE, "com.mojang.authlib.GameProfile", MinecraftVersion.MC1_8_R3, null);
 
 	private Class<?> clazz;

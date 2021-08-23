@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import ca.tweetzy.tweety.CompressUtil;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.collection.SerializedMap;
@@ -78,7 +79,7 @@ public final class IncomingMessage extends Message {
 	public String readString() {
 		moveHead(String.class);
 
-		return input.readUTF();
+		return CompressUtil.decompressB64(input.readUTF());
 	}
 
 	/**
@@ -100,7 +101,7 @@ public final class IncomingMessage extends Message {
 	public SerializedMap readMap() {
 		moveHead(String.class);
 
-		return SerializedMap.fromJson(input.readUTF());
+		return SerializedMap.fromJson(CompressUtil.decompressB64(input.readUTF()));
 	}
 
 	/**

@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.model;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -9,14 +9,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ca.tweetzy.tweety.remain.CompChatColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.ChatPaginator;
+
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.Valid;
-
+import ca.tweetzy.tweety.remain.CompChatColor;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

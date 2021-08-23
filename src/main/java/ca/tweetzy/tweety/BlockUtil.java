@@ -1,15 +1,9 @@
 package ca.tweetzy.tweety;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.Remain;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,11 +15,9 @@ import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.*;
 
 /**
  * Utility class for block manipulation.

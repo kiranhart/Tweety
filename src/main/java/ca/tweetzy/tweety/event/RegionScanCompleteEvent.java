@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.event;
 
-import ca.tweetzy.tweety.model.OfflineRegionScanner;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 
+import ca.tweetzy.tweety.model.OfflineRegionScanner;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.settings.YamlConfig;
-
 import lombok.NonNull;
 
 /**

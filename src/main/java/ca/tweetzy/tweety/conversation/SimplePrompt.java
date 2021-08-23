@@ -1,17 +1,12 @@
 package ca.tweetzy.tweety.conversation;
 
+import org.bukkit.conversations.*;
+import org.bukkit.entity.Player;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.model.Variables;
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationPrefix;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
-import org.bukkit.entity.Player;
-
 import lombok.SneakyThrows;
 
 /**

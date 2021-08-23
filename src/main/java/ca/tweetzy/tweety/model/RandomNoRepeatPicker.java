@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import org.bukkit.entity.Player;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.RandomUtil;
 import ca.tweetzy.tweety.Valid;

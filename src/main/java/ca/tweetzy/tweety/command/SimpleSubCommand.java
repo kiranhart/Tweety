@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

@@ -3,8 +3,9 @@ package ca.tweetzy.tweety.menu.tool;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import ca.tweetzy.tweety.Valid;
 import org.bukkit.inventory.ItemStack;
+
+import ca.tweetzy.tweety.Valid;
 
 /**
  * Represents the tool registry holding all registered items

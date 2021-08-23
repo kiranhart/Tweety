@@ -1,5 +1,13 @@
 package ca.tweetzy.tweety.model;
 
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
@@ -19,13 +27,6 @@ import github.scarsz.discordsrv.util.WebhookUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public abstract class DiscordListener implements Listener {
 

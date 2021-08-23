@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
 import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleSettings;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

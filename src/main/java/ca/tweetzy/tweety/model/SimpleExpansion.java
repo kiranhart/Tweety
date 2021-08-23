@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.model;
 
 import org.bukkit.command.CommandSender;
-import ca.tweetzy.tweety.Common;
 
+import ca.tweetzy.tweety.Common;
 import lombok.NonNull;
 
 /**

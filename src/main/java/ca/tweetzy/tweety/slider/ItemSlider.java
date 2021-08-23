@@ -3,10 +3,10 @@ package ca.tweetzy.tweety.slider;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.tweetzy.tweety.remain.CompMaterial;
 import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
 
+import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.remain.CompMaterial;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

@@ -1,11 +1,12 @@
 package ca.tweetzy.tweety.menu.tool;
 
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+
+import ca.tweetzy.tweety.ItemUtil;
+import ca.tweetzy.tweety.menu.model.ItemCreator;
 
 /**
  * Represents a tool. A tool is a simple ItemStack that is registered within the

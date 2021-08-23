@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import ca.tweetzy.tweety.SerializeUtil;
 import ca.tweetzy.tweety.Valid;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Strict list that only allows to remove elements that are contained within, or add elements that are not.

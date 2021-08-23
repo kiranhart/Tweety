@@ -1,12 +1,13 @@
 package ca.tweetzy.tweety.menu;
 
-import ca.tweetzy.tweety.remain.CompMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+
 import ca.tweetzy.tweety.menu.button.Button;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.menu.model.MenuQuantity;
+import ca.tweetzy.tweety.remain.CompMaterial;
 
 /**
  * Advanced menu concept allowing to change quality of an item by more than 1 on

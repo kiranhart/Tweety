@@ -1,11 +1,11 @@
 package ca.tweetzy.tweety;
 
-import ca.tweetzy.tweety.remain.Remain;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import ca.tweetzy.tweety.remain.Remain;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -3,10 +3,10 @@ package ca.tweetzy.tweety.model;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.ClickType;
+
 import ca.tweetzy.tweety.Messenger;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.EventHandledException;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

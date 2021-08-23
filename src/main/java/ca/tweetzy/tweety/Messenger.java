@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety;
 
-import ca.tweetzy.tweety.remain.Remain;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import ca.tweetzy.tweety.remain.Remain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import ca.tweetzy.tweety.Valid;
-
 import lombok.Getter;
 import lombok.NonNull;
 

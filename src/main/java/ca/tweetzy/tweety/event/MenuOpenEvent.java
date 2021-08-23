@@ -3,9 +3,9 @@ package ca.tweetzy.tweety.event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
+
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.menu.model.InventoryDrawer;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

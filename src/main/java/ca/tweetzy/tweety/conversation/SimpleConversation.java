@@ -2,6 +2,9 @@ package ca.tweetzy.tweety.conversation;
 
 import java.util.concurrent.TimeUnit;
 
+import org.bukkit.conversations.*;
+import org.bukkit.entity.Player;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
@@ -10,17 +13,6 @@ import ca.tweetzy.tweety.model.BoxedMessage;
 import ca.tweetzy.tweety.model.Variables;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompSound;
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.conversations.ConversationAbandonedListener;
-import org.bukkit.conversations.ConversationCanceller;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationPrefix;
-import org.bukkit.conversations.InactivityConversationCanceller;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.entity.Player;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 

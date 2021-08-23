@@ -1,12 +1,13 @@
 package ca.tweetzy.tweety.bungee;
 
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+
 import ca.tweetzy.tweety.bungee.message.IncomingMessage;
 import ca.tweetzy.tweety.debug.Debugger;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
 
 /**
  * Represents a BungeeCord listener using a {@link BungeeChannel} channel

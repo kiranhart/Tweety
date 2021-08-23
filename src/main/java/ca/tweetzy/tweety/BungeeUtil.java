@@ -80,61 +80,61 @@ public final class BungeeUtil {
 
 		for (Object data : datas) {
 			try {
-				Valid.checkNotNull(data, "Bungee object in array is null! Array: " + Common.join(datas, ", ", (Common.Stringer<T>) t -> t == null ? "null" : t.toString() + " (" + t.getClass().getSimpleName() + ")"));
+				Valid.checkNotNull(data, "Bungee object in array is null! Array: " + Common.join(datas, ", ", t -> t == null ? "null" : t + " (" + t.getClass().getSimpleName() + ")"));
 
 				if (data instanceof CommandSender)
 					data = ((CommandSender) data).getName();
 
 				if (data instanceof Integer) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, Integer.class, datas);
 					out.writeInt((Integer) data);
 
 				} else if (data instanceof Double) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, Double.class, datas);
 					out.writeDouble((Double) data);
 
 				} else if (data instanceof Long) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, Long.class, datas);
 					out.writeLong((Long) data);
 
 				} else if (data instanceof Boolean) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, Boolean.class, datas);
 					out.writeBoolean((Boolean) data);
 
 				} else if (data instanceof String) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, String.class, datas);
-					out.writeUTF((String) data);
+					out.writeUTF(CompressUtil.compressB64((String) data));
 
 				} else if (data instanceof SerializedMap) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, String.class, datas);
-					out.writeUTF(((SerializedMap) data).toJson());
+					out.writeUTF(CompressUtil.compressB64(((SerializedMap) data).toJson()));
 
 				} else if (data instanceof UUID) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, UUID.class, datas);
-					out.writeUTF(((UUID) data).toString());
+					out.writeUTF(data.toString());
 
 				} else if (data instanceof Enum) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, Enum.class, datas);
-					out.writeUTF(((Enum<?>) data).toString());
+					out.writeUTF(data.toString());
 
 				} else if (data instanceof byte[]) {
-					Debugger.put("bungee", data.toString() + ", ");
+					Debugger.put("bungee", data + ", ");
 
 					moveHead(actionHead, action, String.class, datas);
 					out.write((byte[]) data);
@@ -153,12 +153,12 @@ public final class BungeeUtil {
 
 		Debugger.push("bungee");
 
-		byte[] byteArray = out.toByteArray();
+		final byte[] byteArray = out.toByteArray();
 
 		try {
 			recipient.sendPluginMessage(SimplePlugin.getInstance(), channel, byteArray);
 
-		} catch (MessageTooLargeException ex) {
+		} catch (final MessageTooLargeException ex) {
 			Common.log("Outgoing bungee message '" + action + "' was oversized, not sending. Max length: 32766 bytes, got " + byteArray.length + " bytes.");
 		}
 
@@ -181,7 +181,7 @@ public final class BungeeUtil {
 		final ByteArrayDataOutput out = ByteStreams.newDataOutput();
 
 		for (final Object data : datas) {
-			Valid.checkNotNull(data, "Bungee object in array is null! Array: " + Common.join(datas, ", ", t -> t == null ? "null" : t.toString() + "(" + t.getClass().getSimpleName() + ")"));
+			Valid.checkNotNull(data, "Bungee object in array is null! Array: " + Common.join(datas, ", ", t -> t == null ? "null" : t + "(" + t.getClass().getSimpleName() + ")"));
 
 			if (data instanceof Integer)
 				out.writeInt((Integer) data);

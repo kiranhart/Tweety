@@ -8,9 +8,6 @@ import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.UUID;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.remain.Remain;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
@@ -18,6 +15,9 @@ import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.remain.Remain;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.model;
 
 import org.apache.commons.lang.math.NumberUtils;
+
 import ca.tweetzy.tweety.TimeUtil;
 import ca.tweetzy.tweety.Valid;
-
 import lombok.Getter;
 
 /**

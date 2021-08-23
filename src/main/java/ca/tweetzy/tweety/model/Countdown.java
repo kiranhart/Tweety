@@ -1,11 +1,11 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
-
+import ca.tweetzy.tweety.plugin.SimplePlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 

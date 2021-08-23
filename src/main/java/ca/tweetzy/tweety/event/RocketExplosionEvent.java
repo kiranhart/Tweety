@@ -3,8 +3,8 @@ package ca.tweetzy.tweety.event;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import ca.tweetzy.tweety.menu.tool.Rocket;
 
+import ca.tweetzy.tweety.menu.tool.Rocket;
 import lombok.Getter;
 import lombok.Setter;
 

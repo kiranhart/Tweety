@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.slider;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MathUtil;
 import org.bukkit.ChatColor;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MathUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

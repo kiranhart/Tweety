@@ -1,5 +1,15 @@
 package ca.tweetzy.tweety.model;
 
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+
+import javax.script.*;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
@@ -7,14 +17,6 @@ import ca.tweetzy.tweety.exception.EventHandledException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import lombok.NonNull;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-
-import javax.script.*;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 
 /**
  * An engine that compiles and executes code on the fly.

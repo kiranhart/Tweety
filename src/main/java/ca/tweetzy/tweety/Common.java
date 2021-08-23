@@ -30,6 +30,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictList;
 import ca.tweetzy.tweety.collection.StrictMap;
@@ -490,10 +491,10 @@ public final class Common {
 				else
 					toSend = prefix + part;
 
-				if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9) && toSend.length() + 1 >= Short.MAX_VALUE) {
+				if (MinecraftVersion.olderThan(V.v1_9) && toSend.length() + 1 >= Short.MAX_VALUE) {
 					toSend = toSend.substring(0, Short.MAX_VALUE / 2);
 
-					Common.log("Warning: Message to " + sender.getName() + " was too large, sending the first 16,000 letters: " + toSend);
+					Common.warning("Message to " + sender.getName() + " was too large, sending the first 16,000 letters: " + toSend);
 				}
 
 				// Make player engaged in a server conversation still receive the message
@@ -1030,7 +1031,7 @@ public final class Common {
 		if (nTimes == 0)
 			return "";
 
-		final String toDuplicate = new String(text);
+		final String toDuplicate = text;
 
 		for (int i = 1; i < nTimes; i++)
 			text += toDuplicate;
@@ -1084,6 +1085,7 @@ public final class Common {
 		for (final Plugin otherPlugin : Bukkit.getPluginManager().getPlugins())
 			if (otherPlugin.getName().equals(pluginName)) {
 				lookup = otherPlugin;
+
 				break;
 			}
 
@@ -1218,6 +1220,16 @@ public final class Common {
 		}
 
 		return String.format(format, args);
+	}
+
+	/**
+	 * A dummy helper method adding "&cWarning: &f" to the given message
+	 * and logging it.
+	 *
+	 * @param message
+	 */
+	public static void warning(String message) {
+		log("&cWarning: &f" + message);
 	}
 
 	/**
@@ -1730,7 +1742,7 @@ public final class Common {
 			return ((CompChatColor) arg).getName();
 
 		else if (arg instanceof Enum)
-			return ((Enum<?>) arg).toString().toLowerCase();
+			return arg.toString().toLowerCase();
 
 		try {
 			if (arg instanceof net.md_5.bungee.api.ChatColor)
@@ -2548,7 +2560,7 @@ public final class Common {
 	public static boolean callEvent(final Event event) {
 		Bukkit.getPluginManager().callEvent(event);
 
-		return event instanceof Cancellable ? !((Cancellable) event).isCancelled() : true;
+		return !(event instanceof Cancellable) || !((Cancellable) event).isCancelled();
 	}
 
 	/**
@@ -2660,7 +2672,6 @@ public final class Common {
 	 * @param <K>
 	 * @param <V>
 	 */
-	@SuppressWarnings("hiding")
 	public interface MapToListConverter<O, K, V> {
 
 		/**

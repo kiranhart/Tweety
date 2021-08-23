@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.Common;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -4,11 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.event.RocketExplosionEvent;
-import ca.tweetzy.tweety.remain.Remain;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EnderPearl;
@@ -23,8 +18,13 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.event.RocketExplosionEvent;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.Data;
 
 /**

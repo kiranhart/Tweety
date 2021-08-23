@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import ca.tweetzy.tweety.CompressUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.debug.Debugger;
@@ -50,7 +51,7 @@ public final class OutgoingMessage extends Message {
 	 */
 	public void writeString(String... messages) {
 		for (final String message : messages)
-			write(message, String.class);
+			write(CompressUtil.compressB64(message), String.class);
 	}
 
 	/**
@@ -114,6 +115,15 @@ public final class OutgoingMessage extends Message {
 	 */
 	public void writeShort(short number) {
 		write(number, Short.class);
+	}
+
+	/**
+	 * Write an uuid into the message
+	 *
+	 * @param uuid
+	 */
+	public void writeUUID(UUID uuid) {
+		write(uuid, UUID.class);
 	}
 
 	/**

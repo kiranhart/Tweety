@@ -1,9 +1,10 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
 
 /**
  * Utility class to test NBT library's compatibility

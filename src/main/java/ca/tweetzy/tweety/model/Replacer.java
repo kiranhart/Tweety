@@ -8,12 +8,12 @@ import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.SerializeUtil;
 import ca.tweetzy.tweety.SerializeUtil.SerializeFailedException;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

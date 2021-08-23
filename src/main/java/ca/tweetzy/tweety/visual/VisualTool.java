@@ -2,14 +2,14 @@ package ca.tweetzy.tweety.visual;
 
 import java.util.List;
 
-import ca.tweetzy.tweety.menu.tool.Tool;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import ca.tweetzy.tweety.menu.tool.BlockTool;
-import ca.tweetzy.tweety.remain.CompMaterial;
 
+import ca.tweetzy.tweety.menu.tool.BlockTool;
+import ca.tweetzy.tweety.menu.tool.Tool;
+import ca.tweetzy.tweety.remain.CompMaterial;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

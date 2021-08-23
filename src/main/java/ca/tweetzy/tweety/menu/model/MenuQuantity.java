@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.menu.model;
 
 import ca.tweetzy.tweety.menu.MenuQuantitable;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -2,9 +2,6 @@ package ca.tweetzy.tweety;
 
 import java.util.ArrayList;
 
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.CompMaterial;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,8 +9,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ca.tweetzy.tweety.remain.nbt.NBTItem;
 
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.nbt.NBTItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;

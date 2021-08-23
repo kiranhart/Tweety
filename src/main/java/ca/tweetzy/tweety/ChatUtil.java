@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety;
 
-import java.awt.Color;
+import java.awt.*;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import ca.tweetzy.tweety.model.Whiteblacklist;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
+import ca.tweetzy.tweety.model.Whiteblacklist;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

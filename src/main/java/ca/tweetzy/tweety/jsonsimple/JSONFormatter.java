@@ -203,11 +203,7 @@
  */
 package ca.tweetzy.tweety.jsonsimple;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 /**
  * Can format and minimize JSON data.

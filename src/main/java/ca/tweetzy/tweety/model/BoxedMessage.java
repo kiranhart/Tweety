@@ -3,14 +3,14 @@ package ca.tweetzy.tweety.model;
 import java.util.Arrays;
 import java.util.Objects;
 
-import ca.tweetzy.tweety.remain.Remain;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import ca.tweetzy.tweety.ChatUtil;
 import ca.tweetzy.tweety.Common;
-
+import ca.tweetzy.tweety.remain.Remain;
 import lombok.RequiredArgsConstructor;
 
 /**

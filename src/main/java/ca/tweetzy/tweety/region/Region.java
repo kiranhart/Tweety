@@ -4,18 +4,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import ca.tweetzy.tweety.visual.VisualizedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+
 import ca.tweetzy.tweety.BlockUtil;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.model.ConfigSerializable;
-
+import ca.tweetzy.tweety.visual.VisualizedRegion;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

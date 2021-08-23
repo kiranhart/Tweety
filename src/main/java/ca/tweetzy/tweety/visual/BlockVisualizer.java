@@ -2,19 +2,19 @@ package ca.tweetzy.tweety.visual;
 
 import java.util.HashSet;
 
-import ca.tweetzy.tweety.remain.Remain;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompProperty;
-
+import ca.tweetzy.tweety.remain.Remain;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
