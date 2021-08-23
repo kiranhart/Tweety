@@ -40,6 +40,10 @@ import lombok.NonNull;
 public abstract class SimpleCommand extends Command {
 
 	/**
+	 * Denotes an empty list used to disable tab-completion
+	 */
+	protected static final List<String> NO_COMPLETE = Collections.unmodifiableList(new ArrayList<>());
+	/**
 	 * If this flag is true, we will use {@link Messenger} to send
 	 * messages (no prefix supported)
 	 *
@@ -47,27 +51,25 @@ public abstract class SimpleCommand extends Command {
 	 */
 	@Deprecated
 	public static boolean USE_MESSENGER = Messenger.ENABLED;
-
-	/**
-	 * Denotes an empty list used to disable tab-completion
-	 */
-	protected static final List<String> NO_COMPLETE = Collections.unmodifiableList(new ArrayList<>());
-
-	/**
-	 * Return the default permission syntax
-	 *
-	 * @return
-	 */
-	protected static final String getDefaultPermission() {
-		return SimplePlugin.getNamed().toLowerCase() + ".command.{label}";
-	}
-
 	/**
 	 * You can set the cooldown time before executing the command again. This map
 	 * stores the player uuid and his last execution of the command.
 	 */
 	private final ExpiringMap<UUID, Long> cooldownMap = ExpiringMap.builder().expiration(30, TimeUnit.MINUTES).build();
-
+	/**
+	 * The command sender, or null if does not exist
+	 * <p>
+	 * This variable is updated dynamically when the command is run with the
+	 * last known sender
+	 */
+	protected CommandSender sender;
+	/**
+	 * The arguments used when the command was last executed
+	 * <p>
+	 * This variable is updated dynamically when the command is run with the
+	 * last known arguments
+	 */
+	protected String[] args;
 	/**
 	 * The command label, eg. boss for /boss
 	 * <p>
@@ -76,35 +78,29 @@ public abstract class SimpleCommand extends Command {
 	 * respectively
 	 */
 	private String label;
-
 	/**
 	 * Has this command been already registered?
 	 */
 	private boolean registered = false;
-
 	/**
 	 * Should we add {@link Common#getTellPrefix()} automatically when calling tell and returnTell methods
 	 * from this command?
 	 */
 	private boolean addTellPrefix = true;
-
 	/**
 	 * The {@link Common#getTellPrefix()} custom prefix only used for sending messages in {@link #onCommand()} method
 	 * for this command, empty by default, then we use the one in Common
 	 */
 	private String tellPrefix = "";
-
 	/**
 	 * Minimum arguments required to run this command
 	 */
 	@Getter
 	private int minArguments = 0;
-
 	/**
 	 * The command cooldown before we can run this command again
 	 */
 	private int cooldownSeconds = 0;
-
 	/**
 	 * A custom message when the player attempts to run this command
 	 * within {@link #cooldownSeconds}. By default we use the one found in
@@ -114,33 +110,14 @@ public abstract class SimpleCommand extends Command {
 	 */
 	private String cooldownMessage = null;
 
+	// ----------------------------------------------------------------------
+	// Temporary variables
+	// ----------------------------------------------------------------------
 	/**
 	 * Should we automatically send usage message when the first argument
 	 * equals to "help" or "?" ?
 	 */
 	private boolean autoHandleHelp = true;
-
-	// ----------------------------------------------------------------------
-	// Temporary variables
-	// ----------------------------------------------------------------------
-
-	/**
-	 * The command sender, or null if does not exist
-	 * <p>
-	 * This variable is updated dynamically when the command is run with the
-	 * last known sender
-	 */
-	protected CommandSender sender;
-
-	/**
-	 * The arguments used when the command was last executed
-	 * <p>
-	 * This variable is updated dynamically when the command is run with the
-	 * last known arguments
-	 */
-	protected String[] args;
-
-	// ----------------------------------------------------------------------
 
 	/**
 	 * Create a new simple command with the given label.
@@ -154,6 +131,8 @@ public abstract class SimpleCommand extends Command {
 	protected SimpleCommand(final String label) {
 		this(parseLabel0(label), parseAliases0(label));
 	}
+
+	// ----------------------------------------------------------------------
 
 	/**
 	 * Create a new simple command from the list. The first
@@ -186,6 +165,15 @@ public abstract class SimpleCommand extends Command {
 
 		// Set a default permission for this command
 		setPermission(getDefaultPermission());
+	}
+
+	/**
+	 * Return the default permission syntax
+	 *
+	 * @return
+	 */
+	protected static final String getDefaultPermission() {
+		return SimplePlugin.getNamed().toLowerCase() + ".command.{label}";
 	}
 
 	/*
@@ -1451,17 +1439,6 @@ public abstract class SimpleCommand extends Command {
 	}
 
 	/**
-	 * Get the permission without replacing variables
-	 *
-	 * @return
-	 * @deprecated internal use only
-	 */
-	@Deprecated
-	protected final String getRawPermission() {
-		return super.getPermission();
-	}
-
-	/**
 	 * Sets the permission required for this command to run. If you set the
 	 * permission to null we will not require any permission (unsafe).
 	 *
@@ -1470,6 +1447,17 @@ public abstract class SimpleCommand extends Command {
 	@Override
 	public final void setPermission(final String permission) {
 		super.setPermission(permission);
+	}
+
+	/**
+	 * Get the permission without replacing variables
+	 *
+	 * @return
+	 * @deprecated internal use only
+	 */
+	@Deprecated
+	protected final String getRawPermission() {
+		return super.getPermission();
 	}
 
 	/**

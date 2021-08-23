@@ -21,6 +21,51 @@ import ca.tweetzy.tweety.plugin.SimplePlugin;
 public class SimpleLocalization extends YamlStaticConfig {
 
 	/**
+	 * Denotes the "none" message
+	 */
+	public static String NONE = "None";
+
+	// --------------------------------------------------------------------
+	// Loading
+	// --------------------------------------------------------------------
+	/**
+	 * The message for player if they lack a permission.
+	 */
+	public static String NO_PERMISSION = "&cInsufficient permission ({permission}).";
+
+	// --------------------------------------------------------------------
+	// Version
+	// --------------------------------------------------------------------
+	/**
+	 * The server prefix. Example: you have to use it manually if you are sending messages
+	 * from the console to players
+	 */
+	public static String SERVER_PREFIX = "[Server]";
+	/**
+	 * The console localized name. Example: Console
+	 */
+	public static String CONSOLE_NAME = "Console";
+	/**
+	 * The message when a section is missing from data.db file (typically we use
+	 * this file to store serialized values such as arenas from minigame plugins).
+	 */
+	public static String DATA_MISSING = "&c{name} lacks database information! Please only create {type} in-game! Skipping..";
+
+	// --------------------------------------------------------------------
+	// Shared values
+	// --------------------------------------------------------------------
+
+	// NB: Those keys are optional - you do not have to write them into your messages_X.yml files
+	// but if you do, we will use your values instead of the default ones!
+	/**
+	 * The message when the console attempts to start a server conversation which is prevented.
+	 */
+	public static String CONVERSATION_REQUIRES_PLAYER = "Only players may enter this conversation.";
+	/**
+	 * The configuration version number, found in the "Version" key in the file.,
+	 */
+	protected static Integer VERSION;
+	/**
 	 * A flag indicating that this class has been loaded
 	 * <p>
 	 * You can place this class to {@link SimplePlugin#getSettings()} to make
@@ -28,9 +73,50 @@ public class SimpleLocalization extends YamlStaticConfig {
 	 */
 	private static boolean localizationClassCalled;
 
-	// --------------------------------------------------------------------
-	// Loading
-	// --------------------------------------------------------------------
+	/**
+	 * Load the values -- this method is called automatically by reflection in the {@link YamlStaticConfig} class!
+	 */
+	private static void init() {
+		pathPrefix(null);
+		Valid.checkBoolean(!localizationClassCalled, "Localization class already loaded!");
+
+		if (isSetDefault("No_Permission"))
+			NO_PERMISSION = getString("No_Permission");
+
+		if (isSetDefault("Server_Prefix"))
+			SERVER_PREFIX = getString("Server_Prefix");
+
+		if (isSetDefault("Console_Name"))
+			CONSOLE_NAME = getString("Console_Name");
+
+		if (isSetDefault("Data_Missing"))
+			DATA_MISSING = getString("Data_Missing");
+
+		if (isSetDefault("Conversation_Requires_Player"))
+			CONVERSATION_REQUIRES_PLAYER = getString("Conversation_Requires_Player");
+
+		if (isSetDefault("None"))
+			NONE = getString("None");
+
+		localizationClassCalled = true;
+	}
+
+	/**
+	 * Was this class loaded?
+	 *
+	 * @return
+	 */
+	public static final Boolean isLocalizationCalled() {
+		return localizationClassCalled;
+	}
+
+	/**
+	 * Reset the flag indicating that the class has been loaded,
+	 * used in reloading.
+	 */
+	public static final void resetLocalizationCall() {
+		localizationClassCalled = false;
+	}
 
 	/**
 	 * Create and load the localization/messages_LOCALEPREFIX.yml file.
@@ -44,15 +130,6 @@ public class SimpleLocalization extends YamlStaticConfig {
 	protected final void load() throws Exception {
 		createLocalizationFile(SimpleSettings.LOCALE_PREFIX);
 	}
-
-	// --------------------------------------------------------------------
-	// Version
-	// --------------------------------------------------------------------
-
-	/**
-	 * The configuration version number, found in the "Version" key in the file.,
-	 */
-	protected static Integer VERSION;
 
 	/**
 	 * Set and update the config version automatically, however the {@link #VERSION} will
@@ -80,13 +157,6 @@ public class SimpleLocalization extends YamlStaticConfig {
 	protected int getConfigVersion() {
 		return 1;
 	}
-
-	// --------------------------------------------------------------------
-	// Shared values
-	// --------------------------------------------------------------------
-
-	// NB: Those keys are optional - you do not have to write them into your messages_X.yml files
-	// but if you do, we will use your values instead of the default ones!
 
 	/**
 	 * Locale keys related to your plugin commands
@@ -602,82 +672,5 @@ public class SimpleLocalization extends YamlStaticConfig {
 			if (isSetDefault("Downloaded"))
 				DOWNLOADED = getString("Downloaded");
 		}
-	}
-
-	/**
-	 * Denotes the "none" message
-	 */
-	public static String NONE = "None";
-
-	/**
-	 * The message for player if they lack a permission.
-	 */
-	public static String NO_PERMISSION = "&cInsufficient permission ({permission}).";
-
-	/**
-	 * The server prefix. Example: you have to use it manually if you are sending messages
-	 * from the console to players
-	 */
-	public static String SERVER_PREFIX = "[Server]";
-
-	/**
-	 * The console localized name. Example: Console
-	 */
-	public static String CONSOLE_NAME = "Console";
-
-	/**
-	 * The message when a section is missing from data.db file (typically we use
-	 * this file to store serialized values such as arenas from minigame plugins).
-	 */
-	public static String DATA_MISSING = "&c{name} lacks database information! Please only create {type} in-game! Skipping..";
-
-	/**
-	 * The message when the console attempts to start a server conversation which is prevented.
-	 */
-	public static String CONVERSATION_REQUIRES_PLAYER = "Only players may enter this conversation.";
-
-	/**
-	 * Load the values -- this method is called automatically by reflection in the {@link YamlStaticConfig} class!
-	 */
-	private static void init() {
-		pathPrefix(null);
-		Valid.checkBoolean(!localizationClassCalled, "Localization class already loaded!");
-
-		if (isSetDefault("No_Permission"))
-			NO_PERMISSION = getString("No_Permission");
-
-		if (isSetDefault("Server_Prefix"))
-			SERVER_PREFIX = getString("Server_Prefix");
-
-		if (isSetDefault("Console_Name"))
-			CONSOLE_NAME = getString("Console_Name");
-
-		if (isSetDefault("Data_Missing"))
-			DATA_MISSING = getString("Data_Missing");
-
-		if (isSetDefault("Conversation_Requires_Player"))
-			CONVERSATION_REQUIRES_PLAYER = getString("Conversation_Requires_Player");
-
-		if (isSetDefault("None"))
-			NONE = getString("None");
-
-		localizationClassCalled = true;
-	}
-
-	/**
-	 * Was this class loaded?
-	 *
-	 * @return
-	 */
-	public static final Boolean isLocalizationCalled() {
-		return localizationClassCalled;
-	}
-
-	/**
-	 * Reset the flag indicating that the class has been loaded,
-	 * used in reloading.
-	 */
-	public static final void resetLocalizationCall() {
-		localizationClassCalled = false;
 	}
 }

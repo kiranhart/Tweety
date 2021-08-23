@@ -51,12 +51,12 @@ public final class RocketExplosionEvent extends SimpleEvent implements Cancellab
 		this.breakBlocks = breakBlocks;
 	}
 
-	@Override
-	public HandlerList getHandlers() {
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList() {
+	@Override
+	public HandlerList getHandlers() {
 		return handlers;
 	}
 }

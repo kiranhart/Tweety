@@ -37,6 +37,16 @@ public abstract class SimplePrompt extends ValidatingPrompt implements Cloneable
 	}
 
 	/**
+	 * Show the given prompt to the player
+	 *
+	 * @param player
+	 * @param prompt
+	 */
+	public static final void show(final Player player, final SimplePrompt prompt) {
+		prompt.show(player);
+	}
+
+	/**
 	 * Return the prefix before tell messages
 	 *
 	 * @param ctx
@@ -212,15 +222,5 @@ public abstract class SimplePrompt extends ValidatingPrompt implements Cloneable
 	@Override
 	public SimplePrompt clone() {
 		return (SimplePrompt) super.clone();
-	}
-
-	/**
-	 * Show the given prompt to the player
-	 *
-	 * @param player
-	 * @param prompt
-	 */
-	public static final void show(final Player player, final SimplePrompt prompt) {
-		prompt.show(player);
 	}
 }

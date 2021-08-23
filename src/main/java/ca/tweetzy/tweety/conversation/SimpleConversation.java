@@ -46,6 +46,48 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 	}
 
 	/**
+	 * Sends a boxed message to the conversable player later
+	 *
+	 * @param delayTicks
+	 * @param conversable
+	 * @param messages
+	 */
+	protected static final void tellBoxed(final int delayTicks, final Conversable conversable, final String... messages) {
+		Common.runLater(delayTicks, () -> tellBoxed(conversable, messages));
+	}
+
+	/**
+	 * Sends a boxed message to the conversable player
+	 *
+	 * @param conversable
+	 * @param messages
+	 */
+	protected static final void tellBoxed(final Conversable conversable, final String... messages) {
+		BoxedMessage.tell((Player) conversable, messages);
+	}
+
+	/**
+	 * Shortcut method for direct message send to the player
+	 *
+	 * @param conversable
+	 * @param message
+	 */
+	protected static final void tell(final Conversable conversable, final String message) {
+		Common.tellConversing(conversable, Variables.replace(message, (Player) conversable));
+	}
+
+	/**
+	 * Send a message to the conversable player later
+	 *
+	 * @param delayTicks
+	 * @param conversable
+	 * @param message
+	 */
+	protected static final void tellLater(final int delayTicks, final Conversable conversable, final String message) {
+		Common.tellLaterConversing(delayTicks, conversable, Variables.replace(message, (Player) conversable));
+	}
+
+	/**
 	 * Start a conversation with the player, throwing error if {@link Player#isConversing()}
 	 *
 	 * @param player
@@ -161,6 +203,10 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 		return new SimpleCanceller("quit", "cancel", "exit");
 	}
 
+	// ------------------------------------------------------------------------------------------------------------
+	// Static access
+	// ------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * Return true if we should insert a prefix before each message, see {@link #getPrefix()}
 	 *
@@ -195,52 +241,6 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 	 */
 	public void setMenuToReturnTo(final Menu menu) {
 		this.menuToReturnTo = menu;
-	}
-
-	// ------------------------------------------------------------------------------------------------------------
-	// Static access
-	// ------------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Sends a boxed message to the conversable player later
-	 *
-	 * @param delayTicks
-	 * @param conversable
-	 * @param messages
-	 */
-	protected static final void tellBoxed(final int delayTicks, final Conversable conversable, final String... messages) {
-		Common.runLater(delayTicks, () -> tellBoxed(conversable, messages));
-	}
-
-	/**
-	 * Sends a boxed message to the conversable player
-	 *
-	 * @param conversable
-	 * @param messages
-	 */
-	protected static final void tellBoxed(final Conversable conversable, final String... messages) {
-		BoxedMessage.tell((Player) conversable, messages);
-	}
-
-	/**
-	 * Shortcut method for direct message send to the player
-	 *
-	 * @param conversable
-	 * @param message
-	 */
-	protected static final void tell(final Conversable conversable, final String message) {
-		Common.tellConversing(conversable, Variables.replace(message, (Player) conversable));
-	}
-
-	/**
-	 * Send a message to the conversable player later
-	 *
-	 * @param delayTicks
-	 * @param conversable
-	 * @param message
-	 */
-	protected static final void tellLater(final int delayTicks, final Conversable conversable, final String message) {
-		Common.tellLaterConversing(delayTicks, conversable, Variables.replace(message, (Player) conversable));
 	}
 
 	// ------------------------------------------------------------------------------------------------------------

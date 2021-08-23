@@ -27,29 +27,25 @@ import lombok.NonNull;
 public final class ConfigItems<T extends YamlConfig> {
 
 	/**
-	 * A list of all loaded items
-	 */
-	private volatile List<T> loadedItems = new ArrayList<>();
-
-	/**
 	 * The item type this class stores, such as "variable, "format", or "arena class"
 	 */
 	private final String type;
-
 	/**
 	 * The folder name where the items are stored, this must be the same
 	 * on both your JAR file and in your plugin folder, for example
 	 * "classes/" in your JAR file and "classes/" in your plugin folder
 	 */
 	private final String folder;
-
 	/**
 	 * The class we are loading in the list
 	 * <p>
 	 * *MUST* have a private constructor without any arguments
 	 */
 	private final Class<T> prototypeClass;
-
+	/**
+	 * A list of all loaded items
+	 */
+	private volatile List<T> loadedItems = new ArrayList<>();
 	/**
 	 * Are all items stored in a single file?
 	 */

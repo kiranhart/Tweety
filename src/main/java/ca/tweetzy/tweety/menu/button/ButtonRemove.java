@@ -92,6 +92,21 @@ public class ButtonRemove extends Button {
 	}
 
 	/**
+	 * Fires the action to remove the object
+	 */
+
+	@FunctionalInterface
+	public interface ButtonRemoveAction {
+
+		/**
+		 * Remove the object
+		 *
+		 * @param object the object's name, for example "Warrior" for class
+		 */
+		void remove(String object);
+	}
+
+	/**
 	 * The button that when clicked, actually removes the object
 	 */
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -112,21 +127,6 @@ public class ButtonRemove extends Button {
 
 			Common.tell(player, SimpleLocalization.Menu.ITEM_DELETED.replace("{item}", (!toRemoveType.isEmpty() ? toRemoveType + " " : "") + toRemoveName));
 		}
-	}
-
-	/**
-	 * Fires the action to remove the object
-	 */
-
-	@FunctionalInterface
-	public interface ButtonRemoveAction {
-
-		/**
-		 * Remove the object
-		 *
-		 * @param object the object's name, for example "Warrior" for class
-		 */
-		void remove(String object);
 	}
 
 	/**

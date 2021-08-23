@@ -36,40 +36,19 @@ public class SimpleScoreboard {
 	 */
 	@Getter
 	private final static List<SimpleScoreboard> registeredBoards = new ArrayList<>();
-
-	/**
-	 * Clears registered boards, usually called on reload
-	 */
-	public static final void clearBoards() {
-		registeredBoards.clear();
-	}
-
-	/**
-	 * Removes all scoreboard for a player
-	 *
-	 * @param player
-	 */
-	public static final void clearBoardsFor(final Player player) {
-		for (final SimpleScoreboard scoreboard : registeredBoards)
-			if (scoreboard.isViewing(player))
-				scoreboard.hide(player);
-	}
-
-	// ------------------------------------------------------------------------------------------------------------
-	// Public entries
-	// ------------------------------------------------------------------------------------------------------------
-
 	/**
 	 * Stored scoreboard lines
 	 */
 	@Getter
 	private final List<String> rows = new ArrayList<>();
-
 	/**
 	 * A list of viewed scoreboards
 	 */
 	private final StrictList<ViewedScoreboard> scoreboards = new StrictList<>();
 
+	// ------------------------------------------------------------------------------------------------------------
+	// Public entries
+	// ------------------------------------------------------------------------------------------------------------
 	/**
 	 * The color theme for key: value pairs such as
 	 * <p>
@@ -77,56 +56,16 @@ public class SimpleScoreboard {
 	 * Mode: playing
 	 */
 	private final String[] theme = new String[2];
-
 	/**
 	 * The title of this scoreboard
 	 */
 	@Getter
 	private String title;
-
 	/**
 	 * The update tick delay
 	 */
 	@Getter
 	private int updateDelayTicks;
-
-	// ------------------------------------------------------------------------------------------------------------
-	// Classes
-	// ------------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Stores a viewed scoreboard per player
-	 */
-	@Getter
-	@Setter
-	@AllArgsConstructor(access = AccessLevel.PRIVATE)
-	private class ViewedScoreboard {
-
-		/**
-		 * The scoreboard
-		 */
-		private final Scoreboard scoreboard;
-
-		/**
-		 * The objective
-		 */
-		private Objective objective;
-
-		/**
-		 * The viewer
-		 */
-		private final Player viewer;
-
-		@Override
-		public boolean equals(final Object obj) {
-			return obj instanceof ViewedScoreboard && ((ViewedScoreboard) obj).getViewer().equals(this.viewer);
-		}
-	}
-
-	// ------------------------------------------------------------------------------------------------------------
-	// Private entries
-	// ------------------------------------------------------------------------------------------------------------
-
 	/**
 	 * The running update task
 	 */
@@ -140,8 +79,30 @@ public class SimpleScoreboard {
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
-	// Add new rows
+	// Classes
 	// ------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Clears registered boards, usually called on reload
+	 */
+	public static final void clearBoards() {
+		registeredBoards.clear();
+	}
+
+	// ------------------------------------------------------------------------------------------------------------
+	// Private entries
+	// ------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Removes all scoreboard for a player
+	 *
+	 * @param player
+	 */
+	public static final void clearBoardsFor(final Player player) {
+		for (final SimpleScoreboard scoreboard : registeredBoards)
+			if (scoreboard.isViewing(player))
+				scoreboard.hide(player);
+	}
 
 	/**
 	 * Add rows onto the scoreboard
@@ -151,6 +112,10 @@ public class SimpleScoreboard {
 	public final void addRows(final String... entries) {
 		addRows(Arrays.asList(entries));
 	}
+
+	// ------------------------------------------------------------------------------------------------------------
+	// Add new rows
+	// ------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Add rows onto the scoreboard
@@ -191,10 +156,6 @@ public class SimpleScoreboard {
 		}
 	}
 
-	// ------------------------------------------------------------------------------------------------------------
-	// Start / stop
-	// ------------------------------------------------------------------------------------------------------------
-
 	/**
 	 * Starts visualizing this scoreboard
 	 */
@@ -222,6 +183,10 @@ public class SimpleScoreboard {
 			}
 		}.runTaskTimer(SimplePlugin.getInstance(), 0, updateDelayTicks);
 	}
+
+	// ------------------------------------------------------------------------------------------------------------
+	// Start / stop
+	// ------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Updates this scoreboard
@@ -408,10 +373,6 @@ public class SimpleScoreboard {
 		this.title = title;
 	}
 
-	// ------------------------------------------------------------------------------------------------------------
-	// Rendering
-	// ------------------------------------------------------------------------------------------------------------
-
 	/**
 	 * Show this scoreboard to the player
 	 *
@@ -428,6 +389,10 @@ public class SimpleScoreboard {
 		scoreboards.add(new ViewedScoreboard(scoreboard, null, player));
 		player.setScoreboard(scoreboard);
 	}
+
+	// ------------------------------------------------------------------------------------------------------------
+	// Rendering
+	// ------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Hide this scoreboard from the player
@@ -466,5 +431,32 @@ public class SimpleScoreboard {
 	@Override
 	public final String toString() {
 		return "Scoreboard{title=" + getTitle() + "}";
+	}
+
+	/**
+	 * Stores a viewed scoreboard per player
+	 */
+	@Getter
+	@Setter
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
+	private class ViewedScoreboard {
+
+		/**
+		 * The scoreboard
+		 */
+		private final Scoreboard scoreboard;
+		/**
+		 * The viewer
+		 */
+		private final Player viewer;
+		/**
+		 * The objective
+		 */
+		private Objective objective;
+
+		@Override
+		public boolean equals(final Object obj) {
+			return obj instanceof ViewedScoreboard && ((ViewedScoreboard) obj).getViewer().equals(this.viewer);
+		}
 	}
 }

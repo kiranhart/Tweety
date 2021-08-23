@@ -71,6 +71,67 @@ public final class BoxedMessage {
 	// Helper methods
 	// ------------------------------------------------------------------------------------------------------------
 
+	/**
+	 * Send this message to everyone
+	 *
+	 * @param messages
+	 */
+	public static void broadcast(String... messages) {
+		broadcast(null, messages);
+	}
+
+	/**
+	 * Sends this message to the all players as the sender
+	 *
+	 * @param sender
+	 * @param messages
+	 */
+	public static void broadcast(Player sender, String... messages) {
+		new BoxedMessage(null, sender, messages).launch();
+	}
+
+	/**
+	 * Sends the message to the recipient
+	 *
+	 * @param recipient
+	 * @param messages
+	 */
+	public static void tell(CommandSender recipient, String... messages) {
+		tell(null, Arrays.asList(recipient), messages);
+	}
+
+	/**
+	 * Sends the message to the given recipients
+	 *
+	 * @param recipients
+	 * @param messages
+	 */
+	public static void tell(Iterable<? extends CommandSender> recipients, String... messages) {
+		tell(null, recipients, messages);
+	}
+
+	/**
+	 * Sends this message to a recipient as sender
+	 *
+	 * @param sender
+	 * @param receiver
+	 * @param messages
+	 */
+	public static void tell(Player sender, CommandSender receiver, String... messages) {
+		tell(sender, Arrays.asList(receiver), messages);
+	}
+
+	/**
+	 * Sends this message to recipients as sender
+	 *
+	 * @param sender
+	 * @param receivers
+	 * @param messages
+	 */
+	public static void tell(Player sender, Iterable<? extends CommandSender> receivers, String... messages) {
+		new BoxedMessage(receivers, sender, messages).launch();
+	}
+
 	private void launch() {
 		Common.runLater(2, () -> {
 			final boolean tellPrefixState = Common.ADD_TELL_PREFIX;
@@ -152,6 +213,10 @@ public final class BoxedMessage {
 			tell0(message);
 	}
 
+	// ------------------------------------------------------------------------------------------------------------
+	// Messaging
+	// ------------------------------------------------------------------------------------------------------------
+
 	private String centerMessage0(String message) {
 		if (message.startsWith("<center>"))
 			return ChatUtil.center(message.replaceFirst("\\<center\\>(\\s|)", ""));
@@ -194,7 +259,7 @@ public final class BoxedMessage {
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
-	// Messaging
+	// Static
 	// ------------------------------------------------------------------------------------------------------------
 
 	/**
@@ -251,71 +316,6 @@ public final class BoxedMessage {
 	 * @param sender
 	 */
 	public void tellAs(Iterable<? extends CommandSender> receivers, Player sender) {
-		new BoxedMessage(receivers, sender, messages).launch();
-	}
-
-	// ------------------------------------------------------------------------------------------------------------
-	// Static
-	// ------------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Send this message to everyone
-	 *
-	 * @param messages
-	 */
-	public static void broadcast(String... messages) {
-		broadcast(null, messages);
-	}
-
-	/**
-	 * Sends this message to the all players as the sender
-	 *
-	 * @param sender
-	 * @param messages
-	 */
-	public static void broadcast(Player sender, String... messages) {
-		new BoxedMessage(null, sender, messages).launch();
-	}
-
-	/**
-	 * Sends the message to the recipient
-	 *
-	 * @param recipient
-	 * @param messages
-	 */
-	public static void tell(CommandSender recipient, String... messages) {
-		tell(null, Arrays.asList(recipient), messages);
-	}
-
-	/**
-	 * Sends the message to the given recipients
-	 *
-	 * @param recipients
-	 * @param messages
-	 */
-	public static void tell(Iterable<? extends CommandSender> recipients, String... messages) {
-		tell(null, recipients, messages);
-	}
-
-	/**
-	 * Sends this message to a recipient as sender
-	 *
-	 * @param sender
-	 * @param receiver
-	 * @param messages
-	 */
-	public static void tell(Player sender, CommandSender receiver, String... messages) {
-		tell(sender, Arrays.asList(receiver), messages);
-	}
-
-	/**
-	 * Sends this message to recipients as sender
-	 *
-	 * @param sender
-	 * @param receivers
-	 * @param messages
-	 */
-	public static void tell(Player sender, Iterable<? extends CommandSender> receivers, String... messages) {
 		new BoxedMessage(receivers, sender, messages).launch();
 	}
 

@@ -37,6 +37,39 @@ public final class ItemSlider implements Slider<List<ItemStack>> {
 	private int currentPointer = 0;
 
 	/**
+	 * Create a new slider for the given items.
+	 *
+	 * @param filler
+	 * @param highlighted
+	 * @return
+	 */
+	public static ItemSlider from(CompMaterial filler, CompMaterial highlighted) {
+		return from(ItemCreator.of(filler), ItemCreator.of(highlighted));
+	}
+
+	/**
+	 * Create a new slider for the given items.
+	 *
+	 * @param filler
+	 * @param highlighted
+	 * @return
+	 */
+	public static ItemSlider from(ItemCreator.ItemCreatorBuilder filler, ItemCreator.ItemCreatorBuilder highlighted) {
+		return from(filler.build().make(), highlighted.build().make());
+	}
+
+	/**
+	 * Create a new slider for the given items.
+	 *
+	 * @param filler
+	 * @param highlighted
+	 * @return
+	 */
+	public static ItemSlider from(ItemStack filler, ItemStack highlighted) {
+		return new ItemSlider(filler, highlighted);
+	}
+
+	/**
 	 * Set the amount of items to surround the highlighted item around (left and right side).
 	 *
 	 * @param width
@@ -70,38 +103,5 @@ public final class ItemSlider implements Slider<List<ItemStack>> {
 		this.currentPointer++;
 
 		return items;
-	}
-
-	/**
-	 * Create a new slider for the given items.
-	 *
-	 * @param filler
-	 * @param highlighted
-	 * @return
-	 */
-	public static ItemSlider from(CompMaterial filler, CompMaterial highlighted) {
-		return from(ItemCreator.of(filler), ItemCreator.of(highlighted));
-	}
-
-	/**
-	 * Create a new slider for the given items.
-	 *
-	 * @param filler
-	 * @param highlighted
-	 * @return
-	 */
-	public static ItemSlider from(ItemCreator.ItemCreatorBuilder filler, ItemCreator.ItemCreatorBuilder highlighted) {
-		return from(filler.build().make(), highlighted.build().make());
-	}
-
-	/**
-	 * Create a new slider for the given items.
-	 *
-	 * @param filler
-	 * @param highlighted
-	 * @return
-	 */
-	public static ItemSlider from(ItemStack filler, ItemStack highlighted) {
-		return new ItemSlider(filler, highlighted);
 	}
 }

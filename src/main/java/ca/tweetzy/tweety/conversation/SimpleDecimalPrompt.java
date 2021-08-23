@@ -30,6 +30,17 @@ public class SimpleDecimalPrompt extends SimplePrompt {
 	private Consumer<Double> successAction;
 
 	/**
+	 * Show the question with the action to the player
+	 *
+	 * @param player
+	 * @param question
+	 * @param successAction
+	 */
+	public static void show(final Player player, final String question, final Consumer<Double> successAction) {
+		new SimpleDecimalPrompt(question, successAction).show(player);
+	}
+
+	/**
 	 * The menu question
 	 *
 	 * @see SimplePrompt#getPrompt(org.bukkit.conversations.ConversationContext)
@@ -83,16 +94,5 @@ public class SimpleDecimalPrompt extends SimplePrompt {
 
 		successAction.accept(input);
 		return END_OF_CONVERSATION;
-	}
-
-	/**
-	 * Show the question with the action to the player
-	 *
-	 * @param player
-	 * @param question
-	 * @param successAction
-	 */
-	public static void show(final Player player, final String question, final Consumer<Double> successAction) {
-		new SimpleDecimalPrompt(question, successAction).show(player);
 	}
 }

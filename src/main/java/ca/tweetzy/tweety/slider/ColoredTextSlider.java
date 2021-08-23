@@ -43,6 +43,16 @@ public final class ColoredTextSlider implements Slider<String> {
 	private int currentPointer = Integer.MIN_VALUE;
 
 	/**
+	 * Create a new slider for the given text.
+	 *
+	 * @param text
+	 * @return
+	 */
+	public static ColoredTextSlider from(String text) {
+		return new ColoredTextSlider(text);
+	}
+
+	/**
 	 * Set the amount of letters of the text we apply
 	 * {@link #secondaryColor} to.
 	 *
@@ -99,15 +109,5 @@ public final class ColoredTextSlider implements Slider<String> {
 		this.currentPointer++;
 
 		return before + part + after;
-	}
-
-	/**
-	 * Create a new slider for the given text.
-	 *
-	 * @param text
-	 * @return
-	 */
-	public static ColoredTextSlider from(String text) {
-		return new ColoredTextSlider(text);
 	}
 }

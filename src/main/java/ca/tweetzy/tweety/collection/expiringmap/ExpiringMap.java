@@ -242,11 +242,7 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 	static volatile ScheduledExecutorService EXPIRER;
 	static volatile ThreadPoolExecutor LISTENER_SERVICE;
 	static ThreadFactory THREAD_FACTORY;
-
-	List<ExpirationListener<K, V>> expirationListeners;
-	List<ExpirationListener<K, V>> asyncExpirationListeners;
 	private final AtomicLong expirationNanos;
-	private int maxSize;
 	private final AtomicReference<ExpirationPolicy> expirationPolicy;
 	private final EntryLoader<? super K, ? extends V> entryLoader;
 	private final ExpiringEntryLoader<? super K, ? extends V> expiringEntryLoader;
@@ -258,21 +254,9 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 	 */
 	private final EntryMap<K, V> entries;
 	private final boolean variableExpiration;
-
-	public interface ExpirationListener<K, V> {
-		void expired(K var1, V var2);
-	}
-
-	/**
-	 * Sets the {@link ThreadFactory} that is used to create expiration and listener
-	 * callback threads for all ExpiringMap instances.
-	 *
-	 * @param threadFactory
-	 * @throws NullPointerException if {@code threadFactory} is null
-	 */
-	public static void setThreadFactory(@NonNull ThreadFactory threadFactory) {
-		THREAD_FACTORY = threadFactory;
-	}
+	List<ExpirationListener<K, V>> expirationListeners;
+	List<ExpirationListener<K, V>> asyncExpirationListeners;
+	private int maxSize;
 
 	/**
 	 * Creates a new instance of ExpiringMap.
@@ -308,515 +292,14 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 	}
 
 	/**
-	 * Builds ExpiringMap instances. Defaults to ExpirationPolicy.CREATED,
-	 * expiration of 60 TimeUnit.SECONDS and a maxSize of Integer.MAX_VALUE.
+	 * Sets the {@link ThreadFactory} that is used to create expiration and listener
+	 * callback threads for all ExpiringMap instances.
+	 *
+	 * @param threadFactory
+	 * @throws NullPointerException if {@code threadFactory} is null
 	 */
-	public static final class Builder<K, V> {
-		private ExpirationPolicy expirationPolicy = ExpirationPolicy.CREATED;
-		private List<ExpirationListener<K, V>> expirationListeners;
-		private List<ExpirationListener<K, V>> asyncExpirationListeners;
-		private TimeUnit timeUnit = TimeUnit.SECONDS;
-		private boolean variableExpiration;
-		private long duration = 60;
-		private int maxSize = Integer.MAX_VALUE;
-		private EntryLoader<K, V> entryLoader;
-		private ExpiringEntryLoader<K, V> expiringEntryLoader;
-
-		/**
-		 * Creates a new Builder object.
-		 */
-		private Builder() {
-		}
-
-		/**
-		 * Builds and returns an expiring map.
-		 *
-		 * @param <K1> Key type
-		 * @param <V1> Value type
-		 */
-
-		public <K1 extends K, V1 extends V> ExpiringMap<K1, V1> build() {
-			return new ExpiringMap<>((Builder<K1, V1>) this);
-		}
-
-		/**
-		 * Sets the default map entry expiration.
-		 *
-		 * @param duration the length of time after an entry is created that it should
-		 *                 be removed
-		 * @param timeUnit the unit that {@code duration} is expressed in
-		 * @throws NullPointerException if {@code timeUnit} is null
-		 */
-		public Builder<K, V> expiration(long duration, @NonNull TimeUnit timeUnit) {
-			this.duration = duration;
-			this.timeUnit = timeUnit;
-			return this;
-		}
-
-		/**
-		 * Sets the maximum size of the map. Once this size has been reached, adding an
-		 * additional entry will expire the first entry in line for expiration based on
-		 * the expiration policy.
-		 *
-		 * @param maxSize The maximum size of the map.
-		 */
-		public Builder<K, V> maxSize(int maxSize) {
-			Valid.checkBoolean(maxSize > 0, "maxSize");
-			this.maxSize = maxSize;
-			return this;
-		}
-
-		/**
-		 * Sets the EntryLoader to use when loading entries. Either an EntryLoader or
-		 * ExpiringEntryLoader may be set, not both.
-		 *
-		 * @param loader to set
-		 * @throws NullPointerException  if {@code loader} is null
-		 * @throws IllegalStateException if an
-		 *                               {@link #expiringEntryLoader(ExpiringEntryLoader)
-		 *                               ExpiringEntryLoader} is set
-		 */
-
-		public <K1 extends K, V1 extends V> Builder<K1, V1> entryLoader(@NonNull EntryLoader<? super K1, ? super V1> loader) {
-			assertNoLoaderSet();
-			entryLoader = (EntryLoader<K, V>) loader;
-			return (Builder<K1, V1>) this;
-		}
-
-		/**
-		 * Sets the ExpiringEntryLoader to use when loading entries and configures
-		 * {@link #variableExpiration() variable expiration}. Either an EntryLoader or
-		 * ExpiringEntryLoader may be set, not both.
-		 *
-		 * @param loader to set
-		 * @throws NullPointerException  if {@code loader} is null
-		 * @throws IllegalStateException if an {@link #entryLoader(EntryLoader)
-		 *                               EntryLoader} is set
-		 */
-		public <K1 extends K, V1 extends V> Builder<K1, V1> expiringEntryLoader(@NonNull ExpiringEntryLoader<? super K1, ? super V1> loader) {
-			assertNoLoaderSet();
-			expiringEntryLoader = (ExpiringEntryLoader<K, V>) loader;
-			variableExpiration();
-			return (Builder<K1, V1>) this;
-		}
-
-		/**
-		 * Configures the expiration listener that will receive notifications upon each
-		 * map entry's expiration. Notifications are delivered synchronously and block
-		 * map write operations.
-		 *
-		 * @param listener to set
-		 * @throws NullPointerException if {@code listener} is null
-		 */
-		public <K1 extends K, V1 extends V> Builder<K1, V1> expirationListener(
-				ExpirationListener<? super K1, ? super V1> listener) {
-			Valid.checkNotNull(listener, "listener");
-			if (expirationListeners == null)
-				expirationListeners = new ArrayList<>();
-			expirationListeners.add((ExpirationListener<K, V>) listener);
-			return (Builder<K1, V1>) this;
-		}
-
-		/**
-		 * Configures the expiration listeners which will receive notifications upon
-		 * each map entry's expiration. Notifications are delivered synchronously and
-		 * block map write operations.
-		 *
-		 * @param listeners to set
-		 * @throws NullPointerException if {@code listener} is null
-		 */
-
-		public <K1 extends K, V1 extends V> Builder<K1, V1> expirationListeners(
-				List<ExpirationListener<? super K1, ? super V1>> listeners) {
-			Valid.checkNotNull(listeners, "listeners");
-			if (expirationListeners == null)
-				expirationListeners = new ArrayList<>(listeners.size());
-			for (final ExpirationListener<? super K1, ? super V1> listener : listeners)
-				expirationListeners.add((ExpirationListener<K, V>) listener);
-			return (Builder<K1, V1>) this;
-		}
-
-		/**
-		 * Configures the expiration listener which will receive asynchronous
-		 * notifications upon each map entry's expiration.
-		 *
-		 * @param listener to set
-		 * @throws NullPointerException if {@code listener} is null
-		 */
-		public <K1 extends K, V1 extends V> Builder<K1, V1> asyncExpirationListener(
-				ExpirationListener<? super K1, ? super V1> listener) {
-			Valid.checkNotNull(listener, "listener");
-			if (asyncExpirationListeners == null)
-				asyncExpirationListeners = new ArrayList<>();
-			asyncExpirationListeners.add((ExpirationListener<K, V>) listener);
-			return (Builder<K1, V1>) this;
-		}
-
-		/**
-		 * Configures the expiration listeners which will receive asynchronous
-		 * notifications upon each map entry's expiration.
-		 *
-		 * @param listeners to set
-		 * @throws NullPointerException if {@code listener} is null
-		 */
-		public <K1 extends K, V1 extends V> Builder<K1, V1> asyncExpirationListeners(
-				List<ExpirationListener<? super K1, ? super V1>> listeners) {
-			Valid.checkNotNull(listeners, "listeners");
-			if (asyncExpirationListeners == null)
-				asyncExpirationListeners = new ArrayList<>(listeners.size());
-			for (final ExpirationListener<? super K1, ? super V1> listener : listeners)
-				asyncExpirationListeners.add((ExpirationListener<K, V>) listener);
-			return (Builder<K1, V1>) this;
-		}
-
-		/**
-		 * Configures the map entry expiration policy.
-		 *
-		 * @param expirationPolicy
-		 * @throws NullPointerException if {@code expirationPolicy} is null
-		 */
-		public Builder<K, V> expirationPolicy(@NonNull ExpirationPolicy expirationPolicy) {
-			this.expirationPolicy = expirationPolicy;
-			return this;
-		}
-
-		/**
-		 * Allows for map entries to have individual expirations and for expirations to
-		 * be changed.
-		 */
-		public Builder<K, V> variableExpiration() {
-			variableExpiration = true;
-			return this;
-		}
-
-		private void assertNoLoaderSet() {
-			Valid.checkBoolean(entryLoader == null && expiringEntryLoader == null,
-					"Either entryLoader or expiringEntryLoader may be set, not both");
-		}
-	}
-
-	/**
-	 * Entry map definition.
-	 */
-	private interface EntryMap<K, V> extends Map<K, ExpiringEntry<K, V>> {
-		/**
-		 * Returns the first entry in the map or null if the map is empty.
-		 */
-		ExpiringEntry<K, V> first();
-
-		/**
-		 * Reorders the given entry in the map.
-		 *
-		 * @param entry to reorder
-		 */
-		void reorder(ExpiringEntry<K, V> entry);
-
-		/**
-		 * Returns a values iterator.
-		 */
-		Iterator<ExpiringEntry<K, V>> valuesIterator();
-	}
-
-	/**
-	 * Entry LinkedHashMap implementation.
-	 */
-	private static class EntryLinkedHashMap<K, V> extends LinkedHashMap<K, ExpiringEntry<K, V>>
-			implements EntryMap<K, V> {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public boolean containsValue(Object value) {
-			for (final ExpiringEntry<K, V> entry : values()) {
-				final V v = entry.value;
-				if (v == value || value != null && value.equals(v))
-					return true;
-			}
-			return false;
-		}
-
-		@Override
-		public ExpiringEntry<K, V> first() {
-			return isEmpty() ? null : values().iterator().next();
-		}
-
-		@Override
-		public void reorder(ExpiringEntry<K, V> value) {
-			remove(value.key);
-			value.resetExpiration();
-			put(value.key, value);
-		}
-
-		@Override
-		public Iterator<ExpiringEntry<K, V>> valuesIterator() {
-			return values().iterator();
-		}
-
-		abstract class AbstractHashIterator {
-			private final Iterator<Map.Entry<K, ExpiringEntry<K, V>>> iterator = entrySet().iterator();
-			private ExpiringEntry<K, V> next;
-
-			public boolean hasNext() {
-				return iterator.hasNext();
-			}
-
-			public ExpiringEntry<K, V> getNext() {
-				next = iterator.next().getValue();
-				return next;
-			}
-
-			public void remove() {
-				iterator.remove();
-			}
-		}
-
-		final class KeyIterator extends AbstractHashIterator implements Iterator<K> {
-			@Override
-			public K next() {
-				return getNext().key;
-			}
-		}
-
-		final class ValueIterator extends AbstractHashIterator implements Iterator<V> {
-			@Override
-			public V next() {
-				return getNext().value;
-			}
-		}
-
-		public final class EntryIterator extends AbstractHashIterator implements Iterator<Map.Entry<K, V>> {
-			@Override
-			public Map.Entry<K, V> next() {
-				return mapEntryFor(getNext());
-			}
-		}
-	}
-
-	/**
-	 * Entry TreeHashMap implementation for variable expiration ExpiringMap entries.
-	 */
-	private static class EntryTreeHashMap<K, V> extends HashMap<K, ExpiringEntry<K, V>> implements EntryMap<K, V> {
-		private static final long serialVersionUID = 1L;
-		SortedSet<ExpiringEntry<K, V>> sortedSet = new ConcurrentSkipListSet<>();
-
-		@Override
-		public void clear() {
-			super.clear();
-			sortedSet.clear();
-		}
-
-		@Override
-		public boolean containsValue(Object value) {
-			for (final ExpiringEntry<K, V> entry : values()) {
-				final V v = entry.value;
-				if (v == value || value != null && value.equals(v))
-					return true;
-			}
-			return false;
-		}
-
-		@Override
-		public ExpiringEntry<K, V> first() {
-			return sortedSet.isEmpty() ? null : sortedSet.first();
-		}
-
-		@Override
-		public ExpiringEntry<K, V> put(K key, ExpiringEntry<K, V> value) {
-			sortedSet.add(value);
-			return super.put(key, value);
-		}
-
-		@Override
-		public ExpiringEntry<K, V> remove(Object key) {
-			final ExpiringEntry<K, V> entry = super.remove(key);
-			if (entry != null)
-				sortedSet.remove(entry);
-			return entry;
-		}
-
-		@Override
-		public void reorder(ExpiringEntry<K, V> value) {
-			sortedSet.remove(value);
-			value.resetExpiration();
-			sortedSet.add(value);
-		}
-
-		@Override
-		public Iterator<ExpiringEntry<K, V>> valuesIterator() {
-			return new ExpiringEntryIterator();
-		}
-
-		abstract class AbstractHashIterator {
-			private final Iterator<ExpiringEntry<K, V>> iterator = sortedSet.iterator();
-			protected ExpiringEntry<K, V> next;
-
-			public boolean hasNext() {
-				return iterator.hasNext();
-			}
-
-			public ExpiringEntry<K, V> getNext() {
-				next = iterator.next();
-				return next;
-			}
-
-			public void remove() {
-				EntryTreeHashMap.super.remove(next.key);
-				iterator.remove();
-			}
-		}
-
-		final class ExpiringEntryIterator extends AbstractHashIterator implements Iterator<ExpiringEntry<K, V>> {
-			@Override
-			public ExpiringEntry<K, V> next() {
-				return getNext();
-			}
-		}
-
-		final class KeyIterator extends AbstractHashIterator implements Iterator<K> {
-			@Override
-			public K next() {
-				return getNext().key;
-			}
-		}
-
-		final class ValueIterator extends AbstractHashIterator implements Iterator<V> {
-			@Override
-			public V next() {
-				return getNext().value;
-			}
-		}
-
-		final class EntryIterator extends AbstractHashIterator implements Iterator<Map.Entry<K, V>> {
-			@Override
-			public Map.Entry<K, V> next() {
-				return mapEntryFor(getNext());
-			}
-		}
-	}
-
-	/**
-	 * Expiring map entry implementation.
-	 */
-	static class ExpiringEntry<K, V> implements Comparable<ExpiringEntry<K, V>> {
-		final AtomicLong expirationNanos;
-		/**
-		 * Epoch time at which the entry is expected to expire
-		 */
-		final AtomicLong expectedExpiration;
-		final AtomicReference<ExpirationPolicy> expirationPolicy;
-		final K key;
-		/**
-		 * Guarded by "this"
-		 */
-		volatile Future<?> entryFuture;
-		/**
-		 * Guarded by "this"
-		 */
-		V value;
-		/**
-		 * Guarded by "this"
-		 */
-		volatile boolean scheduled;
-
-		/**
-		 * Creates a new ExpiringEntry object.
-		 *
-		 * @param key              for the entry
-		 * @param value            for the entry
-		 * @param expirationPolicy for the entry
-		 * @param expirationNanos  for the entry
-		 */
-		ExpiringEntry(K key, V value, AtomicReference<ExpirationPolicy> expirationPolicy, AtomicLong expirationNanos) {
-			this.key = key;
-			this.value = value;
-			this.expirationPolicy = expirationPolicy;
-			this.expirationNanos = expirationNanos;
-			this.expectedExpiration = new AtomicLong();
-			resetExpiration();
-		}
-
-		@Override
-		public int compareTo(ExpiringEntry<K, V> other) {
-			if (key.equals(other.key))
-				return 0;
-			return expectedExpiration.get() < other.expectedExpiration.get() ? -1 : 1;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + (key == null ? 0 : key.hashCode());
-			result = prime * result + (value == null ? 0 : value.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			final ExpiringEntry<?, ?> other = (ExpiringEntry<?, ?>) obj;
-			if (!key.equals(other.key))
-				return false;
-			if (value == null) {
-				if (other.value != null)
-					return false;
-			} else if (!value.equals(other.value))
-				return false;
-			return true;
-		}
-
-		@Override
-		public String toString() {
-			return value != null ? value.toString() : "";
-		}
-
-		/**
-		 * Marks the entry as canceled.
-		 *
-		 * @return true if the entry was scheduled
-		 */
-		synchronized boolean cancel() {
-			final boolean result = scheduled;
-			if (entryFuture != null)
-				entryFuture.cancel(false);
-
-			entryFuture = null;
-			scheduled = false;
-			return result;
-		}
-
-		/**
-		 * Gets the entry value.
-		 */
-		synchronized V getValue() {
-			return value;
-		}
-
-		/**
-		 * Resets the entry's expected expiration.
-		 */
-		void resetExpiration() {
-			expectedExpiration.set(expirationNanos.get() + System.nanoTime());
-		}
-
-		/**
-		 * Marks the entry as scheduled.
-		 */
-		synchronized void schedule(Future<?> entryFuture) {
-			this.entryFuture = entryFuture;
-			scheduled = true;
-		}
-
-		/**
-		 * Sets the entry value.
-		 */
-		synchronized void setValue(V value) {
-			this.value = value;
-		}
+	public static void setThreadFactory(@NonNull ThreadFactory threadFactory) {
+		THREAD_FACTORY = threadFactory;
 	}
 
 	/**
@@ -835,6 +318,25 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 
 	public static <K, V> ExpiringMap<K, V> create() {
 		return new ExpiringMap<>((Builder<K, V>) ExpiringMap.builder());
+	}
+
+	private static <K, V> Map.Entry<K, V> mapEntryFor(final ExpiringEntry<K, V> entry) {
+		return new Map.Entry<K, V>() {
+			@Override
+			public K getKey() {
+				return entry.key;
+			}
+
+			@Override
+			public V getValue() {
+				return entry.value;
+			}
+
+			@Override
+			public V setValue(V value) {
+				throw new UnsupportedOperationException();
+			}
+		};
 	}
 
 	/**
@@ -1054,6 +556,18 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 	 */
 	public int getMaxSize() {
 		return maxSize;
+	}
+
+	/**
+	 * Sets the maximum size of the map. Once this size has been reached, adding an
+	 * additional entry will expire the first entry in line for expiration based on
+	 * the expiration policy.
+	 *
+	 * @param maxSize The maximum size of the map.
+	 */
+	public void setMaxSize(int maxSize) {
+		Valid.checkBoolean(maxSize > 0, "maxSize");
+		this.maxSize = maxSize;
 	}
 
 	@Override
@@ -1369,18 +883,6 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 			entry.expirationPolicy.set(expirationPolicy);
 	}
 
-	/**
-	 * Sets the maximum size of the map. Once this size has been reached, adding an
-	 * additional entry will expire the first entry in line for expiration based on
-	 * the expiration policy.
-	 *
-	 * @param maxSize The maximum size of the map.
-	 */
-	public void setMaxSize(int maxSize) {
-		Valid.checkBoolean(maxSize > 0, "maxSize");
-		this.maxSize = maxSize;
-	}
-
 	@Override
 	public int size() {
 		readLock.lock();
@@ -1580,22 +1082,519 @@ public final class ExpiringMap<K, V> implements ConcurrentMap<K, V> {
 		}
 	}
 
-	private static <K, V> Map.Entry<K, V> mapEntryFor(final ExpiringEntry<K, V> entry) {
-		return new Map.Entry<K, V>() {
-			@Override
-			public K getKey() {
-				return entry.key;
+	public interface ExpirationListener<K, V> {
+		void expired(K var1, V var2);
+	}
+
+	/**
+	 * Entry map definition.
+	 */
+	private interface EntryMap<K, V> extends Map<K, ExpiringEntry<K, V>> {
+		/**
+		 * Returns the first entry in the map or null if the map is empty.
+		 */
+		ExpiringEntry<K, V> first();
+
+		/**
+		 * Reorders the given entry in the map.
+		 *
+		 * @param entry to reorder
+		 */
+		void reorder(ExpiringEntry<K, V> entry);
+
+		/**
+		 * Returns a values iterator.
+		 */
+		Iterator<ExpiringEntry<K, V>> valuesIterator();
+	}
+
+	/**
+	 * Builds ExpiringMap instances. Defaults to ExpirationPolicy.CREATED,
+	 * expiration of 60 TimeUnit.SECONDS and a maxSize of Integer.MAX_VALUE.
+	 */
+	public static final class Builder<K, V> {
+		private ExpirationPolicy expirationPolicy = ExpirationPolicy.CREATED;
+		private List<ExpirationListener<K, V>> expirationListeners;
+		private List<ExpirationListener<K, V>> asyncExpirationListeners;
+		private TimeUnit timeUnit = TimeUnit.SECONDS;
+		private boolean variableExpiration;
+		private long duration = 60;
+		private int maxSize = Integer.MAX_VALUE;
+		private EntryLoader<K, V> entryLoader;
+		private ExpiringEntryLoader<K, V> expiringEntryLoader;
+
+		/**
+		 * Creates a new Builder object.
+		 */
+		private Builder() {
+		}
+
+		/**
+		 * Builds and returns an expiring map.
+		 *
+		 * @param <K1> Key type
+		 * @param <V1> Value type
+		 */
+
+		public <K1 extends K, V1 extends V> ExpiringMap<K1, V1> build() {
+			return new ExpiringMap<>((Builder<K1, V1>) this);
+		}
+
+		/**
+		 * Sets the default map entry expiration.
+		 *
+		 * @param duration the length of time after an entry is created that it should
+		 *                 be removed
+		 * @param timeUnit the unit that {@code duration} is expressed in
+		 * @throws NullPointerException if {@code timeUnit} is null
+		 */
+		public Builder<K, V> expiration(long duration, @NonNull TimeUnit timeUnit) {
+			this.duration = duration;
+			this.timeUnit = timeUnit;
+			return this;
+		}
+
+		/**
+		 * Sets the maximum size of the map. Once this size has been reached, adding an
+		 * additional entry will expire the first entry in line for expiration based on
+		 * the expiration policy.
+		 *
+		 * @param maxSize The maximum size of the map.
+		 */
+		public Builder<K, V> maxSize(int maxSize) {
+			Valid.checkBoolean(maxSize > 0, "maxSize");
+			this.maxSize = maxSize;
+			return this;
+		}
+
+		/**
+		 * Sets the EntryLoader to use when loading entries. Either an EntryLoader or
+		 * ExpiringEntryLoader may be set, not both.
+		 *
+		 * @param loader to set
+		 * @throws NullPointerException  if {@code loader} is null
+		 * @throws IllegalStateException if an
+		 *                               {@link #expiringEntryLoader(ExpiringEntryLoader)
+		 *                               ExpiringEntryLoader} is set
+		 */
+
+		public <K1 extends K, V1 extends V> Builder<K1, V1> entryLoader(@NonNull EntryLoader<? super K1, ? super V1> loader) {
+			assertNoLoaderSet();
+			entryLoader = (EntryLoader<K, V>) loader;
+			return (Builder<K1, V1>) this;
+		}
+
+		/**
+		 * Sets the ExpiringEntryLoader to use when loading entries and configures
+		 * {@link #variableExpiration() variable expiration}. Either an EntryLoader or
+		 * ExpiringEntryLoader may be set, not both.
+		 *
+		 * @param loader to set
+		 * @throws NullPointerException  if {@code loader} is null
+		 * @throws IllegalStateException if an {@link #entryLoader(EntryLoader)
+		 *                               EntryLoader} is set
+		 */
+		public <K1 extends K, V1 extends V> Builder<K1, V1> expiringEntryLoader(@NonNull ExpiringEntryLoader<? super K1, ? super V1> loader) {
+			assertNoLoaderSet();
+			expiringEntryLoader = (ExpiringEntryLoader<K, V>) loader;
+			variableExpiration();
+			return (Builder<K1, V1>) this;
+		}
+
+		/**
+		 * Configures the expiration listener that will receive notifications upon each
+		 * map entry's expiration. Notifications are delivered synchronously and block
+		 * map write operations.
+		 *
+		 * @param listener to set
+		 * @throws NullPointerException if {@code listener} is null
+		 */
+		public <K1 extends K, V1 extends V> Builder<K1, V1> expirationListener(
+				ExpirationListener<? super K1, ? super V1> listener) {
+			Valid.checkNotNull(listener, "listener");
+			if (expirationListeners == null)
+				expirationListeners = new ArrayList<>();
+			expirationListeners.add((ExpirationListener<K, V>) listener);
+			return (Builder<K1, V1>) this;
+		}
+
+		/**
+		 * Configures the expiration listeners which will receive notifications upon
+		 * each map entry's expiration. Notifications are delivered synchronously and
+		 * block map write operations.
+		 *
+		 * @param listeners to set
+		 * @throws NullPointerException if {@code listener} is null
+		 */
+
+		public <K1 extends K, V1 extends V> Builder<K1, V1> expirationListeners(
+				List<ExpirationListener<? super K1, ? super V1>> listeners) {
+			Valid.checkNotNull(listeners, "listeners");
+			if (expirationListeners == null)
+				expirationListeners = new ArrayList<>(listeners.size());
+			for (final ExpirationListener<? super K1, ? super V1> listener : listeners)
+				expirationListeners.add((ExpirationListener<K, V>) listener);
+			return (Builder<K1, V1>) this;
+		}
+
+		/**
+		 * Configures the expiration listener which will receive asynchronous
+		 * notifications upon each map entry's expiration.
+		 *
+		 * @param listener to set
+		 * @throws NullPointerException if {@code listener} is null
+		 */
+		public <K1 extends K, V1 extends V> Builder<K1, V1> asyncExpirationListener(
+				ExpirationListener<? super K1, ? super V1> listener) {
+			Valid.checkNotNull(listener, "listener");
+			if (asyncExpirationListeners == null)
+				asyncExpirationListeners = new ArrayList<>();
+			asyncExpirationListeners.add((ExpirationListener<K, V>) listener);
+			return (Builder<K1, V1>) this;
+		}
+
+		/**
+		 * Configures the expiration listeners which will receive asynchronous
+		 * notifications upon each map entry's expiration.
+		 *
+		 * @param listeners to set
+		 * @throws NullPointerException if {@code listener} is null
+		 */
+		public <K1 extends K, V1 extends V> Builder<K1, V1> asyncExpirationListeners(
+				List<ExpirationListener<? super K1, ? super V1>> listeners) {
+			Valid.checkNotNull(listeners, "listeners");
+			if (asyncExpirationListeners == null)
+				asyncExpirationListeners = new ArrayList<>(listeners.size());
+			for (final ExpirationListener<? super K1, ? super V1> listener : listeners)
+				asyncExpirationListeners.add((ExpirationListener<K, V>) listener);
+			return (Builder<K1, V1>) this;
+		}
+
+		/**
+		 * Configures the map entry expiration policy.
+		 *
+		 * @param expirationPolicy
+		 * @throws NullPointerException if {@code expirationPolicy} is null
+		 */
+		public Builder<K, V> expirationPolicy(@NonNull ExpirationPolicy expirationPolicy) {
+			this.expirationPolicy = expirationPolicy;
+			return this;
+		}
+
+		/**
+		 * Allows for map entries to have individual expirations and for expirations to
+		 * be changed.
+		 */
+		public Builder<K, V> variableExpiration() {
+			variableExpiration = true;
+			return this;
+		}
+
+		private void assertNoLoaderSet() {
+			Valid.checkBoolean(entryLoader == null && expiringEntryLoader == null,
+					"Either entryLoader or expiringEntryLoader may be set, not both");
+		}
+	}
+
+	/**
+	 * Entry LinkedHashMap implementation.
+	 */
+	private static class EntryLinkedHashMap<K, V> extends LinkedHashMap<K, ExpiringEntry<K, V>>
+			implements EntryMap<K, V> {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public boolean containsValue(Object value) {
+			for (final ExpiringEntry<K, V> entry : values()) {
+				final V v = entry.value;
+				if (v == value || value != null && value.equals(v))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public ExpiringEntry<K, V> first() {
+			return isEmpty() ? null : values().iterator().next();
+		}
+
+		@Override
+		public void reorder(ExpiringEntry<K, V> value) {
+			remove(value.key);
+			value.resetExpiration();
+			put(value.key, value);
+		}
+
+		@Override
+		public Iterator<ExpiringEntry<K, V>> valuesIterator() {
+			return values().iterator();
+		}
+
+		abstract class AbstractHashIterator {
+			private final Iterator<Map.Entry<K, ExpiringEntry<K, V>>> iterator = entrySet().iterator();
+			private ExpiringEntry<K, V> next;
+
+			public boolean hasNext() {
+				return iterator.hasNext();
 			}
 
-			@Override
-			public V getValue() {
-				return entry.value;
+			public ExpiringEntry<K, V> getNext() {
+				next = iterator.next().getValue();
+				return next;
 			}
 
-			@Override
-			public V setValue(V value) {
-				throw new UnsupportedOperationException();
+			public void remove() {
+				iterator.remove();
 			}
-		};
+		}
+
+		final class KeyIterator extends AbstractHashIterator implements Iterator<K> {
+			@Override
+			public K next() {
+				return getNext().key;
+			}
+		}
+
+		final class ValueIterator extends AbstractHashIterator implements Iterator<V> {
+			@Override
+			public V next() {
+				return getNext().value;
+			}
+		}
+
+		public final class EntryIterator extends AbstractHashIterator implements Iterator<Map.Entry<K, V>> {
+			@Override
+			public Map.Entry<K, V> next() {
+				return mapEntryFor(getNext());
+			}
+		}
+	}
+
+	/**
+	 * Entry TreeHashMap implementation for variable expiration ExpiringMap entries.
+	 */
+	private static class EntryTreeHashMap<K, V> extends HashMap<K, ExpiringEntry<K, V>> implements EntryMap<K, V> {
+		private static final long serialVersionUID = 1L;
+		SortedSet<ExpiringEntry<K, V>> sortedSet = new ConcurrentSkipListSet<>();
+
+		@Override
+		public void clear() {
+			super.clear();
+			sortedSet.clear();
+		}
+
+		@Override
+		public boolean containsValue(Object value) {
+			for (final ExpiringEntry<K, V> entry : values()) {
+				final V v = entry.value;
+				if (v == value || value != null && value.equals(v))
+					return true;
+			}
+			return false;
+		}
+
+		@Override
+		public ExpiringEntry<K, V> first() {
+			return sortedSet.isEmpty() ? null : sortedSet.first();
+		}
+
+		@Override
+		public ExpiringEntry<K, V> put(K key, ExpiringEntry<K, V> value) {
+			sortedSet.add(value);
+			return super.put(key, value);
+		}
+
+		@Override
+		public ExpiringEntry<K, V> remove(Object key) {
+			final ExpiringEntry<K, V> entry = super.remove(key);
+			if (entry != null)
+				sortedSet.remove(entry);
+			return entry;
+		}
+
+		@Override
+		public void reorder(ExpiringEntry<K, V> value) {
+			sortedSet.remove(value);
+			value.resetExpiration();
+			sortedSet.add(value);
+		}
+
+		@Override
+		public Iterator<ExpiringEntry<K, V>> valuesIterator() {
+			return new ExpiringEntryIterator();
+		}
+
+		abstract class AbstractHashIterator {
+			private final Iterator<ExpiringEntry<K, V>> iterator = sortedSet.iterator();
+			protected ExpiringEntry<K, V> next;
+
+			public boolean hasNext() {
+				return iterator.hasNext();
+			}
+
+			public ExpiringEntry<K, V> getNext() {
+				next = iterator.next();
+				return next;
+			}
+
+			public void remove() {
+				EntryTreeHashMap.super.remove(next.key);
+				iterator.remove();
+			}
+		}
+
+		final class ExpiringEntryIterator extends AbstractHashIterator implements Iterator<ExpiringEntry<K, V>> {
+			@Override
+			public ExpiringEntry<K, V> next() {
+				return getNext();
+			}
+		}
+
+		final class KeyIterator extends AbstractHashIterator implements Iterator<K> {
+			@Override
+			public K next() {
+				return getNext().key;
+			}
+		}
+
+		final class ValueIterator extends AbstractHashIterator implements Iterator<V> {
+			@Override
+			public V next() {
+				return getNext().value;
+			}
+		}
+
+		final class EntryIterator extends AbstractHashIterator implements Iterator<Map.Entry<K, V>> {
+			@Override
+			public Map.Entry<K, V> next() {
+				return mapEntryFor(getNext());
+			}
+		}
+	}
+
+	/**
+	 * Expiring map entry implementation.
+	 */
+	static class ExpiringEntry<K, V> implements Comparable<ExpiringEntry<K, V>> {
+		final AtomicLong expirationNanos;
+		/**
+		 * Epoch time at which the entry is expected to expire
+		 */
+		final AtomicLong expectedExpiration;
+		final AtomicReference<ExpirationPolicy> expirationPolicy;
+		final K key;
+		/**
+		 * Guarded by "this"
+		 */
+		volatile Future<?> entryFuture;
+		/**
+		 * Guarded by "this"
+		 */
+		V value;
+		/**
+		 * Guarded by "this"
+		 */
+		volatile boolean scheduled;
+
+		/**
+		 * Creates a new ExpiringEntry object.
+		 *
+		 * @param key              for the entry
+		 * @param value            for the entry
+		 * @param expirationPolicy for the entry
+		 * @param expirationNanos  for the entry
+		 */
+		ExpiringEntry(K key, V value, AtomicReference<ExpirationPolicy> expirationPolicy, AtomicLong expirationNanos) {
+			this.key = key;
+			this.value = value;
+			this.expirationPolicy = expirationPolicy;
+			this.expirationNanos = expirationNanos;
+			this.expectedExpiration = new AtomicLong();
+			resetExpiration();
+		}
+
+		@Override
+		public int compareTo(ExpiringEntry<K, V> other) {
+			if (key.equals(other.key))
+				return 0;
+			return expectedExpiration.get() < other.expectedExpiration.get() ? -1 : 1;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (key == null ? 0 : key.hashCode());
+			result = prime * result + (value == null ? 0 : value.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			final ExpiringEntry<?, ?> other = (ExpiringEntry<?, ?>) obj;
+			if (!key.equals(other.key))
+				return false;
+			if (value == null) {
+				if (other.value != null)
+					return false;
+			} else if (!value.equals(other.value))
+				return false;
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return value != null ? value.toString() : "";
+		}
+
+		/**
+		 * Marks the entry as canceled.
+		 *
+		 * @return true if the entry was scheduled
+		 */
+		synchronized boolean cancel() {
+			final boolean result = scheduled;
+			if (entryFuture != null)
+				entryFuture.cancel(false);
+
+			entryFuture = null;
+			scheduled = false;
+			return result;
+		}
+
+		/**
+		 * Gets the entry value.
+		 */
+		synchronized V getValue() {
+			return value;
+		}
+
+		/**
+		 * Sets the entry value.
+		 */
+		synchronized void setValue(V value) {
+			this.value = value;
+		}
+
+		/**
+		 * Resets the entry's expected expiration.
+		 */
+		void resetExpiration() {
+			expectedExpiration.set(expirationNanos.get() + System.nanoTime());
+		}
+
+		/**
+		 * Marks the entry as scheduled.
+		 */
+		synchronized void schedule(Future<?> entryFuture) {
+			this.entryFuture = entryFuture;
+			scheduled = true;
+		}
 	}
 }

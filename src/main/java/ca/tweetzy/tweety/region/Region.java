@@ -80,6 +80,22 @@ public class Region implements ConfigSerializable {
 		}
 	}
 
+	/**
+	 * Converts a saved map from your yaml/json file into a region if it contains Primary and Secondary keys
+	 *
+	 * @param map
+	 * @return
+	 */
+	public static Region deserialize(final SerializedMap map) {
+		Valid.checkBoolean(map.containsKey("Primary") && map.containsKey("Secondary"), "The region must have Primary and a Secondary location");
+
+		final String name = map.getString("Name");
+		final Location prim = map.getLocation("Primary");
+		final Location sec = map.getLocation("Secondary");
+
+		return new Region(name, prim, sec);
+	}
+
 	/*
 	 * Change primary/secondary around to make secondary always the lowest point
 	 */
@@ -280,21 +296,5 @@ public class Region implements ConfigSerializable {
 		map.putIfExist("Secondary", secondary);
 
 		return map;
-	}
-
-	/**
-	 * Converts a saved map from your yaml/json file into a region if it contains Primary and Secondary keys
-	 *
-	 * @param map
-	 * @return
-	 */
-	public static Region deserialize(final SerializedMap map) {
-		Valid.checkBoolean(map.containsKey("Primary") && map.containsKey("Secondary"), "The region must have Primary and a Secondary location");
-
-		final String name = map.getString("Name");
-		final Location prim = map.getLocation("Primary");
-		final Location sec = map.getLocation("Secondary");
-
-		return new Region(name, prim, sec);
 	}
 }

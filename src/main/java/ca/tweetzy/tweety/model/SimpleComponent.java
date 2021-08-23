@@ -28,15 +28,13 @@ import net.md_5.bungee.api.chat.TextComponent;
 public final class SimpleComponent implements ConfigSerializable {
 
 	/**
-	 * Prevent oversized JSON from kicking players by removing interactive elements from it?
-	 */
-	public static boolean STRIP_OVERSIZED_COMPONENTS = true;
-
-	/**
 	 * The pattern to match URL addresses when parsing text
 	 */
 	private static final Pattern URL_PATTERN = Pattern.compile("^(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,4})(/\\S*)?$");
-
+	/**
+	 * Prevent oversized JSON from kicking players by removing interactive elements from it?
+	 */
+	public static boolean STRIP_OVERSIZED_COMPONENTS = true;
 	/**
 	 * The past components
 	 */
@@ -73,439 +71,6 @@ public final class SimpleComponent implements ConfigSerializable {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Add a show text ; event for the {@link #currentComponents}
-	 *
-	 * @param texts
-	 * @return
-	 */
-	public SimpleComponent onHover(Collection<String> texts) {
-		return onHover(Common.toArray(texts));
-	}
-
-	/**
-	 * Add a show text hover event for the {@link #currentComponents}
-	 *
-	 * @param lines
-	 * @return
-	 */
-	public SimpleComponent onHover(String... lines) {
-		// I don't know why we have to wrap this inside new text component but we do this
-		// to properly reset bold and other decoration colors
-		final String joined = Common.colorize(String.join("\n", lines));
-		this.currentComponent.hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { new TextComponent(TextComponent.fromLegacyText(joined)) });
-
-		return this;
-	}
-
-	/**
-	 * Shows the item on hover if it is not air.
-	 * <p>
-	 * NB: Some colors from lore may get lost as a result of Minecraft/Spigot bug.
-	 *
-	 * @param item
-	 * @return
-	 */
-	public SimpleComponent onHover(ItemStack item) {
-		if (CompMaterial.isAir(item.getType()))
-			return onHover("Air");
-
-		this.currentComponent.hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM, new BaseComponent[] { new TextComponent(Remain.toJson(item)) });
-
-		return this;
-	}
-
-	/**
-	 * Set view permission for last component part
-	 *
-	 * @param viewPermission
-	 * @return
-	 */
-	public SimpleComponent viewPermission(String viewPermission) {
-		this.currentComponent.viewPermission = viewPermission;
-
-		return this;
-	}
-
-	/**
-	 * Set view permission for last component part
-	 *
-	 * @param viewCondition
-	 * @return
-	 */
-	public SimpleComponent viewCondition(String viewCondition) {
-		this.currentComponent.viewCondition = viewCondition;
-
-		return this;
-	}
-
-	/**
-	 * Add a run command event for the {@link #currentComponents}
-	 *
-	 * @param text
-	 * @return
-	 */
-	public SimpleComponent onClickRunCmd(String text) {
-		return onClick(Action.RUN_COMMAND, text);
-	}
-
-	/**
-	 * Add a suggest command event for the {@link #currentComponents}
-	 *
-	 * @param text
-	 * @return
-	 */
-	public SimpleComponent onClickSuggestCmd(String text) {
-		return onClick(Action.SUGGEST_COMMAND, text);
-	}
-
-	/**
-	 * Open the given URL for the {@link #currentComponents}
-	 *
-	 * @param url
-	 * @return
-	 */
-	public SimpleComponent onClickOpenUrl(String url) {
-		return onClick(Action.OPEN_URL, url);
-	}
-
-	/**
-	 * Add a command event for the {@link #currentComponents}
-	 *
-	 * @param action
-	 * @param text
-	 * @return
-	 */
-	public SimpleComponent onClick(Action action, String text) {
-		this.currentComponent.clickEvent = new ClickEvent(action, text);
-
-		return this;
-	}
-
-	/**
-	 * Invoke {@link TextComponent#setInsertion(String)} for {@link #currentComponents}
-	 *
-	 * @param insertion
-	 * @return
-	 */
-	public SimpleComponent onClickInsert(String insertion) {
-		this.currentComponent.insertion = insertion;
-
-		return this;
-	}
-
-	// --------------------------------------------------------------------
-	// Building
-	// --------------------------------------------------------------------
-
-	/**
-	 * Append new component at the beginning of all components
-	 *
-	 * @param component
-	 * @return
-	 */
-	public SimpleComponent appendFirst(SimpleComponent component) {
-		this.pastComponents.add(0, component.currentComponent);
-		this.pastComponents.addAll(0, component.pastComponents);
-
-		return this;
-	}
-
-	/**
-	 * Append text to this simple component
-	 *
-	 * @param text
-	 * @return
-	 */
-	public SimpleComponent append(String text) {
-		return this.append(text, true);
-	}
-
-	/**
-	 * Append text to this simple component
-	 *
-	 * @param text
-	 * @param colorize
-	 * @return
-	 */
-	public SimpleComponent append(String text, boolean colorize) {
-		return this.append(text, null, colorize);
-	}
-
-	/**
-	 * Create another component. The current is put in a list of past components
-	 * so next time you use onClick or onHover, you will be added the event to the new one
-	 * specified here
-	 *
-	 * @param text
-	 * @param inheritFormatting
-	 * @return
-	 */
-	public SimpleComponent append(String text, BaseComponent inheritFormatting) {
-		return this.append(text, inheritFormatting, true);
-	}
-
-	/**
-	 * Create another component. The current is put in a list of past components
-	 * so next time you use onClick or onHover, you will be added the event to the new one
-	 * specified here
-	 *
-	 * @param text
-	 * @param colorize
-	 * @return
-	 */
-	public SimpleComponent append(String text, BaseComponent inheritFormatting, boolean colorize) {
-
-		// Get the last extra
-		BaseComponent inherit = inheritFormatting != null ? inheritFormatting : this.currentComponent.toTextComponent(null);
-
-		if (inherit != null && inherit.getExtra() != null && !inherit.getExtra().isEmpty())
-			inherit = inherit.getExtra().get(inherit.getExtra().size() - 1);
-
-		// Center text for each line separatelly if replacing colors
-		if (colorize) {
-			final List<String> formatContents = Arrays.asList(text.split("\n"));
-
-			for (int i = 0; i < formatContents.size(); i++) {
-				final String line = formatContents.get(i);
-
-				if (Common.stripColors(line).startsWith("<center>"))
-					formatContents.set(i, ChatUtil.center(line.replace("<center>", "")));
-			}
-
-			text = String.join("\n", formatContents);
-		}
-
-		this.pastComponents.add(this.currentComponent);
-
-		this.currentComponent = new Part(colorize ? Common.colorize(text) : text);
-		this.currentComponent.inheritFormatting = inherit;
-
-		return this;
-	}
-
-	/**
-	 * Append a new component on the end of this one
-	 *
-	 * @param component
-	 * @return
-	 */
-	public SimpleComponent append(SimpleComponent component) {
-		this.pastComponents.add(this.currentComponent);
-		this.pastComponents.addAll(component.pastComponents);
-
-		// Get the last extra
-		BaseComponent inherit = Common.getOrDefault(component.currentComponent.inheritFormatting, this.currentComponent.toTextComponent(null));
-
-		if (inherit != null && inherit.getExtra() != null && !inherit.getExtra().isEmpty())
-			inherit = inherit.getExtra().get(inherit.getExtra().size() - 1);
-
-		this.currentComponent = component.currentComponent;
-		this.currentComponent.inheritFormatting = inherit;
-
-		return this;
-	}
-
-	/**
-	 * Return the plain colorized message combining all components into one
-	 * without click/hover events
-	 *
-	 * @return
-	 */
-	public String getPlainMessage() {
-		return build(null).toLegacyText();
-	}
-
-	/**
-	 * Builds the component and its past components into a {@link TextComponent}
-	 *
-	 * @return
-	 */
-	public TextComponent getTextComponent() {
-		return build(null);
-	}
-
-	/**
-	 * Builds the component and its past components into a {@link TextComponent}
-	 *
-	 * @param receiver
-	 * @return
-	 */
-	public TextComponent build(CommandSender receiver) {
-		TextComponent preparedComponent = null;
-
-		for (final Part part : this.pastComponents) {
-			final TextComponent component = part.toTextComponent(receiver);
-
-			if (component != null)
-				if (preparedComponent == null)
-					preparedComponent = component;
-				else
-					preparedComponent.addExtra(component);
-		}
-
-		final TextComponent currentComponent = this.currentComponent.toTextComponent(receiver);
-
-		if (currentComponent != null)
-			if (preparedComponent == null)
-				preparedComponent = currentComponent;
-			else
-				preparedComponent.addExtra(currentComponent);
-
-		return Common.getOrDefault(preparedComponent, new TextComponent(""));
-	}
-
-	/**
-	 * Quickly replaces an object in all parts of this component
-	 *
-	 * @param variable the factual variable - you must supply brackets
-	 * @param value
-	 * @return
-	 */
-	public SimpleComponent replace(String variable, Object value) {
-		final String serialized = SerializeUtil.serialize(value).toString();
-
-		for (final Part part : this.pastComponents) {
-			Valid.checkNotNull(part.text);
-
-			part.text = part.text.replace(variable, serialized);
-		}
-
-		Valid.checkNotNull(this.currentComponent.text);
-		this.currentComponent.text = this.currentComponent.text.replace(variable, serialized);
-
-		return this;
-	}
-
-	// --------------------------------------------------------------------
-	// Sending
-	// --------------------------------------------------------------------
-
-	/**
-	 * Attempts to send the complete {@link SimpleComponent} to the given
-	 * command senders. If they are players, we send them interactive elements.
-	 * <p>
-	 * If they are console, they receive a plain text message.
-	 *
-	 * @param receiver
-	 */
-	public <T extends CommandSender> void send(T... receivers) {
-		this.send(Arrays.asList(receivers));
-	}
-
-	/**
-	 * Attempts to send the complete {@link SimpleComponent} to the given
-	 * command senders. If they are players, we send them interactive elements.
-	 * <p>
-	 * If they are console, they receive a plain text message.
-	 *
-	 * @param <T>
-	 * @param receiver
-	 */
-	public <T extends CommandSender> void send(Iterable<T> receivers) {
-		this.sendAs(null, receivers);
-	}
-
-	/**
-	 * Attempts to send the complete {@link SimpleComponent} to the given
-	 * command senders. If they are players, we send them interactive elements.
-	 * <p>
-	 * If they are console, they receive a plain text message.
-	 *
-	 * We will also replace relation placeholders if the sender is set and is player.
-	 *
-	 * @param <T>
-	 * @param receiver
-	 */
-	public <T extends CommandSender> void sendAs(CommandSender sender, Iterable<T> receivers) {
-		for (final CommandSender receiver : receivers) {
-			final TextComponent component = build(receiver);
-
-			if (receiver instanceof Player && sender instanceof Player)
-				setRelationPlaceholders(component, (Player) receiver, (Player) sender);
-
-			// Prevent clients being kicked out, so we just send plain message instead
-			if (STRIP_OVERSIZED_COMPONENTS && Remain.toJson(component).length() + 1 >= Short.MAX_VALUE) {
-				final String legacy = Common.colorize(component.toLegacyText());
-
-				if (legacy.length() + 1 >= Short.MAX_VALUE)
-					Common.log("Warning: JSON Message to " + receiver.getName() + " was too large and could not be sent: '" + legacy + "'");
-
-				else {
-					Common.log("Warning: JSON Message to " + receiver.getName() + " was too large, removing interactive elements to avoid kick. Sending plain: '" + legacy + "'");
-
-					receiver.sendMessage(legacy);
-				}
-
-			} else
-				Remain.sendComponent(receiver, component);
-		}
-	}
-
-	/*
-	 * Replace relationship placeholders in the full component and all of its extras
-	 */
-	private void setRelationPlaceholders(final TextComponent component, final Player receiver, final Player sender) {
-
-		// Set the main text
-		component.setText(HookManager.replaceRelationPlaceholders(sender, receiver, component.getText()));
-
-		if (component.getExtra() == null)
-			return;
-
-		for (final BaseComponent extra : component.getExtra())
-			if (extra instanceof TextComponent) {
-
-				final TextComponent text = (TextComponent) extra;
-				final ClickEvent clickEvent = text.getClickEvent();
-				final HoverEvent hoverEvent = text.getHoverEvent();
-
-				// Replace for the text itself
-				//text.setText(HookManager.replaceRelationPlaceholders(sender, receiver, text.getText()));
-
-				// And for the click event
-				if (clickEvent != null)
-					text.setClickEvent(new ClickEvent(clickEvent.getAction(), HookManager.replaceRelationPlaceholders(sender, receiver, clickEvent.getValue())));
-
-				// And for the hover event
-				if (hoverEvent != null)
-					for (final BaseComponent hoverBaseComponent : hoverEvent.getValue())
-						if (hoverBaseComponent instanceof TextComponent) {
-							final TextComponent hoverTextComponent = (TextComponent) hoverBaseComponent;
-
-							hoverTextComponent.setText(HookManager.replaceRelationPlaceholders(sender, receiver, hoverTextComponent.getText()));
-						}
-
-				// Then repeat for the extra parts in the text itself
-				setRelationPlaceholders(text, receiver, sender);
-			}
-	}
-
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return this.serialize().toStringFormatted();
-	}
-
-	// --------------------------------------------------------------------
-	// Serialize
-	// --------------------------------------------------------------------
-
-	/**
-	 * @see ConfigSerializable#serialize()
-	 */
-	@Override
-	public SerializedMap serialize() {
-		final SerializedMap map = new SerializedMap();
-
-		map.putIf("Current_Component", this.currentComponent);
-		map.put("Past_Components", this.pastComponents);
-
-		return map;
-	}
-
-	/**
 	 * Create a {@link SimpleComponent} from the serialized map
 	 *
 	 * @param map
@@ -519,10 +84,6 @@ public final class SimpleComponent implements ConfigSerializable {
 
 		return component;
 	}
-
-	// --------------------------------------------------------------------
-	// Static
-	// --------------------------------------------------------------------
 
 	/**
 	 * Compile the message into components, creating a new {@link PermissibleComponent}
@@ -717,6 +278,443 @@ public final class SimpleComponent implements ConfigSerializable {
 		return new SimpleComponent(colorize ? Common.colorize(text) : text);
 	}
 
+	/**
+	 * Add a show text ; event for the {@link #currentComponents}
+	 *
+	 * @param texts
+	 * @return
+	 */
+	public SimpleComponent onHover(Collection<String> texts) {
+		return onHover(Common.toArray(texts));
+	}
+
+	/**
+	 * Add a show text hover event for the {@link #currentComponents}
+	 *
+	 * @param lines
+	 * @return
+	 */
+	public SimpleComponent onHover(String... lines) {
+		// I don't know why we have to wrap this inside new text component but we do this
+		// to properly reset bold and other decoration colors
+		final String joined = Common.colorize(String.join("\n", lines));
+		this.currentComponent.hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[] { new TextComponent(TextComponent.fromLegacyText(joined)) });
+
+		return this;
+	}
+
+	/**
+	 * Shows the item on hover if it is not air.
+	 * <p>
+	 * NB: Some colors from lore may get lost as a result of Minecraft/Spigot bug.
+	 *
+	 * @param item
+	 * @return
+	 */
+	public SimpleComponent onHover(ItemStack item) {
+		if (CompMaterial.isAir(item.getType()))
+			return onHover("Air");
+
+		this.currentComponent.hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM, new BaseComponent[] { new TextComponent(Remain.toJson(item)) });
+
+		return this;
+	}
+
+	/**
+	 * Set view permission for last component part
+	 *
+	 * @param viewPermission
+	 * @return
+	 */
+	public SimpleComponent viewPermission(String viewPermission) {
+		this.currentComponent.viewPermission = viewPermission;
+
+		return this;
+	}
+
+	/**
+	 * Set view permission for last component part
+	 *
+	 * @param viewCondition
+	 * @return
+	 */
+	public SimpleComponent viewCondition(String viewCondition) {
+		this.currentComponent.viewCondition = viewCondition;
+
+		return this;
+	}
+
+	// --------------------------------------------------------------------
+	// Building
+	// --------------------------------------------------------------------
+
+	/**
+	 * Add a run command event for the {@link #currentComponents}
+	 *
+	 * @param text
+	 * @return
+	 */
+	public SimpleComponent onClickRunCmd(String text) {
+		return onClick(Action.RUN_COMMAND, text);
+	}
+
+	/**
+	 * Add a suggest command event for the {@link #currentComponents}
+	 *
+	 * @param text
+	 * @return
+	 */
+	public SimpleComponent onClickSuggestCmd(String text) {
+		return onClick(Action.SUGGEST_COMMAND, text);
+	}
+
+	/**
+	 * Open the given URL for the {@link #currentComponents}
+	 *
+	 * @param url
+	 * @return
+	 */
+	public SimpleComponent onClickOpenUrl(String url) {
+		return onClick(Action.OPEN_URL, url);
+	}
+
+	/**
+	 * Add a command event for the {@link #currentComponents}
+	 *
+	 * @param action
+	 * @param text
+	 * @return
+	 */
+	public SimpleComponent onClick(Action action, String text) {
+		this.currentComponent.clickEvent = new ClickEvent(action, text);
+
+		return this;
+	}
+
+	/**
+	 * Invoke {@link TextComponent#setInsertion(String)} for {@link #currentComponents}
+	 *
+	 * @param insertion
+	 * @return
+	 */
+	public SimpleComponent onClickInsert(String insertion) {
+		this.currentComponent.insertion = insertion;
+
+		return this;
+	}
+
+	/**
+	 * Append new component at the beginning of all components
+	 *
+	 * @param component
+	 * @return
+	 */
+	public SimpleComponent appendFirst(SimpleComponent component) {
+		this.pastComponents.add(0, component.currentComponent);
+		this.pastComponents.addAll(0, component.pastComponents);
+
+		return this;
+	}
+
+	/**
+	 * Append text to this simple component
+	 *
+	 * @param text
+	 * @return
+	 */
+	public SimpleComponent append(String text) {
+		return this.append(text, true);
+	}
+
+	/**
+	 * Append text to this simple component
+	 *
+	 * @param text
+	 * @param colorize
+	 * @return
+	 */
+	public SimpleComponent append(String text, boolean colorize) {
+		return this.append(text, null, colorize);
+	}
+
+	/**
+	 * Create another component. The current is put in a list of past components
+	 * so next time you use onClick or onHover, you will be added the event to the new one
+	 * specified here
+	 *
+	 * @param text
+	 * @param inheritFormatting
+	 * @return
+	 */
+	public SimpleComponent append(String text, BaseComponent inheritFormatting) {
+		return this.append(text, inheritFormatting, true);
+	}
+
+	/**
+	 * Create another component. The current is put in a list of past components
+	 * so next time you use onClick or onHover, you will be added the event to the new one
+	 * specified here
+	 *
+	 * @param text
+	 * @param colorize
+	 * @return
+	 */
+	public SimpleComponent append(String text, BaseComponent inheritFormatting, boolean colorize) {
+
+		// Get the last extra
+		BaseComponent inherit = inheritFormatting != null ? inheritFormatting : this.currentComponent.toTextComponent(null);
+
+		if (inherit != null && inherit.getExtra() != null && !inherit.getExtra().isEmpty())
+			inherit = inherit.getExtra().get(inherit.getExtra().size() - 1);
+
+		// Center text for each line separatelly if replacing colors
+		if (colorize) {
+			final List<String> formatContents = Arrays.asList(text.split("\n"));
+
+			for (int i = 0; i < formatContents.size(); i++) {
+				final String line = formatContents.get(i);
+
+				if (Common.stripColors(line).startsWith("<center>"))
+					formatContents.set(i, ChatUtil.center(line.replace("<center>", "")));
+			}
+
+			text = String.join("\n", formatContents);
+		}
+
+		this.pastComponents.add(this.currentComponent);
+
+		this.currentComponent = new Part(colorize ? Common.colorize(text) : text);
+		this.currentComponent.inheritFormatting = inherit;
+
+		return this;
+	}
+
+	// --------------------------------------------------------------------
+	// Sending
+	// --------------------------------------------------------------------
+
+	/**
+	 * Append a new component on the end of this one
+	 *
+	 * @param component
+	 * @return
+	 */
+	public SimpleComponent append(SimpleComponent component) {
+		this.pastComponents.add(this.currentComponent);
+		this.pastComponents.addAll(component.pastComponents);
+
+		// Get the last extra
+		BaseComponent inherit = Common.getOrDefault(component.currentComponent.inheritFormatting, this.currentComponent.toTextComponent(null));
+
+		if (inherit != null && inherit.getExtra() != null && !inherit.getExtra().isEmpty())
+			inherit = inherit.getExtra().get(inherit.getExtra().size() - 1);
+
+		this.currentComponent = component.currentComponent;
+		this.currentComponent.inheritFormatting = inherit;
+
+		return this;
+	}
+
+	/**
+	 * Return the plain colorized message combining all components into one
+	 * without click/hover events
+	 *
+	 * @return
+	 */
+	public String getPlainMessage() {
+		return build(null).toLegacyText();
+	}
+
+	/**
+	 * Builds the component and its past components into a {@link TextComponent}
+	 *
+	 * @return
+	 */
+	public TextComponent getTextComponent() {
+		return build(null);
+	}
+
+	/**
+	 * Builds the component and its past components into a {@link TextComponent}
+	 *
+	 * @param receiver
+	 * @return
+	 */
+	public TextComponent build(CommandSender receiver) {
+		TextComponent preparedComponent = null;
+
+		for (final Part part : this.pastComponents) {
+			final TextComponent component = part.toTextComponent(receiver);
+
+			if (component != null)
+				if (preparedComponent == null)
+					preparedComponent = component;
+				else
+					preparedComponent.addExtra(component);
+		}
+
+		final TextComponent currentComponent = this.currentComponent.toTextComponent(receiver);
+
+		if (currentComponent != null)
+			if (preparedComponent == null)
+				preparedComponent = currentComponent;
+			else
+				preparedComponent.addExtra(currentComponent);
+
+		return Common.getOrDefault(preparedComponent, new TextComponent(""));
+	}
+
+	/**
+	 * Quickly replaces an object in all parts of this component
+	 *
+	 * @param variable the factual variable - you must supply brackets
+	 * @param value
+	 * @return
+	 */
+	public SimpleComponent replace(String variable, Object value) {
+		final String serialized = SerializeUtil.serialize(value).toString();
+
+		for (final Part part : this.pastComponents) {
+			Valid.checkNotNull(part.text);
+
+			part.text = part.text.replace(variable, serialized);
+		}
+
+		Valid.checkNotNull(this.currentComponent.text);
+		this.currentComponent.text = this.currentComponent.text.replace(variable, serialized);
+
+		return this;
+	}
+
+	// --------------------------------------------------------------------
+	// Serialize
+	// --------------------------------------------------------------------
+
+	/**
+	 * Attempts to send the complete {@link SimpleComponent} to the given
+	 * command senders. If they are players, we send them interactive elements.
+	 * <p>
+	 * If they are console, they receive a plain text message.
+	 *
+	 * @param receiver
+	 */
+	public <T extends CommandSender> void send(T... receivers) {
+		this.send(Arrays.asList(receivers));
+	}
+
+	/**
+	 * Attempts to send the complete {@link SimpleComponent} to the given
+	 * command senders. If they are players, we send them interactive elements.
+	 * <p>
+	 * If they are console, they receive a plain text message.
+	 *
+	 * @param <T>
+	 * @param receiver
+	 */
+	public <T extends CommandSender> void send(Iterable<T> receivers) {
+		this.sendAs(null, receivers);
+	}
+
+	// --------------------------------------------------------------------
+	// Static
+	// --------------------------------------------------------------------
+
+	/**
+	 * Attempts to send the complete {@link SimpleComponent} to the given
+	 * command senders. If they are players, we send them interactive elements.
+	 * <p>
+	 * If they are console, they receive a plain text message.
+	 *
+	 * We will also replace relation placeholders if the sender is set and is player.
+	 *
+	 * @param <T>
+	 * @param receiver
+	 */
+	public <T extends CommandSender> void sendAs(CommandSender sender, Iterable<T> receivers) {
+		for (final CommandSender receiver : receivers) {
+			final TextComponent component = build(receiver);
+
+			if (receiver instanceof Player && sender instanceof Player)
+				setRelationPlaceholders(component, (Player) receiver, (Player) sender);
+
+			// Prevent clients being kicked out, so we just send plain message instead
+			if (STRIP_OVERSIZED_COMPONENTS && Remain.toJson(component).length() + 1 >= Short.MAX_VALUE) {
+				final String legacy = Common.colorize(component.toLegacyText());
+
+				if (legacy.length() + 1 >= Short.MAX_VALUE)
+					Common.log("Warning: JSON Message to " + receiver.getName() + " was too large and could not be sent: '" + legacy + "'");
+
+				else {
+					Common.log("Warning: JSON Message to " + receiver.getName() + " was too large, removing interactive elements to avoid kick. Sending plain: '" + legacy + "'");
+
+					receiver.sendMessage(legacy);
+				}
+
+			} else
+				Remain.sendComponent(receiver, component);
+		}
+	}
+
+	/*
+	 * Replace relationship placeholders in the full component and all of its extras
+	 */
+	private void setRelationPlaceholders(final TextComponent component, final Player receiver, final Player sender) {
+
+		// Set the main text
+		component.setText(HookManager.replaceRelationPlaceholders(sender, receiver, component.getText()));
+
+		if (component.getExtra() == null)
+			return;
+
+		for (final BaseComponent extra : component.getExtra())
+			if (extra instanceof TextComponent) {
+
+				final TextComponent text = (TextComponent) extra;
+				final ClickEvent clickEvent = text.getClickEvent();
+				final HoverEvent hoverEvent = text.getHoverEvent();
+
+				// Replace for the text itself
+				//text.setText(HookManager.replaceRelationPlaceholders(sender, receiver, text.getText()));
+
+				// And for the click event
+				if (clickEvent != null)
+					text.setClickEvent(new ClickEvent(clickEvent.getAction(), HookManager.replaceRelationPlaceholders(sender, receiver, clickEvent.getValue())));
+
+				// And for the hover event
+				if (hoverEvent != null)
+					for (final BaseComponent hoverBaseComponent : hoverEvent.getValue())
+						if (hoverBaseComponent instanceof TextComponent) {
+							final TextComponent hoverTextComponent = (TextComponent) hoverBaseComponent;
+
+							hoverTextComponent.setText(HookManager.replaceRelationPlaceholders(sender, receiver, hoverTextComponent.getText()));
+						}
+
+				// Then repeat for the extra parts in the text itself
+				setRelationPlaceholders(text, receiver, sender);
+			}
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.serialize().toStringFormatted();
+	}
+
+	/**
+	 * @see ConfigSerializable#serialize()
+	 */
+	@Override
+	public SerializedMap serialize() {
+		final SerializedMap map = new SerializedMap();
+
+		map.putIf("Current_Component", this.currentComponent);
+		map.put("Past_Components", this.pastComponents);
+
+		return map;
+	}
+
 	// --------------------------------------------------------------------
 	// Classes
 	// --------------------------------------------------------------------
@@ -777,24 +775,6 @@ public final class SimpleComponent implements ConfigSerializable {
 		}
 
 		/**
-		 * @see ConfigSerializable#serialize()
-		 */
-		@Override
-		public SerializedMap serialize() {
-			final SerializedMap map = new SerializedMap();
-
-			map.put("Text", this.text);
-			map.putIf("View_Permission", this.viewPermission);
-			map.putIf("View_Condition", this.viewCondition);
-			map.putIf("Hover_Event", this.hoverEvent);
-			map.putIf("Click_Event", this.clickEvent);
-			map.putIf("Insertion", this.insertion);
-			map.putIf("Inherit_Formatting", this.inheritFormatting);
-
-			return map;
-		}
-
-		/**
 		 * Create a Part from the given serializedMap
 		 *
 		 * @param map
@@ -811,6 +791,24 @@ public final class SimpleComponent implements ConfigSerializable {
 			part.inheritFormatting = map.get("Inherit_Formatting", BaseComponent.class);
 
 			return part;
+		}
+
+		/**
+		 * @see ConfigSerializable#serialize()
+		 */
+		@Override
+		public SerializedMap serialize() {
+			final SerializedMap map = new SerializedMap();
+
+			map.put("Text", this.text);
+			map.putIf("View_Permission", this.viewPermission);
+			map.putIf("View_Condition", this.viewCondition);
+			map.putIf("Hover_Event", this.hoverEvent);
+			map.putIf("Click_Event", this.clickEvent);
+			map.putIf("Insertion", this.insertion);
+			map.putIf("Inherit_Formatting", this.inheritFormatting);
+
+			return map;
 		}
 
 		/**

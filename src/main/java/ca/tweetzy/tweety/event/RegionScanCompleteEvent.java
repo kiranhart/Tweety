@@ -21,12 +21,12 @@ public final class RegionScanCompleteEvent extends SimpleEvent {
 	 */
 	private final World world;
 
-	@Override
-	public HandlerList getHandlers() {
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList() {
+	@Override
+	public HandlerList getHandlers() {
 		return handlers;
 	}
 }

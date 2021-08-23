@@ -13,16 +13,14 @@ import lombok.Setter;
 public abstract class ChunkedTask {
 
 	/**
+	 * How many items should we process at once?
+	 */
+	private final int processAmount;
+	/**
 	 * How many ticks should we wait before processing the next bulk amount?
 	 */
 	@Setter
 	private int waitPeriodTicks = 20;
-
-	/**
-	 * How many items should we process at once?
-	 */
-	private final int processAmount;
-
 	/*
 	 * The current index where we are processing at, right now
 	 */

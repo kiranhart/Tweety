@@ -83,6 +83,48 @@ public abstract class OfflineRegionScanner {
 	private boolean fastMode = false;
 
 	/**
+	 * Return all region files stored on the disk for the given world
+	 *
+	 * @param world
+	 * @return
+	 */
+	public static File[] getRegionFiles(World world) {
+		final File regionDir = getRegionDirectory(world);
+
+		return regionDir == null ? null : regionDir.listFiles((FilenameFilter) (dir, name) -> name.toLowerCase().endsWith(".mca"));
+	}
+
+	/**
+	 * Return the region directory for the given world
+	 *
+	 * @param world
+	 * @return
+	 */
+	private static final File getRegionDirectory(World world) {
+		for (final String folder : FOLDERS) {
+			final File file = new File(world.getWorldFolder(), folder);
+
+			if (file.isDirectory())
+				return file;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get how long scanning should take for the given world
+	 * depending on its amount of region files
+	 *
+	 * @param world
+	 * @return
+	 */
+	public static int getEstimatedWaitTimeSec(World world) {
+		final File[] files = getRegionFiles(world);
+
+		return (WAIT_TIME_BETWEEN_SCAN_SECONDS + 2) * files.length;
+	}
+
+	/**
 	 * Starts the scan for the given world (warning: this operation is blocking
 	 * and takes long time, see {@link #getEstimatedWaitTimeSec(World)})
 	 *
@@ -275,6 +317,10 @@ public abstract class OfflineRegionScanner {
 	 */
 	protected abstract void onChunkScan(Chunk chunk);
 
+	// ------------------------------------------------------------------------------------------------------------
+	// Static
+	// ------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * Called when a chunk is being scanned and loaded
 	 * ONLY CALLED WHEN FASTMODE IS ENABLED
@@ -301,52 +347,6 @@ public abstract class OfflineRegionScanner {
 	 */
 	protected void onScanFinished() {
 	}
-
-	// ------------------------------------------------------------------------------------------------------------
-	// Static
-	// ------------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Return all region files stored on the disk for the given world
-	 *
-	 * @param world
-	 * @return
-	 */
-	public static File[] getRegionFiles(World world) {
-		final File regionDir = getRegionDirectory(world);
-
-		return regionDir == null ? null : regionDir.listFiles((FilenameFilter) (dir, name) -> name.toLowerCase().endsWith(".mca"));
-	}
-
-	/**
-	 * Return the region directory for the given world
-	 *
-	 * @param world
-	 * @return
-	 */
-	private static final File getRegionDirectory(World world) {
-		for (final String folder : FOLDERS) {
-			final File file = new File(world.getWorldFolder(), folder);
-
-			if (file.isDirectory())
-				return file;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get how long scanning should take for the given world
-	 * depending on its amount of region files
-	 *
-	 * @param world
-	 * @return
-	 */
-	public static int getEstimatedWaitTimeSec(World world) {
-		final File[] files = getRegionFiles(world);
-
-		return (WAIT_TIME_BETWEEN_SCAN_SECONDS + 2) * files.length;
-	}
 }
 
 /**
@@ -354,11 +354,10 @@ public abstract class OfflineRegionScanner {
  */
 class RegionAccessor {
 
-	private static Constructor<?> regionFileConstructor;
-	private static Method isChunkSaved;
-
 	private static final boolean atleast1_13, atleast1_14, atleast1_15, atleast1_16;
 	private static final String saveMethodName;
+	private static Constructor<?> regionFileConstructor;
+	private static Method isChunkSaved;
 
 	static {
 		atleast1_13 = MinecraftVersion.atLeast(V.v1_13);

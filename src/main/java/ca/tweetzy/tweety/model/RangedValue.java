@@ -46,6 +46,32 @@ public class RangedValue {
 	}
 
 	/**
+	 * Create a {@link RangedValue} from a line
+	 * Example: 1-10
+	 * 5 - 60
+	 * 4
+	 * <p>
+	 * or
+	 * <p>
+	 * 10 seconds - 20 minutes (will be converted to seconds)
+	 */
+	public static RangedValue parse(String line) {
+		line = line.replace(" ", "");
+
+		final String[] parts = line.split("\\-");
+		Valid.checkBoolean(parts.length == 1 || parts.length == 2, "Malformed value " + line);
+
+		final String first = parts[0];
+		final Integer min = NumberUtils.isNumber(first) ? Integer.parseInt(first) : (int) (TimeUtil.toTicks(first) / 20);
+
+		final String second = parts.length == 2 ? parts[1] : "";
+		final Integer max = parts.length == 2 ? NumberUtils.isNumber(second) ? Integer.parseInt(second) : (int) (TimeUtil.toTicks(second) / 20) : min;
+		Valid.checkBoolean(min != null && max != null, "Malformed value " + line);
+
+		return new RangedValue(min, max);
+	}
+
+	/**
 	 * Get the minimum as an integer
 	 */
 	public final int getMinInt() {
@@ -99,32 +125,6 @@ public class RangedValue {
 	 */
 	public final String toLine() {
 		return min + " - " + max;
-	}
-
-	/**
-	 * Create a {@link RangedValue} from a line
-	 * Example: 1-10
-	 * 5 - 60
-	 * 4
-	 * <p>
-	 * or
-	 * <p>
-	 * 10 seconds - 20 minutes (will be converted to seconds)
-	 */
-	public static RangedValue parse(String line) {
-		line = line.replace(" ", "");
-
-		final String[] parts = line.split("\\-");
-		Valid.checkBoolean(parts.length == 1 || parts.length == 2, "Malformed value " + line);
-
-		final String first = parts[0];
-		final Integer min = NumberUtils.isNumber(first) ? Integer.parseInt(first) : (int) (TimeUtil.toTicks(first) / 20);
-
-		final String second = parts.length == 2 ? parts[1] : "";
-		final Integer max = parts.length == 2 ? NumberUtils.isNumber(second) ? Integer.parseInt(second) : (int) (TimeUtil.toTicks(second) / 20) : min;
-		Valid.checkBoolean(min != null && max != null, "Malformed value " + line);
-
-		return new RangedValue(min, max);
 	}
 
 	@Override

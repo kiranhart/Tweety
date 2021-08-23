@@ -64,77 +64,6 @@ public final class ChatImage {
 	private String[] lines;
 
 	/**
-	 * Appends the given text next to the image
-	 *
-	 * @param text
-	 * @return
-	 */
-	public ChatImage appendText(String... text) {
-		for (int y = 0; y < lines.length; y++)
-			if (text.length > y) {
-				final String line = text[y];
-
-				lines[y] += " " + line;
-			}
-
-		return this;
-	}
-
-	/**
-	 * Appends the given text as centered, next to the image
-	 *
-	 * @param text
-	 * @return
-	 */
-	public ChatImage appendCenteredText(String... text) {
-		for (int y = 0; y < lines.length; y++)
-			if (text.length > y) {
-				final int len = ChatPaginator.AVERAGE_CHAT_PAGE_WIDTH - lines[y].length();
-
-				lines[y] = lines[y] + center(text[y], len);
-
-			} else
-				return this;
-
-		return this;
-	}
-
-	/*
-	 * Centers the given message according to the given length
-	 */
-	private String center(String message, int length) {
-		if (message.length() > length)
-			return message.substring(0, length);
-
-		else if (message.length() == length)
-			return message;
-
-		else {
-			final int leftPadding = (length - message.length()) / 2;
-			final StringBuilder leftBuilder = new StringBuilder();
-
-			for (int i = 0; i < leftPadding; i++)
-				leftBuilder.append(" ");
-
-			return leftBuilder.toString() + message;
-		}
-	}
-
-	/**
-	 * Sends this image to the given player
-	 *
-	 * @param sender
-	 */
-	public void sendToPlayer(CommandSender sender) {
-		for (final String line : lines)
-			sender.sendMessage(Variables.replace(line, sender));
-	}
-
-	/* ------------------------------------------------------------------------------- */
-	/* Static */
-	/* ------------------------------------------------------------------------------- */
-
-	/**
 	 * Create an image to show in a chat message from the given path
 	 * in your plugin's JAR, with the given height and the given character type.
 	 *
@@ -211,6 +140,10 @@ public final class ChatImage {
 		return operation.filter(originalImage, null);
 	}
 
+	/* ------------------------------------------------------------------------------- */
+	/* Static */
+	/* ------------------------------------------------------------------------------- */
+
 	/*
 	 * Returns the closes chat color from the given color
 	 */
@@ -286,6 +219,73 @@ public final class ChatImage {
 		}
 
 		return lines;
+	}
+
+	/**
+	 * Appends the given text next to the image
+	 *
+	 * @param text
+	 * @return
+	 */
+	public ChatImage appendText(String... text) {
+		for (int y = 0; y < lines.length; y++)
+			if (text.length > y) {
+				final String line = text[y];
+
+				lines[y] += " " + line;
+			}
+
+		return this;
+	}
+
+	/**
+	 * Appends the given text as centered, next to the image
+	 *
+	 * @param text
+	 * @return
+	 */
+	public ChatImage appendCenteredText(String... text) {
+		for (int y = 0; y < lines.length; y++)
+			if (text.length > y) {
+				final int len = ChatPaginator.AVERAGE_CHAT_PAGE_WIDTH - lines[y].length();
+
+				lines[y] = lines[y] + center(text[y], len);
+
+			} else
+				return this;
+
+		return this;
+	}
+
+	/*
+	 * Centers the given message according to the given length
+	 */
+	private String center(String message, int length) {
+		if (message.length() > length)
+			return message.substring(0, length);
+
+		else if (message.length() == length)
+			return message;
+
+		else {
+			final int leftPadding = (length - message.length()) / 2;
+			final StringBuilder leftBuilder = new StringBuilder();
+
+			for (int i = 0; i < leftPadding; i++)
+				leftBuilder.append(" ");
+
+			return leftBuilder.toString() + message;
+		}
+	}
+
+	/**
+	 * Sends this image to the given player
+	 *
+	 * @param sender
+	 */
+	public void sendToPlayer(CommandSender sender) {
+		for (final String line : lines)
+			sender.sendMessage(Variables.replace(line, sender));
 	}
 
 	/* ------------------------------------------------------------------------------- */

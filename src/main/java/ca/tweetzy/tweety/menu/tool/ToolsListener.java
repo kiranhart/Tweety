@@ -38,19 +38,6 @@ public final class ToolsListener implements Listener {
 	private final Map<UUID, ShotRocket> shotRockets = new HashMap<>();
 
 	/**
-	 * Represents a shot rocket with the shooter
-	 */
-	@Data
-	private final class ShotRocket {
-		private final Player shooter;
-		private final Rocket rocket;
-	}
-
-	// -------------------------------------------------------------------------------------------
-	// Main tool listener
-	// -------------------------------------------------------------------------------------------
-
-	/**
 	 * Handles clicking tools and shooting rocket
 	 *
 	 * @param event
@@ -90,6 +77,10 @@ public final class ToolsListener implements Listener {
 						"Failed to handle " + event.getAction() + " using tool: " + tool.getClass());
 			}
 	}
+
+	// -------------------------------------------------------------------------------------------
+	// Main tool listener
+	// -------------------------------------------------------------------------------------------
 
 	/**
 	 * Handles block placing
@@ -149,10 +140,6 @@ public final class ToolsListener implements Listener {
 		else if (previous != null)
 			previous.onHotbarDefocused(player);
 	}
-
-	// -------------------------------------------------------------------------------------------
-	// Rockets
-	// -------------------------------------------------------------------------------------------
 
 	/**
 	 * Handles launching a rocket
@@ -243,6 +230,10 @@ public final class ToolsListener implements Listener {
 			}
 	}
 
+	// -------------------------------------------------------------------------------------------
+	// Rockets
+	// -------------------------------------------------------------------------------------------
+
 	/**
 	 * Handles rockets on impacts
 	 *
@@ -276,5 +267,14 @@ public final class ToolsListener implements Listener {
 						"Failed to handle impact by rocket " + shot.getRocket().getClass());
 			}
 		}
+	}
+
+	/**
+	 * Represents a shot rocket with the shooter
+	 */
+	@Data
+	private final class ShotRocket {
+		private final Player shooter;
+		private final Rocket rocket;
 	}
 }

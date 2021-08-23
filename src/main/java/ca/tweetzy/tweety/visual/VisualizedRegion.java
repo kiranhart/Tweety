@@ -64,6 +64,22 @@ public final class VisualizedRegion extends Region {
 	// ------–------–------–------–------–------–------–------–------–------–------–------–
 
 	/**
+	 * Converts a saved map from your yaml/json file into a region if it contains Primary and Secondary keys
+	 *
+	 * @param map
+	 * @return
+	 */
+	public static VisualizedRegion deserialize(final SerializedMap map) {
+		Valid.checkBoolean(map.containsKey("Primary") && map.containsKey("Secondary"), "The region must have Primary and a Secondary location");
+
+		final String name = map.getString("Name");
+		final Location prim = map.getLocation("Primary");
+		final Location sec = map.getLocation("Secondary");
+
+		return new VisualizedRegion(name, prim, sec);
+	}
+
+	/**
 	 * Shows the region to the given player for the given duration,
 	 * the hides it
 	 *
@@ -158,21 +174,5 @@ public final class VisualizedRegion extends Region {
 		task = null;
 
 		viewers.clear();
-	}
-
-	/**
-	 * Converts a saved map from your yaml/json file into a region if it contains Primary and Secondary keys
-	 *
-	 * @param map
-	 * @return
-	 */
-	public static VisualizedRegion deserialize(final SerializedMap map) {
-		Valid.checkBoolean(map.containsKey("Primary") && map.containsKey("Secondary"), "The region must have Primary and a Secondary location");
-
-		final String name = map.getString("Name");
-		final Location prim = map.getLocation("Primary");
-		final Location sec = map.getLocation("Secondary");
-
-		return new VisualizedRegion(name, prim, sec);
 	}
 }

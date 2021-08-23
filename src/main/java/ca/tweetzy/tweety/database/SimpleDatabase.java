@@ -30,21 +30,18 @@ import lombok.RequiredArgsConstructor;
 public class SimpleDatabase {
 
 	/**
+	 * Map of variables you can use with the {} syntax in SQL
+	 */
+	private final StrictMap<String, String> sqlVariables = new StrictMap<>();
+	/**
 	 * The established connection, or null if none
 	 */
 	@Getter(value = AccessLevel.PROTECTED)
 	private volatile Connection connection;
-
 	/**
 	 * The last credentials from the connect function, or null if never called
 	 */
 	private LastCredentials lastCredentials;
-
-	/**
-	 * Map of variables you can use with the {} syntax in SQL
-	 */
-	private final StrictMap<String, String> sqlVariables = new StrictMap<>();
-
 	/**
 	 * Indicates that {@link #batchUpdate(List)} is ongoing
 	 */

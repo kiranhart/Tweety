@@ -41,12 +41,12 @@ public final class MenuOpenEvent extends SimpleEvent implements Cancellable {
 	@Setter
 	private boolean cancelled;
 
-	@Override
-	public HandlerList getHandlers() {
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList() {
+	@Override
+	public HandlerList getHandlers() {
 		return handlers;
 	}
 }

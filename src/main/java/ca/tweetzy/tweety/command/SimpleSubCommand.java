@@ -36,16 +36,6 @@ public abstract class SimpleSubCommand extends SimpleCommand {
 		this(getMainCommandGroup0(), sublabel);
 	}
 
-	/*
-	 * Attempts to get the main command group, failing with an error if not defined
-	 */
-	private static SimpleCommandGroup getMainCommandGroup0() {
-		final SimpleCommandGroup main = SimplePlugin.getInstance().getMainCommand();
-		Valid.checkNotNull(main, SimplePlugin.getNamed() + " does not define a main command group!");
-
-		return main;
-	}
-
 	/**
 	 * Creates a new subcommand belonging to a command group
 	 *
@@ -70,6 +60,16 @@ public abstract class SimpleSubCommand extends SimpleCommand {
 			else
 				setPermission(getRawPermission() + ".{sublabel}"); // append the sublabel at the end since this is not our main command
 		}
+	}
+
+	/*
+	 * Attempts to get the main command group, failing with an error if not defined
+	 */
+	private static SimpleCommandGroup getMainCommandGroup0() {
+		final SimpleCommandGroup main = SimplePlugin.getInstance().getMainCommand();
+		Valid.checkNotNull(main, SimplePlugin.getNamed() + " does not define a main command group!");
+
+		return main;
 	}
 
 	/**

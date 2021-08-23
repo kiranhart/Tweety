@@ -25,6 +25,37 @@ public abstract class RandomNoRepeatPicker<T> {
 	private final List<T> list = new ArrayList<>();
 
 	/**
+	 * Creates a new random no repeat picker of the given class type
+	 * All players may always obtain it
+	 *
+	 * @param <T>
+	 * @param pickedType
+	 * @return
+	 */
+	public static final <T> RandomNoRepeatPicker<T> newPicker(final Class<T> pickedType) {
+		return newPicker((player, type) -> true);
+	}
+
+	/**
+	 * Creates a new random no repeat picker with function
+	 * to check if the player can obtain the class
+	 *
+	 * @param <T>
+	 * @param pickedType
+	 * @param canObtain
+	 * @return
+	 */
+	public static final <T> RandomNoRepeatPicker<T> newPicker(final BiFunction<Player, T, Boolean> canObtain) {
+		return new RandomNoRepeatPicker<T>() {
+
+			@Override
+			protected boolean canObtain(final Player player, final T picked) {
+				return canObtain.apply(player, picked);
+			}
+		};
+	}
+
+	/**
 	 * The the items we want to pick from
 	 *
 	 * @param list
@@ -110,35 +141,4 @@ public abstract class RandomNoRepeatPicker<T> {
 	 * @return
 	 */
 	protected abstract boolean canObtain(Player player, T picked);
-
-	/**
-	 * Creates a new random no repeat picker of the given class type
-	 * All players may always obtain it
-	 *
-	 * @param <T>
-	 * @param pickedType
-	 * @return
-	 */
-	public static final <T> RandomNoRepeatPicker<T> newPicker(final Class<T> pickedType) {
-		return newPicker((player, type) -> true);
-	}
-
-	/**
-	 * Creates a new random no repeat picker with function
-	 * to check if the player can obtain the class
-	 *
-	 * @param <T>
-	 * @param pickedType
-	 * @param canObtain
-	 * @return
-	 */
-	public static final <T> RandomNoRepeatPicker<T> newPicker(final BiFunction<Player, T, Boolean> canObtain) {
-		return new RandomNoRepeatPicker<T>() {
-
-			@Override
-			protected boolean canObtain(final Player player, final T picked) {
-				return canObtain.apply(player, picked);
-			}
-		};
-	}
 }

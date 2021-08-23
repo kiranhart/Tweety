@@ -229,6 +229,40 @@ public enum CompSound {
 	}
 
 	/**
+	 * Returns the level up sound for compatibility
+	 *
+	 * @return the level up sound
+	 */
+	public static final Sound getFallback() {
+		return Sound.valueOf(MinecraftVersion.atLeast(V.v1_9) ? "ENTITY_PLAYER_LEVELUP" : "LEVEL_UP");
+	}
+
+	/**
+	 * Converts the string to a valid bukkit Sound
+	 *
+	 * @param soundName
+	 * @return
+	 */
+	public static final Sound convert(String soundName) {
+		CompSound sound = null;
+
+		// Test if we can convert it directly
+		if (MinecraftVersion.atLeast(V.v1_9))
+			try {
+				return Sound.valueOf(soundName.toUpperCase());
+			} catch (final IllegalArgumentException ex) {
+			}
+
+		// If not, try to find the corresponding new sound
+		for (final CompSound compSound : values())
+			for (final String name : compSound.versionDependentNames)
+				if (name.equalsIgnoreCase(soundName))
+					sound = compSound;
+
+		return sound != null ? sound.getSound() : getFallback();
+	}
+
+	/**
 	 * Plays a sound for the given player with 1F volume and 1F pitch
 	 *
 	 * @param player
@@ -297,39 +331,5 @@ public enum CompSound {
 			}
 
 		return getFallback();
-	}
-
-	/**
-	 * Returns the level up sound for compatibility
-	 *
-	 * @return the level up sound
-	 */
-	public static final Sound getFallback() {
-		return Sound.valueOf(MinecraftVersion.atLeast(V.v1_9) ? "ENTITY_PLAYER_LEVELUP" : "LEVEL_UP");
-	}
-
-	/**
-	 * Converts the string to a valid bukkit Sound
-	 *
-	 * @param soundName
-	 * @return
-	 */
-	public static final Sound convert(String soundName) {
-		CompSound sound = null;
-
-		// Test if we can convert it directly
-		if (MinecraftVersion.atLeast(V.v1_9))
-			try {
-				return Sound.valueOf(soundName.toUpperCase());
-			} catch (final IllegalArgumentException ex) {
-			}
-
-		// If not, try to find the corresponding new sound
-		for (final CompSound compSound : values())
-			for (final String name : compSound.versionDependentNames)
-				if (name.equalsIgnoreCase(soundName))
-					sound = compSound;
-
-		return sound != null ? sound.getSound() : getFallback();
 	}
 }

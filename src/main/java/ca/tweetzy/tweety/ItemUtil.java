@@ -19,6 +19,109 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 /**
+ * A simple class holding some of the potion names
+ */
+@RequiredArgsConstructor
+enum PotionWrapper {
+
+	SLOW("SLOW", "Slowness"),
+	STRENGTH("INCREASE_DAMAGE"),
+	JUMP_BOOST("JUMP"),
+	INSTANT_HEAL("INSTANT_HEALTH"),
+	REGEN("REGENERATION");
+
+	private final String bukkitName;
+	private final String minecraftName;
+
+	private PotionWrapper(String bukkitName) {
+		this(bukkitName, null);
+	}
+
+	protected static String getLocalizedName(String name) {
+		String localizedName = name;
+
+		for (final PotionWrapper e : values())
+			if (name.toUpperCase().replace(" ", "_").equals(e.bukkitName)) {
+				localizedName = e.getMinecraftName();
+
+				break;
+			}
+
+		return WordUtils.capitalizeFully(localizedName.replace("_", " "));
+	}
+
+	protected static String getBukkitName(String name) {
+		name = name.toUpperCase().replace(" ", "_");
+
+		for (final PotionWrapper e : values())
+			if (e.toString().equalsIgnoreCase(name) || e.minecraftName != null && e.minecraftName.equalsIgnoreCase(name))
+				return e.bukkitName;
+
+		return name;
+	}
+
+	public String getMinecraftName() {
+		return Common.getOrDefault(minecraftName, bukkitName);
+	}
+}
+
+/**
+ * A simple class holding some of the enchantments names
+ */
+@RequiredArgsConstructor
+enum EnchantmentWrapper {
+	PROTECTION("PROTECTION_ENVIRONMENTAL"),
+	FIRE_PROTECTION("PROTECTION_FIRE"),
+	FEATHER_FALLING("PROTECTION_FALL"),
+	BLAST_PROTECTION("PROTECTION_EXPLOSIONS"),
+	PROJECTILE_PROTECTION("PROTECTION_PROJECTILE"),
+	RESPIRATION("OXYGEN"),
+	AQUA_AFFINITY("WATER_WORKER"),
+	THORN("THORNS"),
+	CURSE_OF_VANISHING("VANISHING_CURSE"),
+	CURSE_OF_BINDING("BINDING_CURSE"),
+	SHARPNESS("DAMAGE_ALL"),
+	SMITE("DAMAGE_UNDEAD"),
+	BANE_OF_ARTHROPODS("DAMAGE_ARTHROPODS"),
+	LOOTING("LOOT_BONUS_MOBS"),
+	SWEEPING_EDGE("SWEEPING"),
+	EFFICIENCY("DIG_SPEED"),
+	UNBREAKING("DURABILITY"),
+	FORTUNE("LOOT_BONUS_BLOCKS"),
+	POWER("ARROW_DAMAGE"),
+	PUNCH("ARROW_KNOCKBACK"),
+	FLAME("ARROW_FIRE"),
+	INFINITY("ARROW_INFINITE"),
+	LUCK_OF_THE_SEA("LUCK");
+
+	private final String bukkitName;
+
+	protected static String toBukkit(String name) {
+		name = name.toUpperCase().replace(" ", "_");
+
+		for (final EnchantmentWrapper e : values())
+			if (e.toString().equals(name))
+				return e.bukkitName;
+
+		return name;
+	}
+
+	protected static String toMinecraft(String name) {
+		name = name.toUpperCase().replace(" ", "_");
+
+		for (final EnchantmentWrapper e : values())
+			if (name.equals(e.bukkitName))
+				return ItemUtil.bountifyCapitalized(e);
+
+		return WordUtils.capitalizeFully(name);
+	}
+
+	public String getBukkitName() {
+		return bukkitName != null ? bukkitName : name();
+	}
+}
+
+/**
  * Utility class for managing items.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -220,108 +323,5 @@ public final class ItemUtil {
 			return false; // one has but another hasn't, cannot be same
 
 		return firstNbt.getString(key).equals(secondNbt.getString(key));
-	}
-}
-
-/**
- * A simple class holding some of the potion names
- */
-@RequiredArgsConstructor
-enum PotionWrapper {
-
-	SLOW("SLOW", "Slowness"),
-	STRENGTH("INCREASE_DAMAGE"),
-	JUMP_BOOST("JUMP"),
-	INSTANT_HEAL("INSTANT_HEALTH"),
-	REGEN("REGENERATION");
-
-	private final String bukkitName;
-	private final String minecraftName;
-
-	private PotionWrapper(String bukkitName) {
-		this(bukkitName, null);
-	}
-
-	protected static String getLocalizedName(String name) {
-		String localizedName = name;
-
-		for (final PotionWrapper e : values())
-			if (name.toUpperCase().replace(" ", "_").equals(e.bukkitName)) {
-				localizedName = e.getMinecraftName();
-
-				break;
-			}
-
-		return WordUtils.capitalizeFully(localizedName.replace("_", " "));
-	}
-
-	protected static String getBukkitName(String name) {
-		name = name.toUpperCase().replace(" ", "_");
-
-		for (final PotionWrapper e : values())
-			if (e.toString().equalsIgnoreCase(name) || e.minecraftName != null && e.minecraftName.equalsIgnoreCase(name))
-				return e.bukkitName;
-
-		return name;
-	}
-
-	public String getMinecraftName() {
-		return Common.getOrDefault(minecraftName, bukkitName);
-	}
-}
-
-/**
- * A simple class holding some of the enchantments names
- */
-@RequiredArgsConstructor
-enum EnchantmentWrapper {
-	PROTECTION("PROTECTION_ENVIRONMENTAL"),
-	FIRE_PROTECTION("PROTECTION_FIRE"),
-	FEATHER_FALLING("PROTECTION_FALL"),
-	BLAST_PROTECTION("PROTECTION_EXPLOSIONS"),
-	PROJECTILE_PROTECTION("PROTECTION_PROJECTILE"),
-	RESPIRATION("OXYGEN"),
-	AQUA_AFFINITY("WATER_WORKER"),
-	THORN("THORNS"),
-	CURSE_OF_VANISHING("VANISHING_CURSE"),
-	CURSE_OF_BINDING("BINDING_CURSE"),
-	SHARPNESS("DAMAGE_ALL"),
-	SMITE("DAMAGE_UNDEAD"),
-	BANE_OF_ARTHROPODS("DAMAGE_ARTHROPODS"),
-	LOOTING("LOOT_BONUS_MOBS"),
-	SWEEPING_EDGE("SWEEPING"),
-	EFFICIENCY("DIG_SPEED"),
-	UNBREAKING("DURABILITY"),
-	FORTUNE("LOOT_BONUS_BLOCKS"),
-	POWER("ARROW_DAMAGE"),
-	PUNCH("ARROW_KNOCKBACK"),
-	FLAME("ARROW_FIRE"),
-	INFINITY("ARROW_INFINITE"),
-	LUCK_OF_THE_SEA("LUCK");
-
-	private final String bukkitName;
-
-	protected static String toBukkit(String name) {
-		name = name.toUpperCase().replace(" ", "_");
-
-		for (final EnchantmentWrapper e : values())
-			if (e.toString().equals(name))
-				return e.bukkitName;
-
-		return name;
-	}
-
-	protected static String toMinecraft(String name) {
-		name = name.toUpperCase().replace(" ", "_");
-
-		for (final EnchantmentWrapper e : values())
-			if (name.equals(e.bukkitName))
-				return ItemUtil.bountifyCapitalized(e);
-
-		return WordUtils.capitalizeFully(name);
-	}
-
-	public String getBukkitName() {
-		return bukkitName != null ? bukkitName : name();
 	}
 }

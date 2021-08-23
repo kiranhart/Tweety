@@ -272,17 +272,6 @@ public class JSONFormatter {
 	}
 
 	/**
-	 * Sets the indent.
-	 *
-	 * @param indent the indent
-	 * @since 2.0.0
-	 */
-	public void setIndent(int indent) {
-
-		this.indent = indent;
-	}
-
-	/**
 	 * Formats minimized JSON data. Do not try to format already formatted JSON. The result does not look good.
 	 *
 	 * @param reader the {@linkplain Reader} with the JSON data
@@ -454,5 +443,16 @@ public class JSONFormatter {
 	public int getIndent() {
 
 		return this.indent;
+	}
+
+	/**
+	 * Sets the indent.
+	 *
+	 * @param indent the indent
+	 * @since 2.0.0
+	 */
+	public void setIndent(int indent) {
+
+		this.indent = indent;
 	}
 }
