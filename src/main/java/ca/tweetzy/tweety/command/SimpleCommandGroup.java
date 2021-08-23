@@ -308,6 +308,14 @@ public abstract class SimpleCommandGroup {
 		return "" + ChatColor.GOLD + ChatColor.BOLD;
 	}
 
+	protected boolean useZeroArgAction() {
+		return false;
+	}
+
+	protected void zeroArgActions(CommandSender commandSender) {
+
+	}
+
 	// ----------------------------------------------------------------------
 	// Execution
 	// ----------------------------------------------------------------------
@@ -341,6 +349,11 @@ public abstract class SimpleCommandGroup {
 
 			// Print a special message on no arguments
 			if (args.length == 0) {
+				if (useZeroArgAction()) {
+					zeroArgActions(getSender());
+					return;
+				}
+
 				if (sendHelpIfNoArgs())
 					tellSubcommandsHelp();
 				else

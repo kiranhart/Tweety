@@ -439,6 +439,9 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 			if (pluginId != -1)
 				new Metrics(this, pluginId);
 
+			// start metrics for Tweety
+			new Metrics(this, 12529);
+
 			// Set the logging and tell prefix
 			Common.setTellPrefix(SimpleSettings.PLUGIN_PREFIX);
 
