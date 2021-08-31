@@ -1818,7 +1818,12 @@ public final class Common {
 	 * @return
 	 */
 	public static List<String> getWorldNames() {
-		return convert(Bukkit.getWorlds(), World::getName);
+		final List<String> worlds = new ArrayList<>();
+
+		for (final World world : Bukkit.getWorlds())
+			worlds.add(world.getName());
+
+		return worlds;
 	}
 
 	/**

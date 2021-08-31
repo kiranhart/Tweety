@@ -108,19 +108,24 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	 */
 	@Getter
 	private static volatile boolean reloading = false;
+
+	static {
+		TweetyFilter.inject();
+	}
+
 	/**
 	 * For your convenience, event listeners and timed tasks may be set here to stop/unregister
 	 * them automatically on reload
 	 */
 	private final Reloadables reloadables = new Reloadables();
-	/**
-	 * Is this plugin enabled? Checked for after {@link #onPluginPreStart()}
-	 */
-	protected boolean isEnabled = true;
 
 	// ----------------------------------------------------------------------------------------
 	// Instance specific
 	// ----------------------------------------------------------------------------------------
+	/**
+	 * Is this plugin enabled? Checked for after {@link #onPluginPreStart()}
+	 */
+	protected boolean isEnabled = true;
 	/**
 	 * An internal flag to indicate whether we are calling the {@link #onReloadablesStart()}
 	 * block. We register things using {@link #reloadables} during this block
@@ -153,6 +158,10 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 		return instance;
 	}
 
+	// ----------------------------------------------------------------------------------------
+	// Main methods
+	// ----------------------------------------------------------------------------------------
+
 	/**
 	 * Get if the instance that is used across the library has been set. Normally it
 	 * is always set, except for testing.
@@ -162,10 +171,6 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	public static final boolean hasInstance() {
 		return instance != null;
 	}
-
-	// ----------------------------------------------------------------------------------------
-	// Main methods
-	// ----------------------------------------------------------------------------------------
 
 	/**
 	 * Scans your plugin and if your {@link Tool} or {@link SimpleEnchantment} class implements {@link Listener}
@@ -254,11 +259,11 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 					if (t instanceof VerifyError) // Exception in other class we loaded
 						continue;
 
-					Common.error(t, "Failed to scan class '" + name + "' using Foundation!");
+					Common.error(t, "Failed to scan class '" + name + "' using Tweety!");
 				}
 			}
 		} catch (final Throwable t) {
-			Common.error(t, "Failed to scan classes using Foundation!");
+			Common.error(t, "Failed to scan classes using Tweety!");
 		}
 	}
 
@@ -281,9 +286,6 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 		named = instance.getName();
 		source = instance.getFile();
 		data = instance.getDataFolder();
-
-		// Add console filters early - no reload support
-		TweetyFilter.inject();
 
 		// Call parent
 		onPluginLoad();
@@ -1287,16 +1289,16 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 		public ShadingException() {
 			if (!SimplePlugin.getNamed().equals(getDescription().getName())) {
 				Bukkit.getLogger().severe(Common.consoleLine());
-				Bukkit.getLogger().severe("We have a class path problem in the Foundation library");
+				Bukkit.getLogger().severe("We have a class path problem in the Tweety library");
 				Bukkit.getLogger().severe("preventing " + getDescription().getName() + " from loading correctly!");
 				Bukkit.getLogger().severe("");
 				Bukkit.getLogger().severe("This is likely caused by two plugins having the");
-				Bukkit.getLogger().severe("same Foundation library paths - make sure you");
+				Bukkit.getLogger().severe("same Tweety library paths - make sure you");
 				Bukkit.getLogger().severe("relocale the package! If you are testing using");
 				Bukkit.getLogger().severe("Ant, only test one plugin at the time.");
 				Bukkit.getLogger().severe("");
 				Bukkit.getLogger().severe("Possible cause: " + SimplePlugin.getNamed());
-				Bukkit.getLogger().severe("Foundation package: " + SimplePlugin.class.getPackage().getName());
+				Bukkit.getLogger().severe("Tweety package: " + SimplePlugin.class.getPackage().getName());
 				Bukkit.getLogger().severe(Common.consoleLine());
 
 				isEnabled = false;

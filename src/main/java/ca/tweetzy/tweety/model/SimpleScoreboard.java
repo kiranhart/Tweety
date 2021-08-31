@@ -159,7 +159,7 @@ public class SimpleScoreboard {
 	/**
 	 * Starts visualizing this scoreboard
 	 */
-	private final void start() {
+	private void start() {
 		Valid.checkBoolean(updateTask == null, "Scoreboard " + this + " already running");
 
 		updateTask = new BukkitRunnable() {
@@ -191,7 +191,7 @@ public class SimpleScoreboard {
 	/**
 	 * Updates this scoreboard
 	 */
-	private final void update() {
+	private void update() {
 		onUpdate();
 
 		for (final ViewedScoreboard viewedScoreboard : scoreboards) {
@@ -205,7 +205,7 @@ public class SimpleScoreboard {
 	 *
 	 * @param viewedScoreboard
 	 */
-	private final void resetObjective(final ViewedScoreboard viewedScoreboard) {
+	private void resetObjective(final ViewedScoreboard viewedScoreboard) {
 		final Scoreboard scoreboard = viewedScoreboard.getScoreboard();
 		Objective objective = viewedScoreboard.getObjective();
 
@@ -225,7 +225,7 @@ public class SimpleScoreboard {
 	 *
 	 * @param viewedScoreboard
 	 */
-	private final void reloadEntries(final ViewedScoreboard viewedScoreboard) {
+	private void reloadEntries(final ViewedScoreboard viewedScoreboard) {
 		final Objective objective = viewedScoreboard.getObjective();
 		final StrictList<String> duplicates = new StrictList<>();
 
@@ -248,7 +248,7 @@ public class SimpleScoreboard {
 	 * @param row
 	 * @return
 	 */
-	private final String replaceTheme(final String row) {
+	private String replaceTheme(final String row) {
 		if (theme != null && row.contains(":"))
 			if (theme.length == 1)
 				return theme[0] + row;
@@ -289,7 +289,7 @@ public class SimpleScoreboard {
 	 * @param message
 	 * @return
 	 */
-	private final String fixDuplicates(final StrictList<String> duplicates, String message) {
+	private String fixDuplicates(final StrictList<String> duplicates, String message) {
 		message = StringUtils.substring(message, 0, 40);
 
 		final boolean cut = MinecraftVersion.olderThan(V.v1_8);
@@ -343,7 +343,7 @@ public class SimpleScoreboard {
 	/**
 	 * Cancels the update task
 	 */
-	private final void cancelUpdateTask() {
+	private void cancelUpdateTask() {
 		Valid.checkNotNull(updateTask, "Scoreboard " + this + " not running");
 
 		updateTask.cancel();
@@ -386,7 +386,7 @@ public class SimpleScoreboard {
 
 		final Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-		scoreboards.add(new ViewedScoreboard(scoreboard, null, player));
+		scoreboards.add(new ViewedScoreboard(scoreboard, null, (Objective) player));
 		player.setScoreboard(scoreboard);
 	}
 

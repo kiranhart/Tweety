@@ -15,8 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.settings.SimpleSettings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -50,8 +48,12 @@ final class TweetyFilter {
 		Bukkit.getLogger().setFilter(filter);
 
 		// Set Log4j filter
-		if (MinecraftVersion.atLeast(V.v1_7))
+		try {
 			FilterLog4j.inject();
+
+		} catch (final Throwable t) {
+			// Ignore for legacy MC
+		}
 	}
 
 	/*
@@ -61,14 +63,12 @@ final class TweetyFilter {
 		if (message == null || message.isEmpty())
 			return false;
 
-		message = Common.stripColors(message);
+		// Replace & color codes only if server is available
+		if (Bukkit.getServer() != null)
+			message = Common.stripColors(message);
 
 		// Filter a warning since we've already patched this with NashornPlus extension
 		if (message.equals("Warning: Nashorn engine is planned to be removed from a future JDK release"))
-			return true;
-
-		// Filter spam
-		if (message.equals("Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!"))
 			return true;
 
 		// One less spammy message for server owners
@@ -174,7 +174,7 @@ class FilterLog4j implements org.apache.logging.log4j.core.Filter {
 	/*
 	 * Return if the message should be filtered
 	 */
-	private final Result checkMessage(String message) {
+	private Result checkMessage(String message) {
 		return TweetyFilter.isFiltered(message) ? Result.DENY : Result.NEUTRAL;
 	}
 

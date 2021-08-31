@@ -836,7 +836,7 @@ public abstract class SimpleCommand extends Command {
 	 * @return
 	 */
 	protected final boolean hasPerm(CommandSender sender, String permission) {
-		return permission == null ? true : PlayerUtil.hasPerm(sender, permission.replace("{label}", getLabel()));
+		return permission == null || PlayerUtil.hasPerm(sender, permission.replace("{label}", getLabel()));
 	}
 
 	// ----------------------------------------------------------------------
@@ -1418,7 +1418,7 @@ public abstract class SimpleCommand extends Command {
 	 */
 	@Override
 	public final String getPermissionMessage() {
-		return Common.getOrDefault(super.getPermissionMessage(), "&c" + SimpleLocalization.NO_PERMISSION);
+		return Common.getOrDefault(super.getPermissionMessage(), SimpleLocalization.NO_PERMISSION);
 	}
 
 	/**
@@ -1615,7 +1615,7 @@ public abstract class SimpleCommand extends Command {
 
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof SimpleCommand ? ((SimpleCommand) obj).getLabel().equals(getLabel()) && ((SimpleCommand) obj).getAliases().equals(getAliases()) : false;
+		return obj instanceof SimpleCommand && ((SimpleCommand) obj).getLabel().equals(getLabel()) && ((SimpleCommand) obj).getAliases().equals(getAliases());
 	}
 
 	@Override

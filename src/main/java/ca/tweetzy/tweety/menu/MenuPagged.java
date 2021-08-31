@@ -1,5 +1,7 @@
 package ca.tweetzy.tweety.menu;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 /**
@@ -28,125 +31,54 @@ import lombok.val;
  */
 public abstract class MenuPagged<T> extends Menu {
 
-	/**
-	 * The pages by the page number, containing a list of items
-	 */
+	private final List<Integer> bottomSlots = new ArrayList<>();
 	@Getter
-	private final Map<Integer, List<T>> pages;
-
-	/**
-	 * The current page
-	 */
+	private Map<Integer, List<T>> pages;
 	@Getter
-	private int currentPage = 1;
+	@Setter
+	private int currentPage;
+	private Button prevButton, nextButton;
 
-	/**
-	 * The next button automatically generated
-	 */
-	private Button nextButton;
-
-	/**
-	 * The "go to previous page" button automatically generated
-	 */
-	private Button prevButton;
-
-	/**
-	 * Create a new paged menu where each page has 3 rows + 1 bottom bar
-	 *
-	 * @param pages the pages
-	 */
-	protected MenuPagged(final Iterable<T> pages) {
-		this(null, pages);
+	public MenuPagged(final Integer rows, final Integer itemsPerPage, final Iterable<T> pages) {
+		this(null, rows, itemsPerPage, pages);
 	}
 
-	/**
-	 * Create a new paged menu
-	 *
-	 * @param parent the parent menu
-	 * @param pages  the pages the pages
-	 */
-	protected MenuPagged(final Menu parent, final Iterable<T> pages) {
-		this(null, parent, pages, false);
+	public MenuPagged(final Integer rows, final Iterable<T> pages) {
+		this(null, rows, rows * 6, pages);
 	}
 
-	/**
-	 * Create a new paged menu
-	 *
-	 * @param parent
-	 * @param pages
-	 * @param returnMakesNewInstance
-	 */
-	protected MenuPagged(final Menu parent, final Iterable<T> pages, final boolean returnMakesNewInstance) {
-		this(null, parent, pages, returnMakesNewInstance);
+	public MenuPagged(final Menu parent, final Integer rows, final Iterable<T> pages) {
+		this(parent, rows, rows * 6, pages);
 	}
 
-	/**
-	 * Create a new paged menu
-	 *
-	 * @param pageSize size of the menu, a multiple of 9 (keep in mind we already add
-	 *                 1 row there)
-	 * @param pages    the pages
-	 * @deprecated we recommend you don't set the page size for the menu to
-	 * autocalculate
-	 */
-	@Deprecated
-	protected MenuPagged(final int pageSize, final Iterable<T> pages) {
-		this(pageSize, null, pages);
+	public MenuPagged(final Menu parent, final Integer rows, final Integer itemsPerPage, final Iterable<T> pages) {
+		this(parent, rows, itemsPerPage, pages, false);
 	}
 
-	/**
-	 * Create a new paged menu
-	 *
-	 * @param pageSize size of the menu, a multiple of 9 (keep in mind we already add
-	 *                 1 row there)
-	 * @param parent   the parent menu
-	 * @param pages    the pages the pages
-	 * @deprecated we recommend you don't set the page size for the menu to
-	 * autocalculate
-	 */
-	@Deprecated
-	protected MenuPagged(final int pageSize, final Menu parent, final Iterable<T> pages) {
-		this(pageSize, parent, pages, false);
-	}
-
-	/**
-	 * Create a new paged menu
-	 *
-	 * @param pageSize
-	 * @param parent
-	 * @param pages
-	 * @param returnMakesNewInstance *
-	 * @deprecated we recommend you don't set the page size for the menu to
-	 * autocalculate
-	 */
-	@Deprecated
-	protected MenuPagged(final int pageSize, final Menu parent, final Iterable<T> pages, final boolean returnMakesNewInstance) {
-		this((Integer) pageSize, parent, pages, returnMakesNewInstance);
-	}
-
-	/**
-	 * Create a new paged menu
-	 *
-	 * @param pageSize               size of the menu, a multiple of 9 (keep in mind we already add
-	 *                               1 row there)
-	 * @param parent                 the parent menu
-	 * @param pages                  the pages the pages
-	 * @param returnMakesNewInstance should we re-instatiate the parent menu when returning to it?
-	 */
-	private MenuPagged(final Integer pageSize, final Menu parent, final Iterable<T> pages, final boolean returnMakesNewInstance) {
+	public MenuPagged(final Menu parent, final Integer rows, final Integer itemsPerPage, final Iterable<T> pages, final boolean returnMakesNewInstance) {
 		super(parent, returnMakesNewInstance);
 
 		final int items = getItemAmount(pages);
-		final int autoPageSize = pageSize != null ? pageSize : items <= 9 ? 9 * 1 : items <= 9 * 2 ? 9 * 2 : items <= 9 * 3 ? 9 * 3 : items <= 9 * 4 ? 9 * 4 : 9 * 5;
+		final int autoPageSize = rows != null ? rows * 9 : items <= 9 ? 9 : items <= 9 * 2 ? 9 * 2 : items <= 9 * 3 ? 9 * 3 : items <= 9 * 4 ? 9 * 4 : 9 * 5;
 
 		this.currentPage = 1;
-		this.pages = Common.fillPages(autoPageSize, pages);
+		this.pages = Common.fillPages(itemsPerPage, pages);
 
-		setSize(9 + autoPageSize);
+		if (this.pages.size() > 1 && itemsPerPage == 54)
+			this.pages = Common.fillPages(itemsPerPage - 9, pages);
+
+		final int addExtraRow = autoPageSize != 9 * 6 && this.pages.size() > 1 ? 9 : 0;
+
+		setSize(addExtraRow + autoPageSize);
 		setButtons();
+
+		for (int i = 1; i < 10; i++) {
+			if (getSize() - i == previousButtonSlot() || getSize() - i == nextButtonSlot())
+				continue;
+			this.bottomSlots.add(getSize() - i);
+		}
 	}
 
-	@SuppressWarnings("unused")
 	private int getItemAmount(final Iterable<T> pages) {
 		int amount = 0;
 
@@ -168,10 +100,41 @@ public abstract class MenuPagged<T> extends Menu {
 	}
 
 	/**
+	 * Automatically get the correct item from the actual page, including
+	 * prev/next buttons
+	 *
+	 * @param slot the slot
+	 * @return the item, or null
+	 */
+	@Override
+	public ItemStack getItemAt(int slot) {
+		// apply the header / footer first
+		if (useHeader() && Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8).contains(slot))
+			return headerItem();
+		if (useFooter() && bottomSlots.contains(slot))
+			return footerItem();
+
+		int index = slot - startingSlot();
+
+		if (slot >= startingSlot() && index < getCurrentPageItems().size()) {
+			final T object = getCurrentPageItems().get(index);
+
+			if (object != null)
+				return convertToItemStack(object);
+		}
+
+		if (slot == previousButtonSlot())
+			return prevButton.getItem();
+
+		if (slot == nextButtonSlot())
+			return nextButton.getItem();
+
+		return useBackground() ? backgroundItem() : null;
+	}
+
+	/**
 	 * Return the button to list the previous page,
 	 * override to customize it.
-	 *
-	 * @return
 	 */
 	public Button formPreviousButton() {
 		return new Button() {
@@ -181,7 +144,6 @@ public abstract class MenuPagged<T> extends Menu {
 			public void onClickedInMenu(final Player pl, final Menu menu, final ClickType click) {
 				if (canGo) {
 					currentPage = MathUtil.range(currentPage - 1, 1, pages.size());
-
 					updatePage();
 				}
 			}
@@ -189,9 +151,8 @@ public abstract class MenuPagged<T> extends Menu {
 			@Override
 			public ItemStack getItem() {
 				final int previousPage = currentPage - 1;
-
 				return ItemCreator
-						.of(canGo ? CompMaterial.LIME_DYE : CompMaterial.GRAY_DYE)
+						.of(canGo ? CompMaterial.ARROW : useFooter() ? CompMaterial.fromItem(footerItem()) : useBackground() ? CompMaterial.fromItem(backgroundItem()) : CompMaterial.AIR)
 						.name(previousPage == 0 ? SimpleLocalization.Menu.PAGE_FIRST : SimpleLocalization.Menu.PAGE_PREVIOUS.replace("{page}", String.valueOf(previousPage)))
 						.build().make();
 			}
@@ -201,8 +162,6 @@ public abstract class MenuPagged<T> extends Menu {
 	/**
 	 * Return the button to list the next page,
 	 * override to customize it.
-	 *
-	 * @return
 	 */
 	public Button formNextButton() {
 		return new Button() {
@@ -212,7 +171,6 @@ public abstract class MenuPagged<T> extends Menu {
 			public void onClickedInMenu(final Player pl, final Menu menu, final ClickType click) {
 				if (canGo) {
 					currentPage = MathUtil.range(currentPage + 1, 1, pages.size());
-
 					updatePage();
 				}
 			}
@@ -220,16 +178,15 @@ public abstract class MenuPagged<T> extends Menu {
 			@Override
 			public ItemStack getItem() {
 				final boolean lastPage = currentPage == pages.size();
-
 				return ItemCreator
-						.of(canGo ? CompMaterial.LIME_DYE : CompMaterial.GRAY_DYE)
+						.of(canGo ? CompMaterial.ARROW : useHeader() ? CompMaterial.fromItem(headerItem()) : useBackground() ? CompMaterial.fromItem(backgroundItem()) : CompMaterial.AIR)
 						.name(lastPage ? SimpleLocalization.Menu.PAGE_LAST : SimpleLocalization.Menu.PAGE_NEXT.replace("{page}", String.valueOf(currentPage + 1)))
 						.build().make();
 			}
 		};
 	}
 
-	// Reinits the menu and plays the anvil sound
+	// Re-inits the menu and plays the anvil sound
 	private void updatePage() {
 		setButtons();
 		redraw();
@@ -252,12 +209,29 @@ public abstract class MenuPagged<T> extends Menu {
 	 * Override for a custom last-minute implementation, but
 	 * ensure to call the super method otherwise no title will
 	 * be set in {@link InventoryDrawer}
-	 *
-	 * @param
 	 */
 	@Override
 	protected final void onDisplay(final InventoryDrawer drawer) {
 		drawer.setTitle(compileTitle0());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void onMenuClick(final Player player, final int slot, final InventoryAction action, final ClickType click, final ItemStack cursor, final ItemStack clicked, final boolean cancelled) {
+		int index = slot - startingSlot();
+		if (slot >= startingSlot() && index < getCurrentPageItems().size()) {
+			final T obj = getCurrentPageItems().get(index);
+
+			if (obj != null) {
+				final val prevType = player.getOpenInventory().getType();
+				onPageClick(player, obj, click);
+
+				if (updateButtonOnClick() && prevType == player.getOpenInventory().getType())
+					player.getOpenInventory().getTopInventory().setItem(index, getItemAt(index));
+			}
+		}
 	}
 
 	/**
@@ -291,63 +265,83 @@ public abstract class MenuPagged<T> extends Menu {
 	/**
 	 * Return true if you want our system to add page/totalPages suffix after
 	 * your title, true by default
-	 *
-	 * @return
 	 */
 	protected boolean addPageNumbers() {
 		return true;
 	}
 
 	/**
-	 * Return if there are no items at all
-	 *
-	 * @return
+	 * Return true if you want to fill the empty slots within the inventory
+	 * with a "placeholder/background" item
 	 */
-	protected boolean isEmpty() {
-		return pages.isEmpty() || pages.get(0).isEmpty();
+	protected boolean useBackground() {
+		return true;
 	}
 
 	/**
-	 * Automatically get the correct item from the actual page, including
-	 * prev/next buttons
-	 *
-	 * @param slot the slot
-	 * @return the item, or null
+	 * Should a header row / line be placed?
 	 */
-	@Override
-	public ItemStack getItemAt(final int slot) {
-		if (slot < getCurrentPageItems().size()) {
-			final T object = getCurrentPageItems().get(slot);
-
-			if (object != null)
-				return convertToItemStack(object);
-		}
-
-		if (slot == getSize() - 6)
-			return prevButton.getItem();
-
-		if (slot == getSize() - 4)
-			return nextButton.getItem();
-
-		return null;
+	protected boolean useHeader() {
+		return false;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Should a footer row / line be placed?
 	 */
-	@Override
-	public final void onMenuClick(final Player player, final int slot, final InventoryAction action, final ClickType click, final ItemStack cursor, final ItemStack clicked, final boolean cancelled) {
-		if (slot < getCurrentPageItems().size()) {
-			final T obj = getCurrentPageItems().get(slot);
+	protected boolean useFooter() {
+		return false;
+	}
 
-			if (obj != null) {
-				final val prevType = player.getOpenInventory().getType();
-				onPageClick(player, obj, click);
+	/**
+	 * What item should be used as the header?
+	 */
+	protected ItemStack headerItem() {
+		return CompMaterial.YELLOW_STAINED_GLASS_PANE.toItem();
+	}
 
-				if (updateButtonOnClick() && prevType == player.getOpenInventory().getType())
-					player.getOpenInventory().getTopInventory().setItem(slot, getItemAt(slot));
-			}
-		}
+	/**
+	 * What item should be used as the footer?
+	 */
+	protected ItemStack footerItem() {
+		return CompMaterial.YELLOW_STAINED_GLASS_PANE.toItem();
+	}
+
+	/**
+	 * Set which slot the previous button should be placed in.
+	 *
+	 * @return the slot of the previous button
+	 */
+	protected int previousButtonSlot() {
+		return getSize() - 6;
+	}
+
+	/**
+	 * Set which slot the next button should be placed in.
+	 *
+	 * @return the slot of the next button
+	 */
+	protected int nextButtonSlot() {
+		return getSize() - 4;
+	}
+
+	/**
+	 * If you want items to begin placing from a specific slot
+	 * then override this with the slot number
+	 * ex. 9 will place items starting from the second row onward
+	 *
+	 * @return the slot items should begin placing at
+	 */
+	protected int startingSlot() {
+		return 0;
+	}
+
+	/**
+	 * The background item of the menu
+	 *
+	 * @return the item that should be used as a filler/background item
+	 */
+	protected ItemStack backgroundItem() {
+		return CompMaterial.BLACK_STAINED_GLASS_PANE.toItem();
 	}
 
 	// Do not allow override
@@ -365,7 +359,6 @@ public abstract class MenuPagged<T> extends Menu {
 	// Get all items in a page
 	private List<T> getCurrentPageItems() {
 		Valid.checkBoolean(pages.containsKey(currentPage - 1), "The menu has only " + pages.size() + " pages, not " + currentPage + "!");
-
 		return pages.get(currentPage - 1);
 	}
 }
