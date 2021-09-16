@@ -44,11 +44,11 @@ public abstract class MenuPagged<T> extends Menu {
 	}
 
 	public MenuPagged(final Integer rows, final Iterable<T> pages) {
-		this(null, rows, rows * 6, pages);
+		this(null, rows, rows * 9, pages);
 	}
 
 	public MenuPagged(final Menu parent, final Integer rows, final Iterable<T> pages) {
-		this(parent, rows, rows * 6, pages);
+		this(parent, rows, rows * 9, pages);
 	}
 
 	public MenuPagged(final Menu parent, final Integer rows, final Integer itemsPerPage, final Iterable<T> pages) {
