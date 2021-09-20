@@ -62,17 +62,20 @@ public final class Common {
 	// ------------------------------------------------------------------------------------------------------------
 
 	/**
+	 * Pattern used to match colors with & or {@link ChatColor#COLOR_CHAR}
+	 */
+	private static final Pattern COLOR_AND_DECORATION_REGEX = Pattern.compile("(&|" + ChatColor.COLOR_CHAR + ")[0-9a-fk-orA-FK-OR]");
+
+	/**
 	 * Pattern used to match colors with #HEX code for MC 1.16+
 	 */
 	public static final Pattern RGB_HEX_COLOR_REGEX = Pattern.compile("(?<!\\\\)(&|)#((?:[0-9a-fA-F]{3}){1,2})");
+
 	/**
 	 * Pattern used to match colors with {#HEX} code for MC 1.16+
 	 */
 	public static final Pattern RGB_HEX_BRACKET_COLOR_REGEX = Pattern.compile("\\{#((?:[0-9a-fA-F]{3}){1,2})\\}");
-	/**
-	 * Pattern used to match colors with & or {@link ChatColor#COLOR_CHAR}
-	 */
-	private static final Pattern COLOR_AND_DECORATION_REGEX = Pattern.compile("(&|" + ChatColor.COLOR_CHAR + ")[0-9a-fk-orA-FK-OR]");
+
 	/**
 	 * Pattern used to match colors with #HEX code for MC 1.16+
 	 */

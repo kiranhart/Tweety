@@ -24,102 +24,127 @@ public final class CompChatColor {
 	 */
 	public static final char COLOR_CHAR = '\u00A7';
 	public static final String ALL_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
-	/**
-	 * Represents black.
-	 */
-	public static final CompChatColor BLACK = new CompChatColor('0', "black", new Color(0x000000));
-	/**
-	 * Represents dark blue.
-	 */
-	public static final CompChatColor DARK_BLUE = new CompChatColor('1', "dark_blue", new Color(0x0000AA));
-	/**
-	 * Represents dark green.
-	 */
-	public static final CompChatColor DARK_GREEN = new CompChatColor('2', "dark_green", new Color(0x00AA00));
-	/**
-	 * Represents dark blue (aqua).
-	 */
-	public static final CompChatColor DARK_AQUA = new CompChatColor('3', "dark_aqua", new Color(0x00AAAA));
-	/**
-	 * Represents dark red.
-	 */
-	public static final CompChatColor DARK_RED = new CompChatColor('4', "dark_red", new Color(0xAA0000));
-	/**
-	 * Represents dark purple.
-	 */
-	public static final CompChatColor DARK_PURPLE = new CompChatColor('5', "dark_purple", new Color(0xAA00AA));
-	/**
-	 * Represents gold.
-	 */
-	public static final CompChatColor GOLD = new CompChatColor('6', "gold", new Color(0xFFAA00));
-	/**
-	 * Represents gray.
-	 */
-	public static final CompChatColor GRAY = new CompChatColor('7', "gray", new Color(0xAAAAAA));
-	/**
-	 * Represents dark gray.
-	 */
-	public static final CompChatColor DARK_GRAY = new CompChatColor('8', "dark_gray", new Color(0x555555));
-	/**
-	 * Represents blue.
-	 */
-	public static final CompChatColor BLUE = new CompChatColor('9', "blue", new Color(0x05555FF));
-	/**
-	 * Represents green.
-	 */
-	public static final CompChatColor GREEN = new CompChatColor('a', "green", new Color(0x55FF55));
-	/**
-	 * Represents aqua.
-	 */
-	public static final CompChatColor AQUA = new CompChatColor('b', "aqua", new Color(0x55FFFF));
-	/**
-	 * Represents red.
-	 */
-	public static final CompChatColor RED = new CompChatColor('c', "red", new Color(0xFF5555));
-	/**
-	 * Represents light purple.
-	 */
-	public static final CompChatColor LIGHT_PURPLE = new CompChatColor('d', "light_purple", new Color(0xFF55FF));
-	/**
-	 * Represents yellow.
-	 */
-	public static final CompChatColor YELLOW = new CompChatColor('e', "yellow", new Color(0xFFFF55));
-	/**
-	 * Represents white.
-	 */
-	public static final CompChatColor WHITE = new CompChatColor('f', "white", new Color(0xFFFFFF));
-	/**
-	 * Represents magical characters that change around randomly.
-	 */
-	public static final CompChatColor MAGIC = new CompChatColor('k', "obfuscated");
-	/**
-	 * Makes the text bold.
-	 */
-	public static final CompChatColor BOLD = new CompChatColor('l', "bold");
-	/**
-	 * Makes a line appear through the text.
-	 */
-	public static final CompChatColor STRIKETHROUGH = new CompChatColor('m', "strikethrough");
-	/**
-	 * Makes the text appear underlined.
-	 */
-	public static final CompChatColor UNDERLINE = new CompChatColor('n', "underline");
-	/**
-	 * Makes the text italic.
-	 */
-	public static final CompChatColor ITALIC = new CompChatColor('o', "italic");
-	/**
-	 * Resets all previous chat colors or formats.
-	 */
-	public static final CompChatColor RESET = new CompChatColor('r', "reset");
+
 	/**
 	 * Colour instances keyed by their active character.
 	 */
 	private static final Map<Character, CompChatColor> BY_CHAR = new HashMap<>();
+
 	/**
 	 * Colour instances keyed by their name.
 	 */
 	private static final Map<String, CompChatColor> BY_NAME = new HashMap<>();
+
+	/**
+	 * Represents black.
+	 */
+	public static final CompChatColor BLACK = new CompChatColor('0', "black", new Color(0x000000));
+
+	/**
+	 * Represents dark blue.
+	 */
+	public static final CompChatColor DARK_BLUE = new CompChatColor('1', "dark_blue", new Color(0x0000AA));
+
+	/**
+	 * Represents dark green.
+	 */
+	public static final CompChatColor DARK_GREEN = new CompChatColor('2', "dark_green", new Color(0x00AA00));
+
+	/**
+	 * Represents dark blue (aqua).
+	 */
+	public static final CompChatColor DARK_AQUA = new CompChatColor('3', "dark_aqua", new Color(0x00AAAA));
+
+	/**
+	 * Represents dark red.
+	 */
+	public static final CompChatColor DARK_RED = new CompChatColor('4', "dark_red", new Color(0xAA0000));
+
+	/**
+	 * Represents dark purple.
+	 */
+	public static final CompChatColor DARK_PURPLE = new CompChatColor('5', "dark_purple", new Color(0xAA00AA));
+
+	/**
+	 * Represents gold.
+	 */
+	public static final CompChatColor GOLD = new CompChatColor('6', "gold", new Color(0xFFAA00));
+
+	/**
+	 * Represents gray.
+	 */
+	public static final CompChatColor GRAY = new CompChatColor('7', "gray", new Color(0xAAAAAA));
+
+	/**
+	 * Represents dark gray.
+	 */
+	public static final CompChatColor DARK_GRAY = new CompChatColor('8', "dark_gray", new Color(0x555555));
+
+	/**
+	 * Represents blue.
+	 */
+	public static final CompChatColor BLUE = new CompChatColor('9', "blue", new Color(0x05555FF));
+
+	/**
+	 * Represents green.
+	 */
+	public static final CompChatColor GREEN = new CompChatColor('a', "green", new Color(0x55FF55));
+
+	/**
+	 * Represents aqua.
+	 */
+	public static final CompChatColor AQUA = new CompChatColor('b', "aqua", new Color(0x55FFFF));
+
+	/**
+	 * Represents red.
+	 */
+	public static final CompChatColor RED = new CompChatColor('c', "red", new Color(0xFF5555));
+
+	/**
+	 * Represents light purple.
+	 */
+	public static final CompChatColor LIGHT_PURPLE = new CompChatColor('d', "light_purple", new Color(0xFF55FF));
+
+	/**
+	 * Represents yellow.
+	 */
+	public static final CompChatColor YELLOW = new CompChatColor('e', "yellow", new Color(0xFFFF55));
+
+	/**
+	 * Represents white.
+	 */
+	public static final CompChatColor WHITE = new CompChatColor('f', "white", new Color(0xFFFFFF));
+
+	/**
+	 * Represents magical characters that change around randomly.
+	 */
+	public static final CompChatColor MAGIC = new CompChatColor('k', "obfuscated");
+
+	/**
+	 * Makes the text bold.
+	 */
+	public static final CompChatColor BOLD = new CompChatColor('l', "bold");
+
+	/**
+	 * Makes a line appear through the text.
+	 */
+	public static final CompChatColor STRIKETHROUGH = new CompChatColor('m', "strikethrough");
+
+	/**
+	 * Makes the text appear underlined.
+	 */
+	public static final CompChatColor UNDERLINE = new CompChatColor('n', "underline");
+
+	/**
+	 * Makes the text italic.
+	 */
+	public static final CompChatColor ITALIC = new CompChatColor('o', "italic");
+
+	/**
+	 * Resets all previous chat colors or formats.
+	 */
+	public static final CompChatColor RESET = new CompChatColor('r', "reset");
+
 	/**
 	 * The code representing this color such as a, r, etc.
 	 */
@@ -161,6 +186,67 @@ public final class CompChatColor {
 		this.name = name;
 		this.color = new Color(rgb);
 		this.toString = toString;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 53 * hash + Objects.hashCode(this.toString);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+
+		return Objects.equals(this.toString, ((CompChatColor) obj).toString);
+	}
+
+	/**
+	 * Get the color code
+	 *
+	 * @return the code
+	 */
+	public char getCode() {
+		Valid.checkBoolean(code != '#', "Cannot retrieve color code for HEX colors");
+
+		return code;
+	}
+
+	/**
+	 * Return true if the color is HEX?
+	 *
+	 * @return
+	 */
+	public boolean isHex() {
+		return code == '#';
+	}
+
+	/**
+	 * Return the color's name such as red, or in case of hex color return
+	 * the code, colorized
+	 * @return
+	 */
+	public String toReadableString() {
+		return isHex() ? toString + "\\" + getName() : ItemUtil.bountify(getName());
+	}
+
+	/**
+	 * Return a string that can be used in saving yml files
+	 *
+	 * @return
+	 */
+	public String toSaveableString() {
+		return getName();
+	}
+
+	@Override
+	public String toString() {
+		return toString;
 	}
 
 	/**
@@ -259,66 +345,5 @@ public final class CompChatColor {
 	 */
 	public static List<CompChatColor> getDecorations() {
 		return Arrays.asList(MAGIC, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC);
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 53 * hash + Objects.hashCode(this.toString);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-
-		if (obj == null || getClass() != obj.getClass())
-			return false;
-
-		return Objects.equals(this.toString, ((CompChatColor) obj).toString);
-	}
-
-	/**
-	 * Get the color code
-	 *
-	 * @return the code
-	 */
-	public char getCode() {
-		Valid.checkBoolean(code != '#', "Cannot retrieve color code for HEX colors");
-
-		return code;
-	}
-
-	/**
-	 * Return true if the color is HEX?
-	 *
-	 * @return
-	 */
-	public boolean isHex() {
-		return code == '#';
-	}
-
-	/**
-	 * Return the color's name such as red, or in case of hex color return
-	 * the code, colorized
-	 * @return
-	 */
-	public String toReadableString() {
-		return isHex() ? toString + "\\" + getName() : ItemUtil.bountify(getName());
-	}
-
-	/**
-	 * Return a string that can be used in saving yml files
-	 *
-	 * @return
-	 */
-	public String toSaveableString() {
-		return getName();
-	}
-
-	@Override
-	public String toString() {
-		return toString;
 	}
 }
