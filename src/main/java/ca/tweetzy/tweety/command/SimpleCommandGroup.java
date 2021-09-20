@@ -244,7 +244,7 @@ public abstract class SimpleCommandGroup {
 
 	// Return the TM symbol in case we have it for kangarko's plugins
 	private String getTrademark() {
-		return SimplePlugin.getInstance().getDescription().getAuthors().contains("kangarko") ? getHeaderPrefix() + "&8\u2122" : "";
+		return SimplePlugin.getInstance().getDescription().getAuthors().contains("kiran") ? getHeaderPrefix() + "&8\u2122" : "";
 	}
 
 	/**
@@ -312,7 +312,15 @@ public abstract class SimpleCommandGroup {
 		return false;
 	}
 
+	protected boolean handleDynamicArgActions() {
+		return false;
+	}
+
 	protected void zeroArgActions(CommandSender commandSender) {
+
+	}
+
+	protected void dynamicArgActions(CommandSender commandSender, String arg) {
 
 	}
 
@@ -387,6 +395,8 @@ public abstract class SimpleCommandGroup {
 				tellSubcommandsHelp();
 
 			// Handle unknown argument
+			else if (handleDynamicArgActions())
+				dynamicArgActions(getSender(), argument);
 			else
 				returnInvalidArgs();
 		}
