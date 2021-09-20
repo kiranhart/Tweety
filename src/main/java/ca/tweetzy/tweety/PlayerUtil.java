@@ -22,6 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.jsonsimple.JSONObject;
 import ca.tweetzy.tweety.jsonsimple.JSONParser;
@@ -75,7 +76,7 @@ public final class PlayerUtil {
 	public static int getPing(final Player player) {
 		final Object entityPlayer = Remain.getHandleEntity(player);
 
-		return (int) ReflectionUtil.getFieldContent(entityPlayer, "ping");
+		return ReflectionUtil.getFieldContent(entityPlayer, "ping");
 	}
 
 	/**
@@ -193,7 +194,7 @@ public final class PlayerUtil {
 	// Read json file for the statistic
 	private static long getStatisticFile(final OfflinePlayer player, final Statistic statistic, final Material material, final EntityType entityType) {
 		final File worldFolder = new File(Bukkit.getServer().getWorlds().get(0).getWorldFolder(), "stats");
-		final File statFile = new File(worldFolder, player.getUniqueId().toString() + ".json");
+		final File statFile = new File(worldFolder, player.getUniqueId() + ".json");
 
 		if (statFile.exists())
 			try {
@@ -453,10 +454,11 @@ public final class PlayerUtil {
 		if (HookManager.isVanished(player))
 			return true;
 
-		if (player.hasMetadata("vanished"))
-			for (final MetadataValue meta : player.getMetadata("vanished"))
-				if (meta.asBoolean())
-					return true;
+		final List<MetadataValue> list = player.getMetadata("vanished");
+
+		for (final MetadataValue meta : list)
+			if (meta.asBoolean())
+				return true;
 
 		return false;
 	}
@@ -554,7 +556,7 @@ public final class PlayerUtil {
 		Valid.checkNotNull(oldTitle, "Old Title == null");
 
 		// Send the packet
-		updateInventoryTitle(player, MinecraftVersion.atLeast(MinecraftVersion.V.v1_13) ? temporaryTitle.replace("%", "%%") : temporaryTitle);
+		updateInventoryTitle(player, MinecraftVersion.atLeast(V.v1_13) ? temporaryTitle.replace("%", "%%") : temporaryTitle);
 
 		// Prevent flashing titles
 		BukkitTask pending = titleRestoreTasks.get(player.getUniqueId());
@@ -575,8 +577,7 @@ public final class PlayerUtil {
 
 		// Prevent overloading the map so remove the key afterwards
 		Common.runLater(duration + 1, () -> {
-			if (titleRestoreTasks.containsKey(uid))
-				titleRestoreTasks.remove(uid);
+			titleRestoreTasks.remove(uid);
 		});
 	}
 
@@ -637,8 +638,9 @@ public final class PlayerUtil {
 	 * @param material
 	 */
 	public static boolean takeFirstOnePiece(final Player player, final CompMaterial material) {
+
 		for (final ItemStack item : player.getInventory().getContents())
-			if (item != null && CompMaterial.fromLegacy(item.getType().toString(), item.getData().getData()) == material) {
+			if (item != null && material.is(item)) {
 				takeOnePiece(player, item);
 
 				return true;

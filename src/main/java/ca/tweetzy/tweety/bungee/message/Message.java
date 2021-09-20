@@ -2,7 +2,6 @@ package ca.tweetzy.tweety.bungee.message;
 
 import java.util.UUID;
 
-import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
@@ -87,7 +86,7 @@ abstract class Message {
 	protected final void setAction(String actionName) {
 		final BungeeAction action = BungeeAction.getByName(actionName);
 
-		Valid.checkNotNull(action, "Unknown action named: " + actionName + ". Available: " + Common.join(SimplePlugin.getInstance().getBungeeCord().getActions()));
+		Valid.checkNotNull(action, "Unknown plugin action named: " + actionName + ". IF YOU UPDATED THE PLUGIN BY RELOADING, you need to stop your entire network, ensure all servers were updated and start it again.");
 		setAction(action);
 	}
 

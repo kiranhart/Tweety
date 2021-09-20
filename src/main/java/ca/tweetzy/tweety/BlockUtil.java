@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
 
+import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 import lombok.*;
@@ -82,8 +83,7 @@ public final class BlockUtil {
 
 		if (locX >= x && locX <= x1 || locX <= x && locX >= x1)
 			if (locZ >= z && locZ <= z1 || locZ <= z && locZ >= z1)
-				if (locY >= y && locY <= y1 || locY <= y && locY >= y1)
-					return true;
+				return locY >= y && locY <= y1 || locY <= y && locY >= y1;
 
 		return false;
 	}
@@ -135,7 +135,7 @@ public final class BlockUtil {
 
 		for (int i = 0; i < bottomCorners.size(); i++) {
 			final VectorHelper p1 = bottomCorners.get(i);
-			final VectorHelper p2 = i + 1 < bottomCorners.size() ? (VectorHelper) bottomCorners.get(i + 1) : (VectorHelper) bottomCorners.get(0);
+			final VectorHelper p2 = i + 1 < bottomCorners.size() ? bottomCorners.get(i + 1) : bottomCorners.get(0);
 
 			final VectorHelper p3 = p1.add(0, height, 0);
 			final VectorHelper p4 = p2.add(0, height, 0);
@@ -442,8 +442,8 @@ public final class BlockUtil {
 	public static List<Block> getTreePartsUp(final Block treeBase) {
 		final Material baseMaterial = treeBase.getState().getType();
 
-		final String logType = MinecraftVersion.atLeast(MinecraftVersion.V.v1_13) ? baseMaterial.toString() : "LOG";
-		final String leaveType = MinecraftVersion.atLeast(MinecraftVersion.V.v1_13) ? logType.replace("_LOG", "") + "_LEAVES" : "LEAVES";
+		final String logType = MinecraftVersion.atLeast(V.v1_13) ? baseMaterial.toString() : "LOG";
+		final String leaveType = MinecraftVersion.atLeast(V.v1_13) ? logType.replace("_LOG", "") + "_LEAVES" : "LEAVES";
 
 		final Set<Block> treeParts = new HashSet<>();
 		final Set<Block> toSearch = new HashSet<>();
@@ -679,6 +679,9 @@ public final class BlockUtil {
 	 * Shoot the given block to the sky with the given velocity (maybe your arrow velocity?)
 	 * and can even make the block burn on impact. The shot block is set to air
 	 *
+	 * We adjust velocity a bit using random to add a bit for more realism, if you do not
+	 * want this, use {@link #spawnFallingBlock(Block, Vector)}
+	 *
 	 * @param block
 	 * @param velocity
 	 * @param burnOnFallChance from 0.0 to 1.0
@@ -688,7 +691,7 @@ public final class BlockUtil {
 		if (!canShootBlock(block))
 			return null;
 
-		final FallingBlock falling = Remain.spawnFallingBlock(block.getLocation(), block.getType());
+		final FallingBlock falling = Remain.spawnFallingBlock(block.getLocation().clone().add(0.5, 0, 0.5), block.getType());
 
 		{ // Set velocity to reflect the given velocity but change a bit for more realism
 			final double x = MathUtil.range(velocity.getX(), -2, 2) * 0.5D;
@@ -700,6 +703,28 @@ public final class BlockUtil {
 
 		if (RandomUtil.chanceD(burnOnFallChance) && block.getType().isBurnable())
 			scheduleBurnOnFall(falling);
+
+		// Prevent drop
+		falling.setDropItem(false);
+
+		// Remove the block
+		block.setType(Material.AIR);
+
+		return falling;
+	}
+
+	/**
+	 * Just spawns the falling block without adjusting its velocity
+	 *
+	 * @param block
+	 * @param velocity
+	 * @return
+	 */
+	public static FallingBlock spawnFallingBlock(final Block block, final Vector velocity) {
+		final FallingBlock falling = Remain.spawnFallingBlock(block.getLocation().clone().add(0.5, 0, 0.5), block.getType());
+
+		// Apply velocity
+		falling.setVelocity(velocity);
 
 		// Prevent drop
 		falling.setDropItem(false);
