@@ -2582,7 +2582,11 @@ public final class Remain {
 class SneakyThrow {
 
 	public static void sneaky(final Throwable t) {
-		throw SneakyThrow.superSneaky(t);
+		try {
+			throw SneakyThrow.superSneaky(t);
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		}
 	}
 
 	private static <T extends Throwable> T superSneaky(final Throwable t) throws T {
