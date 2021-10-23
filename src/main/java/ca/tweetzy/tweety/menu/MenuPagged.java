@@ -93,10 +93,10 @@ public abstract class MenuPagged<T> extends Menu {
 		final boolean hasPages = pages.size() > 1;
 
 		// Set previous button
-		prevButton = hasPages ? formPreviousButton() : Button.makeEmpty();
+		prevButton = hasPages ? formPreviousButton() : useBackground() ? Button.makeDummy(backgroundItem()) : Button.makeEmpty();
 
 		// Set next page button
-		nextButton = hasPages ? formNextButton() : Button.makeEmpty();
+		nextButton = hasPages ? formNextButton() : useBackground() ? Button.makeDummy(backgroundItem()) : Button.makeEmpty();
 	}
 
 	/**
@@ -200,7 +200,7 @@ public abstract class MenuPagged<T> extends Menu {
 	private String compileTitle0() {
 		final boolean canAddNumbers = addPageNumbers() && pages.size() > 1;
 
-		return getTitle() + (canAddNumbers ? " &8" + currentPage + "/" + pages.size() : "");
+		return getTitle().replace("{current_page}", "" + currentPage).replace("{max_pages}", "" + pages.size()) + (canAddNumbers ? " &8" + currentPage + "/" + pages.size() : "");
 	}
 
 	/**
