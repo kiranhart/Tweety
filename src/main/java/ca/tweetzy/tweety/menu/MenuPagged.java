@@ -215,10 +215,10 @@ public abstract class MenuPagged<T> extends Menu {
 		final boolean hasPages = pages.size() > 1;
 
 		// Set previous button
-		prevButton = hasPages ? formPreviousButton() : Button.makeEmpty();
+		prevButton = hasPages ? formPreviousButton() : Button.makeDummy(backgroundItem());
 
 		// Set next page button
-		nextButton = hasPages ? formNextButton() : Button.makeEmpty();
+		nextButton = hasPages ? formNextButton() : Button.makeDummy(backgroundItem());
 	}
 
 	/**
@@ -381,7 +381,11 @@ public abstract class MenuPagged<T> extends Menu {
 		if (slot == this.getNextButtonPosition())
 			return nextButton.getItem();
 
-		return null;
+		return backgroundItem();
+	}
+
+	protected ItemStack backgroundItem() {
+		return CompMaterial.BLACK_STAINED_GLASS_PANE.toItem();
 	}
 
 	/**
