@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ca.tweetzy.tweety.exception.TweetyException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -84,7 +85,7 @@ import ca.tweetzy.tweety.TimeUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.BoxedMessage;
 import ca.tweetzy.tweety.model.UUIDToNameConverter;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.internal.BossBarInternals;
@@ -1479,6 +1480,14 @@ public final class Remain {
 	@Deprecated
 	public static void updateInventoryTitle(final Player player, String title) {
 
+		// TODO Workaround
+		if (MinecraftVersion.atLeast(V.v1_18)) {
+			CompSound.SUCCESSFUL_HIT.play(player);
+			BoxedMessage.tell(player, title);
+
+			return;
+		}
+
 		try {
 			if (MinecraftVersion.atLeast(V.v1_17)) {
 				final Object nmsPlayer = Remain.getHandleEntity(player);
@@ -2350,7 +2359,7 @@ public final class Remain {
 				else if (MinecraftVersion.atLeast(V.v1_9))
 					item.setAmount(0);
 
-				// Explanation: For some weird reason there is a bug not removing 1 piece of ItemStack in 1.8.8
+					// Explanation: For some weird reason there is a bug not removing 1 piece of ItemStack in 1.8.8
 				else {
 					final ItemStack[] content = player.getInventory().getContents();
 

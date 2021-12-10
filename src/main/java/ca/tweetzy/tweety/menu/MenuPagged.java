@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,25 +36,33 @@ public abstract class MenuPagged<T> extends Menu {
 	@Getter
 	private final List<Integer> slots;
 
-	/**
-	 * The active page button material, used in buttons to previous/next pages
-	 * when they can be clicked (such as to go to the next/previous page)
-	 * <p>
-	 * Defaults to lime dye
-	 */
 	@Getter
 	@Setter
-	private static CompMaterial activePageButton = CompMaterial.LIME_DYE;
+	private static ItemStack nextPageButton = CompMaterial.ARROW.toItem();
 
-	/**
-	 * The inactive page button material, used in buttons to previous/next
-	 * pages when they cannot be clicked (i.e. on the first/last page)
-	 * <p>
-	 * Defaults to gray dye
-	 */
 	@Getter
 	@Setter
-	private static CompMaterial inactivePageButton = CompMaterial.GRAY_DYE;
+	private static ItemStack previousPageButton = CompMaterial.ARROW.toItem();
+
+	@Getter
+	@Setter
+	private static String nextPageButtonName = "&eNext Page";
+
+	@Getter
+	@Setter
+	private static String previousPageButtonName = "&ePrevious Page";
+
+	@Getter
+	@Setter
+	private static List<String> nextPageButtonLore = Collections.singletonList("&7Click to go to next page");
+
+	@Getter
+	@Setter
+	private static List<String> previousPageButtonLore = Collections.singletonList("&7Click to go back");
+
+	@Getter
+	@Setter
+	private static ItemStack inactivePageButton = CompMaterial.AIR.toItem();
 
 	/**
 	 * The pages by the page number, containing a list of items
@@ -236,7 +245,6 @@ public abstract class MenuPagged<T> extends Menu {
 			public void onClickedInMenu(final Player player, final Menu menu, final ClickType click) {
 				if (canGo) {
 					currentPage = MathUtil.range(currentPage - 1, 1, pages.size());
-
 					updatePage();
 				}
 			}
@@ -246,8 +254,9 @@ public abstract class MenuPagged<T> extends Menu {
 				final int previousPage = currentPage - 1;
 
 				return ItemCreator
-						.of(canGo ? activePageButton : inactivePageButton)
-						.name(previousPage == 0 ? SimpleLocalization.Menu.PAGE_FIRST : SimpleLocalization.Menu.PAGE_PREVIOUS.replace("{page}", String.valueOf(previousPage)))
+						.of(canGo ? previousPageButton : inactivePageButton)
+						.name(previousPage == 0 ? previousPageButtonName : previousPageButtonName.replace("{page}", String.valueOf(previousPage)))
+						.lore(previousPageButtonLore)
 						.make();
 			}
 		};
@@ -267,7 +276,6 @@ public abstract class MenuPagged<T> extends Menu {
 			public void onClickedInMenu(final Player player, final Menu menu, final ClickType click) {
 				if (canGo) {
 					currentPage = MathUtil.range(currentPage + 1, 1, pages.size());
-
 					updatePage();
 				}
 			}
@@ -277,15 +285,16 @@ public abstract class MenuPagged<T> extends Menu {
 				final boolean lastPage = currentPage == pages.size();
 
 				return ItemCreator
-						.of(canGo ? activePageButton : inactivePageButton)
-						.name(lastPage ? SimpleLocalization.Menu.PAGE_LAST : SimpleLocalization.Menu.PAGE_NEXT.replace("{page}", String.valueOf(currentPage + 1)))
+						.of(canGo ? nextPageButton : inactivePageButton)
+						.name(lastPage ? nextPageButtonName : nextPageButtonName.replace("{page}", String.valueOf(currentPage + 1)))
+						.lore(nextPageButtonLore)
 						.make();
 			}
 		};
 	}
 
 	// Reinits the menu and plays the anvil sound
-	private void updatePage() {
+	protected void updatePage() {
 		setButtons();
 		restartMenu();
 

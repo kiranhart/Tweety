@@ -13,6 +13,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import ca.tweetzy.tweety.model.BoxedMessage;
+import ca.tweetzy.tweety.remain.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -41,10 +43,6 @@ import ca.tweetzy.tweety.jsonsimple.JSONParser;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompAttribute;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.CompProperty;
-import ca.tweetzy.tweety.remain.Remain;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -584,6 +582,12 @@ public final class PlayerUtil {
 		Valid.checkNotNull(player, "Player == null");
 		Valid.checkNotNull(temporaryTitle, "Title == null");
 		Valid.checkNotNull(oldTitle, "Old Title == null");
+
+		if (MinecraftVersion.atLeast(V.v1_18)) {
+			CompSound.SUCCESSFUL_HIT.play(player);
+			BoxedMessage.tell(player, temporaryTitle);
+			return;
+		}
 
 		// Send the packet
 		updateInventoryTitle(player, MinecraftVersion.atLeast(V.v1_13) ? temporaryTitle.replace("%", "%%") : temporaryTitle);
