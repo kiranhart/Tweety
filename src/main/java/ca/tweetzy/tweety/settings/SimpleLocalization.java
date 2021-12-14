@@ -10,6 +10,9 @@ import ca.tweetzy.tweety.command.SimpleCommand;
 import ca.tweetzy.tweety.model.ChatPaginator;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A simple implementation of a basic localization file.
  * We create the localization/messages_LOCALEPREFIX.yml file
@@ -171,13 +174,13 @@ public class SimpleLocalization extends YamlStaticConfig {
 		public static String RELOAD_DESCRIPTION = "Reload the configuration.";
 		public static String RELOAD_STARTED = "Reloading plugin's data, please wait..";
 		public static String RELOAD_SUCCESS = "&6{plugin_name} {plugin_version} has been reloaded.";
-		public static String RELOAD_FILE_LOAD_ERROR = "&4Oups, &cthere was a problem loading files from your disk! See the console for more information. {plugin_name} has not been reloaded.";
-		public static String RELOAD_FAIL = "&4Oups, &creloading failed! See the console for more information. Error: {error}";
+		public static String RELOAD_FILE_LOAD_ERROR = "&cThere was a problem loading files from your disk! See the console for more information. {plugin_name} has not been reloaded.";
+		public static String RELOAD_FAIL = "&cReloading failed! See the console for more information. Error: {error}";
 
 		/**
 		 * The message shown when there is a fatal error running this command
 		 */
-		public static String ERROR = "&4&lOups! &cThe command failed :( Check the console and report the error.";
+		public static String ERROR = "&cThe command failed :( Check the console and report the error.";
 
 		/**
 		 * The message shown when player has no permissions to view ANY subcommands in group command.
@@ -533,8 +536,8 @@ public class SimpleLocalization extends YamlStaticConfig {
 		 */
 		public static String PAGE_PREVIOUS = "&8<< &fPage {page}";
 		public static String PAGE_NEXT = "Page {page} &8>>";
-		public static String PAGE_FIRST = "&7First Page";
-		public static String PAGE_LAST = "&7Last Page";
+		public static List<String> PAGE_PREVIOUS_LORE = Collections.singletonList("&7Click to go to page {page}");
+		public static List<String> PAGE_NEXT_LORE = Collections.singletonList("&7Click to go to page {page}");
 
 		/**
 		 * Keys related to menu titles and tooltips
@@ -565,11 +568,11 @@ public class SimpleLocalization extends YamlStaticConfig {
 			if (isSetDefault("Page_Next"))
 				PAGE_NEXT = getString("Page_Next");
 
-			if (isSetDefault("Page_First"))
-				PAGE_FIRST = getString("Page_First");
+			if (isSetDefault("Page_Previous_Lore"))
+				PAGE_PREVIOUS_LORE = getStringList("Page_Previous_Lore");
 
-			if (isSetDefault("Page_Last"))
-				PAGE_LAST = getString("Page_Last");
+			if (isSetDefault("Page_Next_Lore"))
+				PAGE_NEXT_LORE = getStringList("Page_Next_Lore");
 
 			if (isSetDefault("Title_Tools"))
 				TITLE_TOOLS = getString("Title_Tools");

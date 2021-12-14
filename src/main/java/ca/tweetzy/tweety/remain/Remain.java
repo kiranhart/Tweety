@@ -1,59 +1,35 @@
 package ca.tweetzy.tweety.remain;
 
-import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
-import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.exception.TweetyException;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
+import ca.tweetzy.tweety.model.UUIDToNameConverter;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.internal.BossBarInternals;
+import ca.tweetzy.tweety.remain.internal.ChatInternals;
+import ca.tweetzy.tweety.remain.nbt.NBTEntity;
+import ca.tweetzy.tweety.settings.SimpleYaml;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.*;
 import org.bukkit.Statistic.Type;
-import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -71,35 +47,22 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.EntityUtil;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.model.BoxedMessage;
-import ca.tweetzy.tweety.model.UUIDToNameConverter;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.internal.BossBarInternals;
-import ca.tweetzy.tweety.remain.internal.ChatInternals;
-import ca.tweetzy.tweety.remain.nbt.NBTEntity;
-import ca.tweetzy.tweety.settings.SimpleYaml;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
+import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
 
 /**
  * Our main cross-version compatibility class.
@@ -1480,16 +1443,11 @@ public final class Remain {
 	@Deprecated
 	public static void updateInventoryTitle(final Player player, String title) {
 
-		// TODO Workaround
-		if (MinecraftVersion.atLeast(V.v1_18)) {
-			CompSound.SUCCESSFUL_HIT.play(player);
-			BoxedMessage.tell(player, title);
-
-			return;
-		}
-
 		try {
-			if (MinecraftVersion.atLeast(V.v1_17)) {
+
+			if (MinecraftVersion.atLeast(V.v1_17) || MinecraftVersion.atLeast(V.v1_18)) {
+				final boolean is1_18 = MinecraftVersion.atLeast(V.v1_18);
+
 				final Object nmsPlayer = Remain.getHandleEntity(player);
 				final Object chatComponent = toIChatBaseComponentPlain(ChatColor.translateAlternateColorCodes('&', title));
 
@@ -1524,11 +1482,18 @@ public final class Remain {
 						container.getClass(),
 						ReflectionUtil.lookupClass("net.minecraft.network.chat.IChatBaseComponent"));
 
-				final Object activeContainer = ReflectionUtil.getFieldContent(nmsPlayer, "bV");
+				final Object activeContainer = ReflectionUtil.getFieldContent(nmsPlayer, is1_18 ? "bW" : "bV");
 				final int windowId = ReflectionUtil.getFieldContent(activeContainer, "j");
 
+				final Method method = is1_18 ? ReflectionUtil.getMethod(nmsPlayer.getClass(), "a", ReflectionUtil.lookupClass("net.minecraft.world.inventory.Container")) : null;
+
 				Remain.sendPacket(player, ReflectionUtil.instantiate(packetConstructor, windowId, container, chatComponent));
-				ReflectionUtil.invoke("initMenu", nmsPlayer, activeContainer);
+
+				if (is1_18)
+					ReflectionUtil.invoke(method, nmsPlayer, activeContainer);
+
+				else
+					ReflectionUtil.invoke("initMenu", nmsPlayer, activeContainer);
 
 				return;
 			}
@@ -1754,7 +1719,6 @@ public final class Remain {
 	 * Tries to find online player by uuid
 	 *
 	 * @param id
-	 *
 	 * @return null if offline or player
 	 */
 	public static Player getPlayerByUUID(final UUID id) {
@@ -1948,10 +1912,9 @@ public final class Remain {
 	 * Calls NMS to find out if the entity is invisible, works for any entity,
 	 * better than Bukkit since it has extreme downwards compatibility and does not require LivingEntity
 	 *
-	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
-	 *
 	 * @param entity
 	 * @return
+	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
 	 */
 	@Deprecated
 	public static boolean isInvisible(Entity entity) {
@@ -1973,7 +1936,6 @@ public final class Remain {
 	 *
 	 * @param entity
 	 * @param invisible
-	 *
 	 * @deprecated use {@link PlayerUtil#setVanished(Player, boolean)} to disable vanish for plugins also
 	 */
 	@Deprecated
@@ -2122,11 +2084,11 @@ public final class Remain {
 	/**
 	 * Send a "toast" notification to the given receivers. This is an advancement notification that cannot
 	 * be modified that much. It imposes a slight performance penalty the more players to send to.
-	 *
+	 * <p>
 	 * Each player sending is delayed by 0.1s
 	 *
 	 * @param receiver
-	 * @param message you can replace player-specific variables in the message here
+	 * @param message  you can replace player-specific variables in the message here
 	 * @param icon
 	 */
 	public static void sendToast(final List<Player> receivers, final Function<Player, String> message, final CompMaterial icon) {
@@ -2234,9 +2196,9 @@ public final class Remain {
 	/**
 	 * Return the player ping
 	 *
-	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 * @param player
 	 * @return
+	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 */
 	@Deprecated
 	public static int getPing(Player player) {
@@ -2284,7 +2246,7 @@ public final class Remain {
 
 			// If this fails, try getting the entity to which the projectile was attached,
 			// imperfect, but mostly works.
-			final double radius = 0.01;
+			final double radius = 0.5;
 
 			for (final Entity nearby : event.getEntity().getNearbyEntities(radius, radius, radius))
 				if (nearby instanceof LivingEntity)

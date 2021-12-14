@@ -8,6 +8,7 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.menu.button.Button;
 import ca.tweetzy.tweety.menu.model.InventoryDrawer;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.Getter;
@@ -46,19 +47,19 @@ public abstract class MenuPagged<T> extends Menu {
 
 	@Getter
 	@Setter
-	private static String nextPageButtonName = "&eNext Page";
+	private static String nextPageButtonName = SimpleLocalization.Menu.PAGE_NEXT;
 
 	@Getter
 	@Setter
-	private static String previousPageButtonName = "&ePrevious Page";
+	private static String previousPageButtonName = SimpleLocalization.Menu.PAGE_PREVIOUS;
 
 	@Getter
 	@Setter
-	private static List<String> nextPageButtonLore = Collections.singletonList("&7Click to go to next page");
+	private static List<String> nextPageButtonLore = SimpleLocalization.Menu.PAGE_NEXT_LORE;
 
 	@Getter
 	@Setter
-	private static List<String> previousPageButtonLore = Collections.singletonList("&7Click to go back");
+	private static List<String> previousPageButtonLore = SimpleLocalization.Menu.PAGE_PREVIOUS_LORE;
 
 	@Getter
 	@Setter
@@ -256,7 +257,7 @@ public abstract class MenuPagged<T> extends Menu {
 				return ItemCreator
 						.of(canGo ? previousPageButton : inactivePageButton)
 						.name(previousPage == 0 ? previousPageButtonName : previousPageButtonName.replace("{page}", String.valueOf(previousPage)))
-						.lore(previousPageButtonLore)
+						.lore(Replacer.replaceArray(previousPageButtonLore, "{page}", previousPage))
 						.make();
 			}
 		};
@@ -287,7 +288,7 @@ public abstract class MenuPagged<T> extends Menu {
 				return ItemCreator
 						.of(canGo ? nextPageButton : inactivePageButton)
 						.name(lastPage ? nextPageButtonName : nextPageButtonName.replace("{page}", String.valueOf(currentPage + 1)))
-						.lore(nextPageButtonLore)
+						.lore(Replacer.replaceArray(nextPageButtonLore, "{page}", String.valueOf(currentPage + 1)))
 						.make();
 			}
 		};
