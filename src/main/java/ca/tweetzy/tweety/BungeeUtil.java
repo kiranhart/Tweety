@@ -1,12 +1,5 @@
 package ca.tweetzy.tweety;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.util.UUID;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.MessageTooLargeException;
 import ca.tweetzy.tweety.Common.Stringer;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.bungee.BungeeListener;
@@ -15,13 +8,19 @@ import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
-
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.messaging.ChannelNotRegisteredException;
+import org.bukkit.plugin.messaging.MessageTooLargeException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.UUID;
 
 /**
  * Utility class for sending messages to BungeeCord.
@@ -158,6 +157,10 @@ public final class BungeeUtil {
 
 		try {
 			recipient.sendPluginMessage(SimplePlugin.getInstance(), channel, byteArray);
+
+		} catch (final ChannelNotRegisteredException ex) {
+			Common.log("Cannot send Bungee '" + action + "' message because channel '" + channel + "' is not registered. "
+					+ "Use @AutoRegister above your class extending BungeeListener and return its instance in getBungeeCord in your main plugin class.");
 
 		} catch (final MessageTooLargeException ex) {
 			Common.log("Outgoing bungee message '" + action + "' was oversized, not sending. Max length: 32766 bytes, got " + byteArray.length + " bytes.");
