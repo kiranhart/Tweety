@@ -1,5 +1,18 @@
 package ca.tweetzy.tweety.menu.model;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.bukkit.Material;
+import org.bukkit.SkullType;
+import org.bukkit.block.Block;
+import org.bukkit.block.Skull;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,20 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.UUID;
-
-import org.bukkit.Material;
-import org.bukkit.SkullType;
-import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.remain.Remain;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * A library for the Bukkit API to create player skulls
@@ -40,6 +39,7 @@ public class SkullCreator {
 
 	/**
 	 * Creates a player skull, should work in both legacy and new Bukkit APIs.
+	 * @return
 	 */
 	public static ItemStack createSkull() {
 		try {

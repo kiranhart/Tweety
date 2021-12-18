@@ -1,13 +1,13 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiFunction;
-
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.RandomUtil;
 import ca.tweetzy.tweety.Valid;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * A pretty specific class for picking up items for the player randomly,
@@ -56,7 +56,7 @@ public abstract class RandomNoRepeatPicker<T> {
 	}
 
 	/**
-	 * Randomly picks 1 item for the player using {@link #canObtain(Player, Object)} method
+	 * Randomly picks 1 item for the player using the canObtain method
 	 * NB: This also loads up the list
 	 *
 	 * @param items
@@ -81,7 +81,7 @@ public abstract class RandomNoRepeatPicker<T> {
 	}
 
 	/**
-	 * Picks randomly 1 item and evaluates it against {@link #canObtain(Player, Object)}
+	 * Picks randomly 1 item and evaluates it against the canObtain method
 	 * until we run out of items or find 1 that the player can acquire
 	 *
 	 * @param player
@@ -127,7 +127,6 @@ public abstract class RandomNoRepeatPicker<T> {
 	 * to check if the player can obtain the class
 	 *
 	 * @param <T>
-	 * @param pickedType
 	 * @param canObtain
 	 * @return
 	 */

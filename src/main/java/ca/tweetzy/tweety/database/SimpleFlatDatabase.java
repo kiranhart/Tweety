@@ -1,24 +1,23 @@
 package ca.tweetzy.tweety.database;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.debug.LagCatcher;
 import ca.tweetzy.tweety.settings.SimpleSettings;
-
 import lombok.NonNull;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a simple database where values are flattened and stored
- * by {@link UUID} from the given {@link Identifiable} interface.
+ * by {@link UUID}.
  * <p>
  * The table structure is as follows:
  * <p>
@@ -27,10 +26,9 @@ import lombok.NonNull;
  * Player's uuid    | Last known name | {json data}    | Date of last save call
  * <p>
  * We use JSON to flatten those values and provide convenience methods
- * {@link #onLoad(SerializedMap, Identifiable)} and {@link #onSave(Identifiable)}
- * for you to override so that you can easily save/load data to MySQL.
+ * onLoad and onSave for you to override so that you can easily save/load data to MySQL.
  * <p>
- * Also see {@link #getExpirationDays()}, by default we remove values not touched
+ * Also see getExpirationDays(), by default we remove values not touched
  * within the last 90 days.
  * <p>
  * For a less-restricting solution see {@link SimpleDatabase} however you will
@@ -39,7 +37,7 @@ import lombok.NonNull;
  *
  * @param <T> the model you use to load/save entries, such as your player cache
  */
-public abstract class SimpleFlatDatabase<T> extends SimpleDatabase {
+public abstract class SimpleFlatDatabase<T> extends ca.tweetzy.tweety.database.SimpleDatabase {
 
 	/**
 	 * An internal flag to prevent dead lock so that we do not call any

@@ -1,24 +1,5 @@
 package ca.tweetzy.tweety.collection;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-import org.bukkit.Location;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.SerializeUtil;
@@ -30,12 +11,22 @@ import ca.tweetzy.tweety.model.IsInList;
 import ca.tweetzy.tweety.model.Tuple;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.LongSerializationPolicy;
-
 import lombok.NonNull;
+import org.bukkit.Location;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Serialized map enables you to save and retain values from your
@@ -108,6 +99,9 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * @see Map#containsKey(Object)
+	 *
+	 * @param key
+	 * @return
 	 */
 	public boolean containsKey(final String key) {
 		return map.containsKey(key);
@@ -117,6 +111,7 @@ public final class SerializedMap extends StrictCollection {
 	 * Puts a key:value pair into the map only if the values are not null
 	 *
 	 * @param associativeArray
+	 * @return
 	 */
 	public SerializedMap putArray(final Object... associativeArray) {
 		boolean string = true;
@@ -141,6 +136,7 @@ public final class SerializedMap extends StrictCollection {
 	 * Add another map to this map
 	 *
 	 * @param anotherMap
+	 * @return this
 	 */
 	public SerializedMap put(@NonNull SerializedMap anotherMap) {
 		map.putAll(anotherMap.asMap());
@@ -182,8 +178,8 @@ public final class SerializedMap extends StrictCollection {
 		if (value != null && !value.isEmpty())
 			put(key, value);
 
-		// This value is undesirable to save if null, so if YamlConfig is used
-		// it will remove it from the config
+			// This value is undesirable to save if null, so if YamlConfig is used
+			// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
@@ -200,8 +196,8 @@ public final class SerializedMap extends StrictCollection {
 		if (value != null && !value.isEmpty())
 			put(key, value);
 
-		// This value is undesirable to save if null, so if YamlConfig is used
-		// it will remove it from the config
+			// This value is undesirable to save if null, so if YamlConfig is used
+			// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
@@ -218,8 +214,8 @@ public final class SerializedMap extends StrictCollection {
 		if (value)
 			put(key, value);
 
-		// This value is undesirable to save if null, so if YamlConfig is used
-		// it will remove it from the config
+			// This value is undesirable to save if null, so if YamlConfig is used
+			// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
@@ -236,8 +232,8 @@ public final class SerializedMap extends StrictCollection {
 		if (value != null)
 			put(key, value);
 
-		// This value is undesirable to save if null, so if YamlConfig is used
-		// it will remove it from the config
+			// This value is undesirable to save if null, so if YamlConfig is used
+			// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
@@ -591,6 +587,8 @@ public final class SerializedMap extends StrictCollection {
 	 * @param <K>
 	 * @param <V>
 	 * @param key
+	 * @param keyType
+	 * @param valueType
 	 * @return
 	 */
 	public <K, V> Tuple<K, V> getTuple(final String key, Class<K> keyType, Class<V> valueType) {
@@ -600,8 +598,12 @@ public final class SerializedMap extends StrictCollection {
 	/**
 	 * Return a tuple or default
 	 *
+	 * @param <K>
+	 * @param <V>
 	 * @param key
 	 * @param def
+	 * @param keyType
+	 * @param valueType
 	 * @return
 	 */
 	public <K, V> Tuple<K, V> getTuple(final String key, final Tuple<K, V> def, Class<K> keyType, Class<V> valueType) {
@@ -730,7 +732,6 @@ public final class SerializedMap extends StrictCollection {
 	 * @param path
 	 * @param keyType
 	 * @param valueType
-	 * @param valueParameter
 	 * @return
 	 */
 	public <Key, Value> LinkedHashMap<Key, Value> getMap(@NonNull String path, final Class<Key> keyType, final Class<Value> valueType) {
@@ -868,15 +869,17 @@ public final class SerializedMap extends StrictCollection {
 	 * @return
 	 */
 	public Object getValueIgnoreCase(final String key) {
-		for (final Entry<String, Object> e : map.entrySet())
-			if (e.getKey().equalsIgnoreCase(key))
-				return e.getValue();
+		for (final Entry<String, Object> entry : map.entrySet())
+			if (entry.getKey().equalsIgnoreCase(key))
+				return entry.getValue();
 
 		return null;
 	}
 
 	/**
 	 * @see Map#forEach(BiConsumer)
+	 *
+	 * @param consumer
 	 */
 	public void forEach(final BiConsumer<String, Object> consumer) {
 		for (final Entry<String, Object> e : map.entrySet())
@@ -894,6 +897,8 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * @see Map#keySet()
+	 *
+	 * @return
 	 */
 	public Set<String> keySet() {
 		return map.keySet();
@@ -901,6 +906,8 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * @see Map#values()
+	 *
+	 * @return
 	 */
 	public Collection<Object> values() {
 		return map.values();
@@ -908,6 +915,8 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * @see Map#entrySet()
+	 *
+	 * @return
 	 */
 	public Set<Entry<String, Object>> entrySet() {
 		return map.entrySet();
@@ -915,6 +924,8 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * @see Map#size()
+	 *
+	 * @return
 	 */
 	public int size() {
 		return map.size();
@@ -957,6 +968,8 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * @see Map#isEmpty()
+	 *
+	 * @return
 	 */
 	public boolean isEmpty() {
 		return map.isEmpty();
@@ -1079,7 +1092,7 @@ public final class SerializedMap extends StrictCollection {
 				return SerializedMap.of((Map<String, Object>) firstArgument);
 
 			if (firstArgument instanceof StrictMap)
-				return of(((StrictMap<String, Object>) firstArgument).getSource());
+				return SerializedMap.of(((StrictMap<String, Object>) firstArgument).getSource());
 		}
 
 		final SerializedMap map = new SerializedMap();

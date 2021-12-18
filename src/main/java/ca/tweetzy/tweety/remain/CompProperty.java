@@ -1,20 +1,19 @@
 package ca.tweetzy.tweety.remain;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.meta.ItemMeta;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.nbt.NBTEntity;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A convenience class for applying "properies" to certain Bukkit classes
@@ -71,11 +70,11 @@ public enum CompProperty {
 	 */
 	private final Class<?> setterMethodType;
 
-	private Map<Class<?>, Boolean> isAvailable = new HashMap<>();
-	private Map<Class<?>, Method> cachedMethods = new HashMap<>();
+	private final Map<Class<?>, Boolean> isAvailable = new HashMap<>();
+	private final Map<Class<?>, Method> cachedMethods = new HashMap<>();
 
 	/**
-	 * Apply the property to the entity. Class must be compatible with {@link #requiredClass}
+	 * Apply the property to the entity. Class must be compatible with the {@link #getRequiredClass()} of this property.
 	 * <p>
 	 * Example: SILENT.apply(myZombieEntity, true)
 	 *
@@ -143,7 +142,7 @@ public enum CompProperty {
 	}
 
 	/**
-	 * Can this property be used on this server for the given class? Class must be compatible with {@link #requiredClass}
+	 * Can this property be used on this server for the given class? Class must be compatible with {@link #getRequiredClass()}
 	 * <p>
 	 * Class is for example {@link Entity}
 	 *

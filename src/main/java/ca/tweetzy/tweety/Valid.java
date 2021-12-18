@@ -1,22 +1,17 @@
 package ca.tweetzy.tweety;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Pattern;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.util.Vector;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.RangedValue;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.experimental.UtilityClass;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.util.Vector;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for checking conditions and throwing our safe exception that is
@@ -75,6 +70,7 @@ public final class Valid {
 	 *
 	 * @param expression
 	 * @param falseMessage
+	 * @param replacements
 	 */
 	public void checkBoolean(final boolean expression, final String falseMessage, final Object... replacements) {
 		if (!expression)
@@ -86,6 +82,7 @@ public final class Valid {
 	 *
 	 * @param toCheck
 	 * @param falseMessage
+	 * @param replacements
 	 */
 	public void checkInteger(final String toCheck, final String falseMessage, final Object... replacements) {
 		if (!Valid.isInteger(toCheck))
@@ -107,7 +104,7 @@ public final class Valid {
 	 * Throw an error if the given message is empty or null
 	 *
 	 * @param message
-	 * @param message
+	 * @param emptyMessage
 	 */
 	public void checkNotEmpty(final String message, final String emptyMessage) {
 		if (message == null || message.length() == 0)
@@ -123,8 +120,8 @@ public final class Valid {
 	 * @return
 	 */
 	public boolean checkPermission(final CommandSender sender, final String permission) {
-		if (!PlayerUtil.hasPerm(sender, permission)) {
-			Common.tell(sender, SimpleLocalization.NO_PERMISSION.replace("{permission}", permission));
+		if (!ca.tweetzy.tweety.PlayerUtil.hasPerm(sender, permission)) {
+			ca.tweetzy.tweety.Common.tell(sender, SimpleLocalization.NO_PERMISSION.replace("{permission}", permission));
 
 			return false;
 		}
@@ -331,8 +328,8 @@ public final class Valid {
 	 * Compare two lists. Two lists are considered equal if they are same length and all values are the same.
 	 * Exception: Strings are stripped of colors before comparation.
 	 *
-	 * @param first,  first list to compare
-	 * @param second, second list to compare with
+	 * @param first first list to compare
+	 * @param second second list to compare with
 	 * @return true if lists are equal
 	 */
 	public <T> boolean listEquals(final List<T> first, final List<T> second) {
@@ -359,7 +356,7 @@ public final class Valid {
 				return false;
 
 			if (f != null && !f.equals(s))
-				if (!Common.stripColors(f.toString()).equalsIgnoreCase(Common.stripColors(s.toString())))
+				if (!ca.tweetzy.tweety.Common.stripColors(f.toString()).equalsIgnoreCase(ca.tweetzy.tweety.Common.stripColors(s.toString())))
 					return false;
 		}
 
@@ -374,7 +371,7 @@ public final class Valid {
 	 * @return
 	 */
 	public boolean colorlessEquals(final String first, final String second) {
-		return Common.stripColors(first).equalsIgnoreCase(Common.stripColors(second));
+		return ca.tweetzy.tweety.Common.stripColors(first).equalsIgnoreCase(ca.tweetzy.tweety.Common.stripColors(second));
 	}
 
 	/**
@@ -385,7 +382,7 @@ public final class Valid {
 	 * @return
 	 */
 	public boolean colorlessEquals(final List<String> first, final List<String> second) {
-		return colorlessEquals(Common.toArray(first), Common.toArray(second));
+		return colorlessEquals(ca.tweetzy.tweety.Common.toArray(first), ca.tweetzy.tweety.Common.toArray(second));
 	}
 
 	/**
@@ -397,8 +394,8 @@ public final class Valid {
 	 */
 	public boolean colorlessEquals(final String[] firstArray, final String[] secondArray) {
 		for (int i = 0; i < firstArray.length; i++) {
-			final String first = Common.stripColors(firstArray[i]);
-			final String second = i < secondArray.length ? Common.stripColors(secondArray[i]) : "";
+			final String first = ca.tweetzy.tweety.Common.stripColors(firstArray[i]);
+			final String second = i < secondArray.length ? ca.tweetzy.tweety.Common.stripColors(secondArray[i]) : "";
 
 			if (!first.equalsIgnoreCase(second))
 				return false;
@@ -501,7 +498,7 @@ public final class Valid {
 	public boolean isInListRegex(final String element, final Iterable<String> list) {
 		try {
 			for (final String regex : list)
-				if (Common.regExMatch(regex, element))
+				if (ca.tweetzy.tweety.Common.regExMatch(regex, element))
 					return true;
 
 		} catch (final ClassCastException ex) { // for example when YAML translates "yes" to "true" to boolean (!) (#wontfix)

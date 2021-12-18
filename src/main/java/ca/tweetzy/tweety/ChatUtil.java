@@ -1,22 +1,21 @@
 package ca.tweetzy.tweety;
 
-import java.awt.Color;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.model.Whiteblacklist;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
+
+import java.awt.*;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.model.Whiteblacklist;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Utility class for managing in-game chat.
@@ -63,7 +62,6 @@ public final class ChatUtil {
 	 *
 	 * @param message
 	 * @param space
-	 * @param spaceColor
 	 * @return
 	 */
 	public static String center(final String message, final char space) {
@@ -154,8 +152,7 @@ public final class ChatUtil {
 		for (int i = 0; i < padding; i++)
 			lines.add(RandomUtil.nextColorOrDecoration());
 
-		for (final String message : messages)
-			lines.add(message);
+		lines.addAll(messages);
 
 		for (int i = 0; i < padding; i++)
 			lines.add(RandomUtil.nextColorOrDecoration());
@@ -350,7 +347,7 @@ public final class ChatUtil {
 	 * How many big letters the message has.
 	 *
 	 * @param message the message to check
-	 * @param ignored the list of strings to ignore (whitelist)
+	 * @param list the list of strings to ignore (whitelist)
 	 *
 	 * @return how many big letters are in message
 	 */

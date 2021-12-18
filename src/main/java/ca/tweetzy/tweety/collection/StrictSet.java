@@ -1,20 +1,21 @@
 package ca.tweetzy.tweety.collection;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.SerializeUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.exception.TweetyException;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.exception.TweetyException;
-
 /**
  * Strict set that only allows to remove elements that are contained within, or add elements that are not.
  * <p>
  * Failing to do so results in an error, with optional error message.
+ * @param <E>
  */
 public final class StrictSet<E> extends StrictCollection implements Iterable<E> {
 

@@ -1,11 +1,11 @@
 package ca.tweetzy.tweety.slider;
 
-import org.bukkit.ChatColor;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
-
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.ChatColor;
 
 /**
  * A colored text slider takes in a string and then applies
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
  *
  * Example use: Animated scoreboards, menu titles, etc.
  */
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColoredTextSlider implements Slider<String> {
 
@@ -44,7 +45,7 @@ public final class ColoredTextSlider implements Slider<String> {
 
 	/**
 	 * Set the amount of letters of the text we apply
-	 * {@link #secondaryColor} to.
+	 * {@link #getSecondaryColor()} to.
 	 *
 	 * @param width
 	 * @return

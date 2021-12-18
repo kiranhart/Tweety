@@ -1,14 +1,10 @@
 package ca.tweetzy.tweety;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-
-import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.Remain;
+import com.google.common.collect.Sets;
+import lombok.*;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,17 +14,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.util.Vector;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.Remain;
 
-import com.google.common.collect.Sets;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for block manipulation.
@@ -380,11 +369,10 @@ public final class BlockUtil {
 	/**
 	 * Get all the blocks in a specific area centered around the Location passed in
 	 *
-	 * @param loc    Center of the search area
-	 * @param height how many blocks up to check
-	 * @param radius of the search (cubic search radius)
-	 * @param type   of Material to search for
-	 * @return all the Block with the given Type in the specified radius
+	 * @param loc
+	 * @param height
+	 * @param radius
+	 * @return
 	 */
 	public static List<Block> getBlocks(final Location loc, final int height, final int radius) {
 		final List<Block> blocks = new ArrayList<>();
@@ -442,12 +430,10 @@ public final class BlockUtil {
 	}
 
 	/**
-	 * Return all leaves/logs upwards connected to that given tree block
-	 * <p>
-	 * Parts are sorted according to their Y coordinate from lowest to highest
+	 * Return all leaves/logs upwards connected to that given tree block.
+	 * Parts are sorted according to their Y coordinate from lowest to highest.
 	 *
-	 * @param block
-	 * @param includeLeaves
+	 * @param treeBase
 	 * @return
 	 */
 	public static List<Block> getTreePartsUp(final Block treeBase) {
@@ -495,10 +481,10 @@ public final class BlockUtil {
 
 	/**
 	 * Returns true whether the given block is a "LOG" type and we perform a search
-	 * down to the bottom most connected block to find if that stands onto {@link #TREE_GROUND_BLOCKS}
+	 * down to the bottom most connected block to find if that stands on tree ground blocks.
 	 *
 	 * @param treeBaseBlock
-	 * @return if the bottom most connected block to the given block stays on {@link #TREE_GROUND_BLOCKS}
+	 * @return
 	 */
 	public static boolean isLogOnGround(Block treeBaseBlock) {
 		// Validates the block passed in is actually a log
@@ -628,9 +614,9 @@ public final class BlockUtil {
 	 * Scans the location from top to bottom to find the highest Y non-air coordinate that matches
 	 * the given predicate.
 	 *
-	 * @param world
+	 * @param location
 	 * @param predicate
-	 * @return the y coordinate, or -1 if not found
+	 * @return
 	 */
 	public static int findHighestBlock(final Location location, final Predicate<Material> predicate) {
 		return findHighestBlock(location.getWorld(), location.getBlockX(), location.getBlockZ(), predicate);

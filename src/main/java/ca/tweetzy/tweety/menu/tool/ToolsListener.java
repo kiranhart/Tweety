@@ -1,9 +1,13 @@
 package ca.tweetzy.tweety.menu.tool;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.event.RocketExplosionEvent;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
+import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EnderPearl;
@@ -18,15 +22,10 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.event.RocketExplosionEvent;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
 
-import lombok.Data;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * The event listener class responsible for firing events in tools
@@ -124,6 +123,7 @@ public final class ToolsListener implements Listener {
 
 	/**
 	 * Handles hotbar focus/defocus for tools
+	 * @param event
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onHeltItem(final PlayerItemHeldEvent event) {
@@ -255,7 +255,7 @@ public final class ToolsListener implements Listener {
 		final ShotRocket shot = shotRockets.remove(projectile.getUniqueId());
 
 		if (shot != null) {
-			final Rocket rocket = shot.getRocket();
+			final ca.tweetzy.tweety.menu.tool.Rocket rocket = shot.getRocket();
 			final Player shooter = shot.getShooter();
 
 			try {

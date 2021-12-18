@@ -1,11 +1,5 @@
 package ca.tweetzy.tweety.bungee.message;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-import ca.tweetzy.tweety.CompressUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.bungee.BungeeListener;
@@ -13,9 +7,13 @@ import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
-
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * NB: This uses the standardized Tweety model where the first
@@ -70,7 +68,7 @@ public final class OutgoingMessage extends Message {
 	 */
 	public void writeString(String... messages) {
 		for (final String message : messages)
-			write(CompressUtil.compressB64(message), String.class);
+			write(message, String.class);
 	}
 
 	/**
@@ -165,7 +163,7 @@ public final class OutgoingMessage extends Message {
 	/**
 	 * Send this message with the current data for the given player!
 	 *
-	 * @param connection
+	 * @param player
 	 */
 	public void send(Player player) {
 		player.sendPluginMessage(SimplePlugin.getInstance(), getChannel(), compileData());

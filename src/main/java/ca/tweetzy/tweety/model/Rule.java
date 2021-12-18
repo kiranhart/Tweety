@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.model;
 
-import java.io.File;
-
 import ca.tweetzy.tweety.Common;
+
+import java.io.File;
 
 public interface Rule {
 

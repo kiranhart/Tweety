@@ -1,25 +1,14 @@
 package ca.tweetzy.tweety;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import javax.annotation.Nullable;
-
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
@@ -28,16 +17,17 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.SneakyThrows;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Utility class for various reflection methods
@@ -67,6 +57,7 @@ public final class ReflectionUtil {
 	 */
 	private static final Map<String, Class<?>> classCache = new ConcurrentHashMap<>();
 	private static final Map<Class<?>, ReflectionData<?>> reflectionDataCache = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Method[]> methodCache = new ConcurrentHashMap<>();
 	private static final Collection<String> classNameGuard = ConcurrentHashMap.newKeySet();
 
 	/**
@@ -146,6 +137,9 @@ public final class ReflectionUtil {
 	/**
 	 * Return a constructor for the given class
 	 *
+	 * @param clazz
+	 * @param params
+	 * @return
 	 */
 	public static Constructor<?> getConstructor(@NonNull final Class<?> clazz, final Class<?>... params) {
 		try {
@@ -239,6 +233,9 @@ public final class ReflectionUtil {
 	/**
 	 * Gets the declared field in class by its name
 	 *
+	 * @param clazz
+	 * @param fieldName
+	 * @return
 	 */
 	public static Field getDeclaredField(final Class<?> clazz, final String fieldName) {
 		try {
@@ -315,7 +312,15 @@ public final class ReflectionUtil {
 	 * @return
 	 */
 	public static Method getMethod(final Class<?> clazz, final String methodName, final Class<?>... args) {
-		for (final Method method : clazz.getMethods())
+		try {
+			final Method method = clazz.getMethod(methodName, args);
+			method.setAccessible(true);
+			return method;
+		} catch (final NoSuchMethodException e) {
+		}
+
+		final Method[] methods = methodCache.computeIfAbsent(clazz, k -> clazz.getMethods());
+		for (final Method method : methods)
 			if (method.getName().equals(methodName) && isClassListEqual(args, method.getParameterTypes())) {
 				method.setAccessible(true);
 
@@ -358,6 +363,10 @@ public final class ReflectionUtil {
 	/**
 	 * Get a declared class method
 	 *
+	 * @param clazz
+	 * @param methodName
+	 * @param args
+	 * @return
 	 */
 	public static Method getDeclaredMethod(Class<?> clazz, final String methodName, Class<?>... args) {
 		final Class<?> originalClass = clazz;
@@ -385,6 +394,7 @@ public final class ReflectionUtil {
 	 * Invoke a static method
 	 *
 	 * @param <T>
+	 * @param cl
 	 * @param methodName
 	 * @param params
 	 * @return
@@ -559,8 +569,9 @@ public final class ReflectionUtil {
 
 	/**
 	 * Wrapper for Class.forName
-	 * @param <T>
 	 *
+	 * @param <T>
+	 * @param path
 	 * @return
 	 */
 	public static <T> Class<T> lookupClass(final String path) {
@@ -834,17 +845,13 @@ public final class ReflectionUtil {
 	/**
 	 * Return a tree set of classes from the plugin that extend the given class
 	 *
-	 * @param <T>
-	 * @param <T>
 	 * @param plugin
-	 * @param extendingClass
 	 * @return
 	 */
 	public static List<Class<?>> getClasses(final Plugin plugin) {
 		final List<Class<?>> found = new ArrayList<>();
 
-		for (final Class<?> clazz : getClasses(plugin, null))
-			found.add(clazz);
+		found.addAll(getClasses(plugin, null));
 
 		return found;
 	}
@@ -852,7 +859,9 @@ public final class ReflectionUtil {
 	/**
 	 * Get all classes in the java plugin
 	 *
+	 * @param <T>
 	 * @param plugin
+	 * @param extendingClass
 	 * @return
 	 */
 	@SneakyThrows
@@ -1051,16 +1060,16 @@ public final class ReflectionUtil {
 		/*public Method getDeclaredMethod(final String name, final Class<?>... paramTypes) throws NoSuchMethodException {
 			if (methodCache.containsKey(name)) {
 				final Collection<Method> methods = methodCache.get(name);
-		
+
 				for (final Method method : methods)
 					if (Arrays.equals(paramTypes, method.getParameterTypes()))
 						return method;
 			}
-		
+
 			final Method method = clazz.getDeclaredMethod(name, paramTypes);
-		
+
 			cacheMethod(method);
-		
+
 			return method;
 		}*/
 

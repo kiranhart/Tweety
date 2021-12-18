@@ -1,39 +1,28 @@
 package ca.tweetzy.tweety.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.debug.Debugger;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.RandomUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.remain.Remain;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
 /**
  * Represents a simple MySQL database
  * <p>
  * Before running queries make sure to call connect() methods.
  * <p>
- * You can also override {@link #onConnected()} to run your code after the
+ * You can also override onConnected() to run your code after the
  * connection has been established.
  * <p>
  * To use this class you must know the MySQL command syntax!

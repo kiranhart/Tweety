@@ -1,25 +1,25 @@
 package ca.tweetzy.tweety;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictList;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.debug.Debugger;
+import ca.tweetzy.tweety.exception.RegexTimeoutException;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.DiscordSender;
+import ca.tweetzy.tweety.model.HookManager;
+import ca.tweetzy.tweety.model.Replacer;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
+import ca.tweetzy.tweety.settings.SimpleSettings;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,27 +39,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.exception.RegexTimeoutException;
-import ca.tweetzy.tweety.model.DiscordSender;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.Replacer;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
-import ca.tweetzy.tweety.settings.SimpleSettings;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import net.md_5.bungee.api.chat.TextComponent;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Our main utility class hosting a large variety of different convenience functions
@@ -196,7 +185,7 @@ public final class Common {
 	/**
 	 * Broadcast the message to everyone and logs it
 	 *
-	 * @param message
+	 * @param messages
 	 */
 	public static void broadcast(final String... messages) {
 		if (!Valid.isNullOrEmpty(messages))
@@ -265,10 +254,8 @@ public final class Common {
 	 * Sends a message to the player and saves the time when it was sent.
 	 * The delay in seconds is the delay between which we won't send player the
 	 * same message, in case you call this method again.
-	 * <p>
+	 *
 	 * Does not prepend the message with {@link #getTellPrefix()}
-	 * <p>
-	 * See {@link #TIMED_TELL_CACHE} for more explanation.
 	 *
 	 * @param delaySeconds
 	 * @param sender
@@ -287,8 +274,6 @@ public final class Common {
 	 * Sends a message to the player and saves the time when it was sent.
 	 * The delay in seconds is the delay between which we won't send player the
 	 * same message, in case you call this method again.
-	 * <p>
-	 * See {@link #TIMED_TELL_CACHE} for more explanation.
 	 *
 	 * @param delaySeconds
 	 * @param sender
@@ -512,7 +497,7 @@ public final class Common {
 	}
 
 	/**
-	 * Return the sender's name if it's a player or discord sender, or simply {@link SimplePlugin#getConsoleName()} if it is a console
+	 * Return the sender's name if it's a player or discord sender, or simply {@link SimpleLocalization#CONSOLE_NAME} if it is a console
 	 *
 	 * @param sender
 	 * @return
@@ -557,7 +542,7 @@ public final class Common {
 	}
 
 	/**
-	 * Replace the & letter with the {@link org.bukkit.CompChatColor.COLOR_CHAR} in the message.
+	 * Replace the & letter with the {@link CompChatColor#COLOR_CHAR} in the message.
 	 *
 	 * @param messages the messages to replace color codes with '&'
 	 * @return the colored message
@@ -567,7 +552,7 @@ public final class Common {
 	}
 
 	/**
-	 * Replace the & letter with the {@link org.bukkit.CompChatColor.COLOR_CHAR} in the message.
+	 * Replace the & letter with the {@link CompChatColor#COLOR_CHAR} in the message.
 	 *
 	 * @param messages the messages to replace color codes with '&'
 	 * @return the colored message
@@ -581,9 +566,9 @@ public final class Common {
 	}
 
 	/**
-	 * Replace the & letter with the {@link org.bukkit.CompChatColor.COLOR_CHAR} in the message.
+	 * Replace the & letter with the {@link CompChatColor#COLOR_CHAR} in the message.
 	 * <p>
-	 * Also replaces {prefix} with {@link #getTellPrefix()} and {server} with {@link SimplePlugin#getServerPrefix()}
+	 * Also replaces {prefix} with {@link #getTellPrefix()} and {server} with {@link SimpleLocalization#SERVER_PREFIX}
 	 *
 	 * @param message the message to replace color codes with '&'
 	 * @return the colored message
@@ -715,7 +700,7 @@ public final class Common {
 	/**
 	 * Returns the last color, either & or {@link ChatColor#COLOR_CHAR} from the given message
 	 *
-	 * @param message, or empty if none
+	 * @param message or empty if none
 	 * @return
 	 */
 	public static String lastColor(final String message) {
@@ -1270,7 +1255,7 @@ public final class Common {
 			return;
 
 		if (CONSOLE_SENDER == null)
-			throw new TweetyException("Failed to initialize Console Sender, are you running Foundation under a Bukkit/Spigot server?");
+			throw new TweetyException("Failed to initialize Console Sender, are you running Tweety under a Bukkit/Spigot server?");
 
 		for (String message : messages) {
 			if (message.equals("none"))
@@ -1755,8 +1740,10 @@ public final class Common {
 	/**
 	 * Dynamically populates pages, used for pagination in commands or menus
 	 *
-	 * @param allItems all items that will be split
-	 * @return the map containing pages and their items
+	 * @param <T>
+	 * @param cellSize
+	 * @param items
+	 * @return
 	 */
 	public static <T> Map<Integer, List<T>> fillPages(int cellSize, Iterable<T> items) {
 		final List<T> allItems = Common.toList(items);
@@ -2483,7 +2470,6 @@ public final class Common {
 			if (task.getTaskId() == taskId)
 				return task;
 
-		// TODO Fix for MC 1.2.5
 		return null;
 	}
 
@@ -2691,7 +2677,7 @@ final class TimedCharSequence implements CharSequence {
 
 	/**
 	 * Gets a character at the given index, or throws an error if
-	 * this is called too late after the constructor, see {@link #futureTimestampLimit}
+	 * this is called too late after the constructor.
 	 */
 	@Override
 	public char charAt(final int index) {

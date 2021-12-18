@@ -1,18 +1,17 @@
 package ca.tweetzy.tweety.remain;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.exception.TweetyException;
-
 import lombok.Getter;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A utility class enabling you to convert between {@link DyeColor} and {@link ChatColor} with ease
@@ -234,9 +233,9 @@ public final class CompColor {
 		// Support HEX colors
 		if (name.startsWith("#") && name.length() == 7)
 			return new CompColor(Color.fromRGB(
-					Integer.valueOf(name.substring(1, 3), 16),
-					Integer.valueOf(name.substring(3, 5), 16),
-					Integer.valueOf(name.substring(5, 7), 16)));
+					Integer.parseInt(name.substring(1, 3), 16),
+					Integer.parseInt(name.substring(3, 5), 16),
+					Integer.parseInt(name.substring(5, 7), 16)));
 
 		name = name.toUpperCase();
 
@@ -262,7 +261,7 @@ public final class CompColor {
 	}
 
 	/**
-	 * Returns a {@link CompDye} from the given chat color
+	 * Returns a {@link CompColor} from the given chat color
 	 *
 	 * @param color
 	 * @return
@@ -276,7 +275,7 @@ public final class CompColor {
 	}
 
 	/**
-	 * Returns a {@link CompDye} from the given chat color
+	 * Returns a {@link CompColor} from the given chat color
 	 *
 	 * @param color
 	 * @return

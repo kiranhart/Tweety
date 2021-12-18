@@ -1,28 +1,21 @@
 package ca.tweetzy.tweety;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-
-import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.jsonsimple.JSONObject;
+import ca.tweetzy.tweety.jsonsimple.JSONParser;
+import ca.tweetzy.tweety.menu.Menu;
+import ca.tweetzy.tweety.model.HookManager;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompAttribute;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.CompProperty;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
+import org.bukkit.*;
 import org.bukkit.Statistic.Type;
-import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -35,20 +28,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.jsonsimple.JSONObject;
-import ca.tweetzy.tweety.jsonsimple.JSONParser;
-import ca.tweetzy.tweety.menu.Menu;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompAttribute;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.CompProperty;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.io.File;
+import java.io.FileReader;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * Utility class for managing players.
@@ -668,6 +653,7 @@ public final class PlayerUtil {
 	 *
 	 * @param player
 	 * @param material
+	 * @return
 	 */
 	public static boolean takeFirstOnePiece(final Player player, final CompMaterial material) {
 

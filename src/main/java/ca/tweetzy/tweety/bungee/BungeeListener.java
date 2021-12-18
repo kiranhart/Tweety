@@ -1,18 +1,17 @@
 package ca.tweetzy.tweety.bungee;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.bungee.message.IncomingMessage;
 import ca.tweetzy.tweety.debug.Debugger;
-
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 /**
- * Represents a BungeeCord listener using a {@link BungeeChannel} channel
+ * Represents a BungeeCord listener using a bungee channel
  * on which you can listen to receiving messages
  * <p>
  * This class is also a Listener for Bukkit events for your convenience
@@ -28,7 +27,7 @@ public abstract class BungeeListener implements Listener, PluginMessageListener 
 	/**
 	 * The actions
 	 */
-	private final BungeeAction[] actions;
+	private final ca.tweetzy.tweety.bungee.BungeeAction[] actions;
 
 	/**
 	 * Create a new bungee suite with the given params
@@ -37,23 +36,23 @@ public abstract class BungeeListener implements Listener, PluginMessageListener 
 	 * @param listener
 	 * @param actions
 	 */
-	protected BungeeListener(String channel, Class<? extends BungeeAction> actionEnum) {
+	protected BungeeListener(String channel, Class<? extends ca.tweetzy.tweety.bungee.BungeeAction> actionEnum) {
 		Valid.checkNotNull(channel, "Channel cannot be null!");
 
 		this.channel = channel;
 
-		final BungeeAction[] actions = toActions(actionEnum);
+		final ca.tweetzy.tweety.bungee.BungeeAction[] actions = toActions(actionEnum);
 		Valid.checkNotNull(actions, "Actions cannot be null!");
 
 		this.actions = actions;
 	}
 
-	private static BungeeAction[] toActions(Class<? extends BungeeAction> actionEnum) {
+	private static ca.tweetzy.tweety.bungee.BungeeAction[] toActions(Class<? extends ca.tweetzy.tweety.bungee.BungeeAction> actionEnum) {
 		Valid.checkNotNull(actionEnum);
 		Valid.checkBoolean(actionEnum.isEnum(), "Enum expected, given: " + actionEnum);
 
 		try {
-			return (BungeeAction[]) actionEnum.getMethod("values").invoke(null);
+			return (ca.tweetzy.tweety.bungee.BungeeAction[]) actionEnum.getMethod("values").invoke(null);
 
 		} catch (final ReflectiveOperationException ex) {
 			Common.log("Unable to get values() of " + actionEnum + ", ensure it is an enum!");

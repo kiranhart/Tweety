@@ -1,19 +1,25 @@
 package ca.tweetzy.tweety;
 
-import java.awt.Color;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictCollection;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.exception.InvalidWorldException;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.model.*;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.YamlConfig;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,32 +32,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictCollection;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.exception.InvalidWorldException;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
-import ca.tweetzy.tweety.model.ConfigSerializable;
-import ca.tweetzy.tweety.model.IsInList;
-import ca.tweetzy.tweety.model.RangedSimpleTime;
-import ca.tweetzy.tweety.model.RangedValue;
-import ca.tweetzy.tweety.model.SimpleSound;
-import ca.tweetzy.tweety.model.SimpleTime;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.YamlConfig;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
+import java.awt.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for serializing objects to writeable YAML data and back.
@@ -278,7 +268,7 @@ public final class SerializeUtil {
 	 * @param <T>
 	 * @param classOf
 	 * @param object
-	 * @param deserializeParameters, use more variables in the deserialize method
+	 * @param deserializeParameters
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
@@ -291,10 +281,10 @@ public final class SerializeUtil {
 
 		if (deserializeMethod != null && deserializeParameters == null) {
 			try {
-				return ReflectionUtil.invokeStatic(deserializeMethod, map);
+				return ca.tweetzy.tweety.ReflectionUtil.invokeStatic(deserializeMethod, map);
 
 			} catch (final ReflectionException ex) {
-				Common.throwError(ex, "Could not deserialize " + classOf + " from data: " + map);
+				ca.tweetzy.tweety.Common.throwError(ex, "Could not deserialize " + classOf + " from data: " + map);
 			}
 		}
 
@@ -316,14 +306,13 @@ public final class SerializeUtil {
 			{ // Build parameter instances
 				joinedParams.add(map);
 
-				for (final Object param : deserializeParameters)
-					joinedParams.add(param);
+				Collections.addAll(joinedParams, deserializeParameters);
 			}
 
 			if (deserializeMethod != null) {
 				Valid.checkBoolean(joinedClasses.size() == joinedParams.size(), "static deserialize method arguments length " + joinedClasses.size() + " != given params " + joinedParams.size());
 
-				return ReflectionUtil.invokeStatic(deserializeMethod, joinedParams.toArray());
+				return ca.tweetzy.tweety.ReflectionUtil.invokeStatic(deserializeMethod, joinedParams.toArray());
 			}
 		}
 
@@ -332,7 +321,7 @@ public final class SerializeUtil {
 			deserializeMethod = ReflectionUtil.getMethod(classOf, "getByName", String.class);
 
 			if (deserializeMethod != null)
-				return ReflectionUtil.invokeStatic(deserializeMethod, object);
+				return ca.tweetzy.tweety.ReflectionUtil.invokeStatic(deserializeMethod, object);
 		}
 
 		// Step 4 - If there is no deserialize method, just deserialize the given object
@@ -440,7 +429,7 @@ public final class SerializeUtil {
 			}
 
 			else if (Enum.class.isAssignableFrom(classOf)) {
-				object = ReflectionUtil.lookupEnum((Class<Enum>) classOf, object.toString());
+				object = ca.tweetzy.tweety.ReflectionUtil.lookupEnum((Class<Enum>) classOf, object.toString());
 
 				if (object == null)
 					return null;
@@ -626,7 +615,7 @@ public final class SerializeUtil {
 			Valid.checkBoolean(Modifier.isPublic(deserialize.getModifiers()) && Modifier.isStatic(deserialize.getModifiers()), asWhat + " is missing public 'public static T deserialize()' method");
 
 		} catch (final NoSuchMethodException ex) {
-			Common.throwError(ex, "Class lacks a final method deserialize(SerializedMap) metoda. Tried: " + asWhat.getSimpleName());
+			ca.tweetzy.tweety.Common.throwError(ex, "Class lacks a final method deserialize(SerializedMap) metoda. Tried: " + asWhat.getSimpleName());
 			return null;
 		}
 
@@ -635,7 +624,7 @@ public final class SerializeUtil {
 		try {
 			invoked = deserialize.invoke(null, SerializedMap.of(map));
 		} catch (final ReflectiveOperationException e) {
-			Common.throwError(e, "Error calling " + deserialize.getName() + " as " + asWhat.getSimpleName() + " with data " + map);
+			ca.tweetzy.tweety.Common.throwError(e, "Error calling " + deserialize.getName() + " as " + asWhat.getSimpleName() + " with data " + map);
 			return null;
 		}
 
@@ -659,7 +648,7 @@ public final class SerializeUtil {
 	 * A simple class holding some of the potion names
 	 */
 	@RequiredArgsConstructor
-	protected static enum PotionWrapper {
+	protected enum PotionWrapper {
 
 		SLOW("SLOW", "Slowness"),
 		STRENGTH("INCREASE_DAMAGE"),
@@ -670,7 +659,7 @@ public final class SerializeUtil {
 		private final String bukkitName;
 		private final String minecraftName;
 
-		private PotionWrapper(String bukkitName) {
+		PotionWrapper(String bukkitName) {
 			this(bukkitName, null);
 		}
 
@@ -698,7 +687,7 @@ public final class SerializeUtil {
 		}
 
 		public String getMinecraftName() {
-			return Common.getOrDefault(minecraftName, bukkitName);
+			return ca.tweetzy.tweety.Common.getOrDefault(minecraftName, bukkitName);
 		}
 	}
 
@@ -706,7 +695,7 @@ public final class SerializeUtil {
 	 * A simple class holding some of the enchantments names
 	 */
 	@RequiredArgsConstructor
-	protected static enum EnchantmentWrapper {
+	protected enum EnchantmentWrapper {
 		PROTECTION("PROTECTION_ENVIRONMENTAL"),
 		FIRE_PROTECTION("PROTECTION_FIRE"),
 		FEATHER_FALLING("PROTECTION_FALL"),

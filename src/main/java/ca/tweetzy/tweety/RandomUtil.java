@@ -1,19 +1,14 @@
 package ca.tweetzy.tweety;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.bukkit.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Utility class for generating random numbers.
@@ -219,7 +214,7 @@ public final class RandomUtil {
 	 * @return
 	 */
 	public static <T> T nextItem(final Iterable<T> items, final Predicate<T> condition) {
-		final List<T> list = items instanceof List ? new ArrayList<>((List<T>) items) : Common.toList(items);
+		final List<T> list = items instanceof List ? new ArrayList<>((List<T>) items) : ca.tweetzy.tweety.Common.toList(items);
 
 		// Remove values failing the condition
 		if (condition != null)
@@ -238,7 +233,7 @@ public final class RandomUtil {
 	 *
 	 * @param origin
 	 * @param radius
-	 * @param is3D,  true for sphere, false for cylinder search
+	 * @param is3D true for sphere, false for cylinder search
 	 * @return
 	 */
 	public static Location nextLocation(final Location origin, final double radius, final boolean is3D) {

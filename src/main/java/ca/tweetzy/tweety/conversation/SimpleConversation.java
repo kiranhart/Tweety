@@ -1,17 +1,5 @@
 package ca.tweetzy.tweety.conversation;
 
-import java.util.concurrent.TimeUnit;
-
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.conversations.ConversationAbandonedListener;
-import org.bukkit.conversations.ConversationCanceller;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationPrefix;
-import org.bukkit.conversations.InactivityConversationCanceller;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Messenger;
 import ca.tweetzy.tweety.Valid;
@@ -22,9 +10,12 @@ import ca.tweetzy.tweety.model.Variables;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompSound;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.bukkit.conversations.*;
+import org.bukkit.entity.Player;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple way to communicate with the player
@@ -277,8 +268,6 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 	private final class CustomCanceller extends InactivityConversationCanceller {
 
 		/**
-		 * @param plugin
-		 * @param timeoutSeconds
 		 */
 		public CustomCanceller() {
 			super(SimplePlugin.getInstance(), getTimeout());

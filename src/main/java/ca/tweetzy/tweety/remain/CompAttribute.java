@@ -1,19 +1,18 @@
 package ca.tweetzy.tweety.remain;
 
-import java.lang.reflect.Method;
-
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.exception.TweetyException;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+
+import java.lang.reflect.Method;
 
 /**
  * Wrapper for {@link Attribute}
@@ -103,9 +102,9 @@ public enum CompAttribute {
 	 * Construct a new Attribute.
 	 *
 	 * @param name              the generic name
-	 * @param genericFieldName, see {@link #genericFieldName}
+	 * @param genericFieldName see {@link #genericFieldName}
 	 */
-	private CompAttribute(final String name, final String genericFieldName) {
+	CompAttribute(final String name, final String genericFieldName) {
 		this.minecraftName = name;
 		this.genericFieldName = genericFieldName;
 	}

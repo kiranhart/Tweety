@@ -1,11 +1,12 @@
 package ca.tweetzy.tweety;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import ca.tweetzy.tweety.model.SimpleScoreboard;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompBarColor;
+import ca.tweetzy.tweety.remain.CompBarStyle;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,14 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import ca.tweetzy.tweety.model.SimpleScoreboard;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompBarColor;
-import ca.tweetzy.tweety.remain.CompBarStyle;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Utility class for creating text animations for BossBars, Scoreboards, HUD Titles and Inventories.
@@ -467,8 +465,15 @@ public class AnimationUtil {
 
 	@RequiredArgsConstructor
 	public static class CountdownBar {
-		final long duration;
-		final boolean isSmooth;
-		final boolean goUp;
+
+		/**
+		 * The duration
+		 */
+		private final long duration;
+
+		/**
+		 * Is smooth?
+		 */
+		private final boolean isSmooth;
 	}
 }

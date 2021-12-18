@@ -1,17 +1,16 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.Arrays;
-import java.util.Objects;
-
+import ca.tweetzy.tweety.ChatUtil;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ca.tweetzy.tweety.ChatUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a chat message surrounded by chat-wide line on the top and bottom:
@@ -335,7 +334,7 @@ public final class BoxedMessage {
 		private final String[] variables;
 
 		/**
-		 * Replace {@link #variables} with the given object replacements
+		 * Replace the variables we store with the given object replacements
 		 *
 		 * @param replacements
 		 * @return

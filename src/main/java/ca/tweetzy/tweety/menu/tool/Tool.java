@@ -1,15 +1,15 @@
 package ca.tweetzy.tweety.menu.tool;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import ca.tweetzy.tweety.ItemUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.menu.model.ItemCreator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
+
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Represents a tool. A tool is a simple ItemStack that is registered within the
@@ -210,6 +210,7 @@ public abstract class Tool {
 	 * Convenience method for quickly setting this tool to a specific slot of players inventory
 	 *
 	 * @param player
+	 * @param slot
 	 */
 	public final void give(final Player player, final int slot) {
 		player.getInventory().setItem(slot, getItem());

@@ -1,18 +1,17 @@
 package ca.tweetzy.tweety.debug;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleSettings;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple yet effective way to calculate duration
@@ -174,7 +173,6 @@ public final class LagCatcher {
 	 * it will continue being measure
 	 *
 	 * @param section
-	 * @return
 	 */
 	public static void took(String section) {
 		final Long nanoTime = startTimesMap.get(section);

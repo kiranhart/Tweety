@@ -1,22 +1,19 @@
 package ca.tweetzy.tweety.bungee.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-import ca.tweetzy.tweety.CompressUtil;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.bungee.BungeeListener;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
-
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-
 import lombok.Getter;
+import org.bukkit.entity.Player;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Represents an incoming plugin message.
@@ -63,7 +60,7 @@ public final class IncomingMessage extends Message {
 	 * string is the server name and the second string is the
 	 * {@link BungeeAction} by its name *read automatically*.
 	 *
-	 * @param bungeeListener
+	 * @param listener
 	 * @param data
 	 */
 	public IncomingMessage(BungeeListener listener, byte[] data) {
@@ -96,7 +93,7 @@ public final class IncomingMessage extends Message {
 	public String readString() {
 		moveHead(String.class);
 
-		return CompressUtil.decompressB64(input.readUTF());
+		return input.readUTF();
 	}
 
 	/**
@@ -118,7 +115,7 @@ public final class IncomingMessage extends Message {
 	public SerializedMap readMap() {
 		moveHead(String.class);
 
-		return SerializedMap.fromJson(CompressUtil.decompressB64(input.readUTF()));
+		return SerializedMap.fromJson(input.readUTF());
 	}
 
 	/**
@@ -234,7 +231,7 @@ public final class IncomingMessage extends Message {
 	/**
 	 * Forwards this message to a player
 	 *
-	 * @param connection
+	 * @param player
 	 */
 	public void forward(Player player) {
 		player.sendPluginMessage(SimplePlugin.getInstance(), getChannel(), data);

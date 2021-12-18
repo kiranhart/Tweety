@@ -1,19 +1,18 @@
 package ca.tweetzy.tweety.menu.tool;
 
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.event.RocketExplosionEvent;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.player.PlayerInteractEvent;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.event.RocketExplosionEvent;
-
-import lombok.Getter;
 
 /**
  * A rocket is an extended {@link Tool}
  * that explodes when hit the ground.
  * <p>
- * Please use {@link #explode(Projectile, Location, float, boolean)} for calling
+ * Please use the onExplode method for calling
  * the explosion or call the {@link RocketExplosionEvent} manually.
  */
 @Getter

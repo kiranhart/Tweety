@@ -1,49 +1,31 @@
 package ca.tweetzy.tweety.menu.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.MaterialData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.model.SimpleEnchantment;
-import ca.tweetzy.tweety.remain.CompColor;
-import ca.tweetzy.tweety.remain.CompItemFlag;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.CompMetadata;
-import ca.tweetzy.tweety.remain.CompMonsterEgg;
-import ca.tweetzy.tweety.remain.CompProperty;
-import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.remain.*;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.*;
+import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * ItemCreator allows you to create highly customized {@link ItemStack}
@@ -191,7 +173,7 @@ public final class ItemCreator {
 	}
 
 	/**
-	 * Set the Material for the item. If {@link #item} is set,
+	 * Set the Material for the item. If an itemstack has already been set,
 	 * this material will take priority.
 	 *
 	 * @param material
@@ -244,7 +226,7 @@ public final class ItemCreator {
 
 	/**
 	 * Remove any previous lore from the item. Useful if you initiated this
-	 * class with an ItemStack or set {@link #item} already, to clear old lore off of it.
+	 * class with an ItemStack or set the itemstack already, to clear old lore off of it.
 	 *
 	 * @return
 	 */
@@ -844,6 +826,7 @@ public final class ItemCreator {
 	 * Convenience method for creation potions
 	 *
 	 * @param potionEffect
+	 * @param durationTicks
 	 * @param level
 	 * @param name
 	 * @param lore

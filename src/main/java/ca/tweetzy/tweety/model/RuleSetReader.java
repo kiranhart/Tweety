@@ -1,13 +1,13 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.FileUtil;
+import ca.tweetzy.tweety.Valid;
+
 import java.io.File;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.Valid;
 
 /**
  * An engine that reads rule set from a file such as in ChatControl.
@@ -60,7 +60,7 @@ public abstract class RuleSetReader<T extends Rule> {
 			if (line.equals(this.newKeyword + " " + rule.getUid()))
 				found = true;
 
-			// Found something else
+				// Found something else
 			else if (line.startsWith("#") || line.isEmpty() || line.startsWith("match ")) {
 				if (found && i > 0 && disabled) {
 					lines.add(i, "disabled");
@@ -178,7 +178,7 @@ public abstract class RuleSetReader<T extends Rule> {
 	/**
 	 * Called if there is no match {@link #newKeyword} but something is on the line
 	 * enabling you to inject your own custom operators and settings
-	 *
+	 * <p>
 	 * Return true if you processed the line, false if we should throw an error
 	 *
 	 * @param file the current file
@@ -202,12 +202,11 @@ public abstract class RuleSetReader<T extends Rule> {
 	/**
 	 * Creates a new rule from the value of the {@link #newKeyword}
 	 * where the new keyword is stripped from the value.
-	 *
+	 * <p>
 	 * Example: When the rule starts with "match one two", the value is only "one two" etc.
 	 *
 	 * @param file
 	 * @param value
-	 *
 	 * @return the rule created, or null if the value is not valid
 	 */
 	protected abstract T createRule(File file, String value);

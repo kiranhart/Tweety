@@ -1,14 +1,13 @@
 package ca.tweetzy.tweety;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.SimpleSettings;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * Streamlines the process of sending themed messages to players
@@ -64,7 +63,7 @@ public class Messenger {
 	private String announcePrefix = "&8&l[&5&l!&l&8]&d ";
 
 	/**
-	 * Send a message prepended with the {@link #infoPrefix}
+	 * Send a message prepended with the {@link #getInfoPrefix()}
 	 *
 	 * @param message
 	 */
@@ -74,7 +73,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #successPrefix}
+	 * Send a message prepended with the {@link #getSuccessPrefix()}
 	 *
 	 * @param message
 	 */
@@ -84,7 +83,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #warnPrefix}
+	 * Send a message prepended with the {@link #getWarnPrefix()}
 	 *
 	 * @param message
 	 */
@@ -94,7 +93,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #errorPrefix}
+	 * Send a message prepended with the {@link #getErrorPrefix()}
 	 *
 	 * @param message
 	 */
@@ -104,7 +103,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #questionPrefix}
+	 * Send a message prepended with the {@link #getQuestionPrefix()}
 	 *
 	 * @param message
 	 */
@@ -114,7 +113,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #announcePrefix}
+	 * Send a message prepended with the {@link #getAnnouncePrefix()}
 	 *
 	 * @param message
 	 */
@@ -124,7 +123,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #infoPrefix}
+	 * Send a message prepended with the {@link #getInfoPrefix()}
 	 *
 	 * @param player
 	 * @param message
@@ -134,7 +133,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #successPrefix}
+	 * Send a message prepended with the {@link #getSuccessPrefix()}
 	 *
 	 * @param player
 	 * @param message
@@ -144,7 +143,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #warnPrefix}
+	 * Send a message prepended with the {@link #getWarnPrefix()}
 	 *
 	 * @param player
 	 * @param message
@@ -154,7 +153,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send messages prepended with the {@link #errorPrefix}
+	 * Send messages prepended with the {@link #getErrorPrefix()}
 	 *
 	 * @param player
 	 * @param messages
@@ -165,7 +164,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #errorPrefix}
+	 * Send a message prepended with the {@link #getErrorPrefix()}
 	 *
 	 * @param player
 	 * @param message
@@ -175,7 +174,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #questionPrefix}
+	 * Send a message prepended with the {@link #getQuestionPrefix()}
 	 *
 	 * @param player
 	 * @param message
@@ -185,7 +184,7 @@ public class Messenger {
 	}
 
 	/**
-	 * Send a message prepended with the {@link #announcePrefix}
+	 * Send a message prepended with the {@link #getAnnouncePrefix()}
 	 *
 	 * @param player
 	 * @param message
@@ -203,8 +202,8 @@ public class Messenger {
 		if (message.isEmpty() || "none".equals(message))
 			return;
 
-		final String colorless = Common.stripColors(message);
-		boolean noPrefix = ChatUtil.isInteractive(colorless);
+		final String colorless = ca.tweetzy.tweety.Common.stripColors(message);
+		boolean noPrefix = ca.tweetzy.tweety.ChatUtil.isInteractive(colorless);
 
 		// Special case: Send the prefix for actionbar
 		if (colorless.startsWith("<actionbar>"))
@@ -217,7 +216,7 @@ public class Messenger {
 		}
 
 		// Only insert prefix if the message is sent through the normal chat
-		Common.tellNoPrefix(player, (noPrefix ? "" : prefix) + message);
+		ca.tweetzy.tweety.Common.tellNoPrefix(player, (noPrefix ? "" : prefix) + message);
 	}
 
 	/**

@@ -1,21 +1,19 @@
 package ca.tweetzy.tweety.remain;
 
-import java.lang.reflect.Constructor;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Particle.DustOptions;
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
 import ca.tweetzy.tweety.Valid;
-
 import lombok.SneakyThrows;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
+import org.bukkit.entity.Player;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Constructor;
 
 /**
  * Wrapper for {@link Particle}
@@ -151,7 +149,7 @@ public enum CompParticle {
 	/*
 	 * Construct a new compatible particle class
 	 */
-	private CompParticle() {
+	CompParticle() {
 		this(null);
 	}
 
@@ -159,7 +157,7 @@ public enum CompParticle {
 	 * Construct a new compatible particle class
 	 */
 	@SuppressWarnings("rawtypes")
-	private CompParticle(String name1_7) {
+	CompParticle(String name1_7) {
 		this.name1_7 = name1_7;
 
 		try {
@@ -370,6 +368,7 @@ public enum CompParticle {
 	/**
 	 * Spawns the particle only shown to the given player at the given location with extra material data
 	 *
+	 * @param player
 	 * @param location
 	 * @param data
 	 */

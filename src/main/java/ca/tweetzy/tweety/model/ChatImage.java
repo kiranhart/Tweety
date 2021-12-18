@@ -1,26 +1,24 @@
 package ca.tweetzy.tweety.model;
 
-import java.awt.Color;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.util.ChatPaginator;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.util.ChatPaginator;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.remain.CompChatColor;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * Represents a way to show an image in chat
@@ -142,6 +140,7 @@ public final class ChatImage {
 	 * @param height
 	 * @param characterType
 	 * @return
+	 * @throws IOException
 	 */
 	public static ChatImage fromFile(@NonNull File file, int height, Type characterType) throws IOException {
 		Valid.checkBoolean(file.exists(), "Cannot load image from non existing file " + file.toPath());
@@ -309,7 +308,7 @@ public final class ChatImage {
 		@Getter
 		private char character;
 
-		private Type(char c) {
+		Type(char c) {
 			this.character = c;
 		}
 

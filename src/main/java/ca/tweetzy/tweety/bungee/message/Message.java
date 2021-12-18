@@ -1,14 +1,13 @@
 package ca.tweetzy.tweety.bungee.message;
 
-import java.util.UUID;
-
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.bungee.BungeeListener;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
 
 /**
  * Represents a in/out message with a given action and server name
@@ -128,8 +127,7 @@ abstract class Message {
 	}
 
 	/**
-	 * Return the bungee channel, always returns
-	 * {@link SimplePlugin#getBungee()#getChannel()}
+	 * Return the bungee channel this message is coming from
 	 *
 	 * @return
 	 */

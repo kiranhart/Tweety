@@ -1,9 +1,5 @@
 package ca.tweetzy.tweety.command;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.command.annotation.Permission;
@@ -15,12 +11,15 @@ import ca.tweetzy.tweety.model.SimpleComponent;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization.Commands;
 import ca.tweetzy.tweety.settings.SimpleSettings;
-
 import lombok.NonNull;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple predefined command for quickly listing all permissions
- * the plugin uses, given they are stored in a {@link TweetyPermissions} class.
+ * the plugin uses, given they are stored in a class.
  */
 public final class PermsCommand extends SimpleSubCommand {
 

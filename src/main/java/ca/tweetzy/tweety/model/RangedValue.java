@@ -1,16 +1,15 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.RandomUtil;
+import ca.tweetzy.tweety.Valid;
+import lombok.Getter;
+import org.apache.commons.lang.math.NumberUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.math.NumberUtils;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.RandomUtil;
-import ca.tweetzy.tweety.Valid;
-
-import lombok.Getter;
 
 /**
  * A class holding a minimum and a maximum
@@ -52,6 +51,7 @@ public final class RangedValue {
 
 	/**
 	 * Get the minimum as double
+	 * @return
 	 */
 	public double getMinDouble() {
 		return min.doubleValue();
@@ -59,6 +59,7 @@ public final class RangedValue {
 
 	/**
 	 * Get the maximum as double
+	 * @return
 	 */
 	public double getMaxDouble() {
 		return max.doubleValue();
@@ -66,6 +67,7 @@ public final class RangedValue {
 
 	/**
 	 * Get the minimum as an long
+	 * @return
 	 */
 	public long getMinLong() {
 		return min.longValue();
@@ -73,6 +75,7 @@ public final class RangedValue {
 
 	/**
 	 * Get the maximum as an long
+	 * @return
 	 */
 	public long getMaxLong() {
 		return max.longValue();
@@ -99,7 +102,7 @@ public final class RangedValue {
 	}
 
 	/**
-	 * Get a value in range between {@link #min} and {@link #max}
+	 * Get a value in range between the two values we store in this class
 	 *
 	 * @return a random value
 	 */
@@ -108,7 +111,7 @@ public final class RangedValue {
 	}
 
 	/**
-	 * Return whether {@link #min} equals {@link #max}
+	 * Return whether the two values we store in this class are equal
 	 *
 	 * @return
 	 */
@@ -134,6 +137,8 @@ public final class RangedValue {
 	 * or
 	 * <p>
 	 * 10 seconds - 20 minutes (will be converted to seconds)
+	 * @param line
+	 * @return
 	 */
 	public static RangedValue parse(String line) {
 
