@@ -1,16 +1,15 @@
 package ca.tweetzy.tweety.menu.button;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.conversation.SimpleConversation;
 import ca.tweetzy.tweety.conversation.SimplePrompt;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.remain.CompMaterial;
-
 import lombok.Getter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * A button that runs a server conversation

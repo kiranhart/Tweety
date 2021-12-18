@@ -1,19 +1,5 @@
 package ca.tweetzy.tweety.menu.button;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.conversation.SimplePrompt;
 import ca.tweetzy.tweety.conversation.SimpleStringPrompt;
@@ -23,11 +9,23 @@ import ca.tweetzy.tweety.model.RangedValue;
 import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.Prompt;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Represents a clickable button in menu

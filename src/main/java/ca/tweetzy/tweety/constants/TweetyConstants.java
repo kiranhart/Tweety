@@ -1,12 +1,12 @@
 package ca.tweetzy.tweety.constants;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.TimeUtil;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.YamlConfig;
+import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 /**
  * Stores constants for this plugin

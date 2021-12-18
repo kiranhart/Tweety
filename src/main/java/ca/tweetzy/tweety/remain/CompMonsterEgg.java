@@ -1,14 +1,5 @@
 package ca.tweetzy.tweety.remain;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
@@ -17,8 +8,16 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.nbt.NBTCompound;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
-
 import lombok.NonNull;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SpawnEggMeta;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Utility class for manipulating Monster Eggs

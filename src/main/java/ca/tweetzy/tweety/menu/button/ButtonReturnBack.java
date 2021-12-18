@@ -1,22 +1,17 @@
 package ca.tweetzy.tweety.menu.button;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
+import lombok.*;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents a standardized button that will return back to the parent menu

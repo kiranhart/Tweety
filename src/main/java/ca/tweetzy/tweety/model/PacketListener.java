@@ -1,12 +1,5 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
@@ -14,11 +7,10 @@ import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.EventHandledException;
-import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.exception.RegexTimeoutException;
+import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -28,11 +20,17 @@ import com.comphenix.protocol.wrappers.EnumWrappers.ChatType;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Represents packet handling using ProtocolLib

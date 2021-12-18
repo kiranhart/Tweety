@@ -1,17 +1,5 @@
 package ca.tweetzy.tweety.plugin;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.regex.Pattern;
-
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
@@ -25,16 +13,21 @@ import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.event.SimpleListener;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.menu.tool.Tool;
-import ca.tweetzy.tweety.model.DiscordListener;
-import ca.tweetzy.tweety.model.TweetyEnchantmentListener;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.PacketListener;
-import ca.tweetzy.tweety.model.SimpleEnchantment;
-import ca.tweetzy.tweety.model.SimpleExpansion;
-import ca.tweetzy.tweety.model.Tuple;
-import ca.tweetzy.tweety.model.Variables;
+import ca.tweetzy.tweety.model.*;
 import ca.tweetzy.tweety.settings.SimpleSettings;
 import ca.tweetzy.tweety.settings.YamlConfig;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 /**
  * Utilizes \@AutoRegister annotation to add auto registration support for commands, events and much more.

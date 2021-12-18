@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import java.lang.reflect.Constructor;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.exception.TweetyException;
+
+import java.lang.reflect.Constructor;
 
 /**
  * This Enum wraps Constructors for NMS classes

@@ -1,9 +1,8 @@
 package ca.tweetzy.tweety;
 
-import org.bukkit.Bukkit;
 import ca.tweetzy.tweety.exception.TweetyException;
-
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 /**
  * Represents the current Minecraft version the plugin loaded on

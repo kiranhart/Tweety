@@ -1,14 +1,5 @@
 package ca.tweetzy.tweety.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.menu.button.Button;
@@ -16,6 +7,15 @@ import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.menu.tool.Tool;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A standardized menu to display a list of tools player can toggle to get in

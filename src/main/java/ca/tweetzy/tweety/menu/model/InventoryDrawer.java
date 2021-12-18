@@ -1,14 +1,13 @@
 package ca.tweetzy.tweety.menu.model;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.remain.CompMaterial;
-
-import lombok.Getter;
 
 /**
  * Represents a way to render the inventory to the player

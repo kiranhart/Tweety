@@ -1,13 +1,12 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.collection.SerializedMap;
-
-import lombok.AllArgsConstructor;
 
 /**
  * An elegant way to find {variables} and replace them.

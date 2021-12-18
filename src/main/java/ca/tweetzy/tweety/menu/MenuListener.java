@@ -1,24 +1,20 @@
 package ca.tweetzy.tweety.menu;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.menu.button.Button;
+import ca.tweetzy.tweety.menu.model.MenuClickLocation;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.menu.button.Button;
-import ca.tweetzy.tweety.menu.model.MenuClickLocation;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
 
 /**
  * The bukkit listener responsible for menus to function.

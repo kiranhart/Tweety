@@ -1,9 +1,12 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.exception.TweetyException;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -11,14 +14,10 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.exception.TweetyException;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a Discord command sender for Discord integration

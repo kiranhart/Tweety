@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.settings;
 
-import java.util.Objects;
-
 import ca.tweetzy.tweety.Valid;
+
+import java.util.Objects;
 
 /**
  * An extension of {@link YamlConfig} useful when you want to separate

@@ -1,17 +1,17 @@
 package ca.tweetzy.tweety.menu;
 
-import javax.annotation.Nullable;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.menu.model.MenuClickLocation;
 import ca.tweetzy.tweety.remain.CompMaterial;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nullable;
 
 /**
  * A simple menu allowing players to drop or take items.

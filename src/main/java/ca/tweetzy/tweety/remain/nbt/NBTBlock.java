@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import org.bukkit.block.Block;
 import ca.tweetzy.tweety.exception.TweetyException;
+import org.bukkit.block.Block;
 
 public class NBTBlock {
 

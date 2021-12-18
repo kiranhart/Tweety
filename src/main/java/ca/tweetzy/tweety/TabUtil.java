@@ -1,12 +1,12 @@
 package ca.tweetzy.tweety;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Utility class for tab completion.

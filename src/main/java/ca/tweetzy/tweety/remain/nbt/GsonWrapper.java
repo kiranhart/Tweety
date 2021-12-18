@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.remain.nbt;
 
 import ca.tweetzy.tweety.exception.TweetyException;
-
 import com.google.gson.Gson;
 
 /**

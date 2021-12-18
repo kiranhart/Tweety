@@ -1,9 +1,8 @@
 package ca.tweetzy.tweety.model;
 
-import org.bukkit.command.CommandSender;
 import ca.tweetzy.tweety.Common;
-
 import lombok.NonNull;
+import org.bukkit.command.CommandSender;
 
 /**
  * Represents a placeholder expansion used for variables that need

@@ -1,8 +1,12 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-
+import ca.tweetzy.tweety.EntityUtil;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -15,14 +19,9 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
-import ca.tweetzy.tweety.EntityUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 
 /**
  * Listens and executes events for {@link SimpleEnchantment}

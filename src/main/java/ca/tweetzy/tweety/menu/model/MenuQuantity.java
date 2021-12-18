@@ -1,12 +1,11 @@
 package ca.tweetzy.tweety.menu.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.menu.MenuQuantitable;
-
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents how much we should change an

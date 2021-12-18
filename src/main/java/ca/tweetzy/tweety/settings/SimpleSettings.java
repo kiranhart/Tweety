@@ -1,9 +1,5 @@
 package ca.tweetzy.tweety.settings;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictList;
@@ -13,6 +9,10 @@ import ca.tweetzy.tweety.debug.LagCatcher;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.SpigotUpdater;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * A simple implementation of a typical main plugin settings

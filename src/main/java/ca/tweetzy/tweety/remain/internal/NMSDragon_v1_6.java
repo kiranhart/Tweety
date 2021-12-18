@@ -1,11 +1,11 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
+import ca.tweetzy.tweety.ReflectionUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-import ca.tweetzy.tweety.ReflectionUtil;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Represents a fake dragon entity for Minecraft 1.6.x

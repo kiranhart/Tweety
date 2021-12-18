@@ -1,23 +1,9 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.ChatUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.*;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
-
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -25,6 +11,15 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A very simple way of sending interactive chat messages

@@ -1,21 +1,16 @@
 package ca.tweetzy.tweety;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.NoRouteToHostException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.TimeUnit;
-
 import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utility class for resolving geographical information about players.

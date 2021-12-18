@@ -1,7 +1,5 @@
 package ca.tweetzy.tweety.settings;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.command.DebugCommand;
 import ca.tweetzy.tweety.command.PermsCommand;
@@ -9,6 +7,9 @@ import ca.tweetzy.tweety.command.ReloadCommand;
 import ca.tweetzy.tweety.command.SimpleCommand;
 import ca.tweetzy.tweety.model.ChatPaginator;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyListener;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,24 +1,23 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.PlayerUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.settings.ConfigItems;
 import ca.tweetzy.tweety.settings.YamlConfig;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 public final class Variable extends YamlConfig {
 

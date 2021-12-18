@@ -1,11 +1,5 @@
 package ca.tweetzy.tweety.menu.button;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
@@ -14,11 +8,16 @@ import ca.tweetzy.tweety.remain.CompColor;
 import ca.tweetzy.tweety.remain.CompItemFlag;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents a standardized remove button that opens the remove confirmation dialog.

@@ -1,25 +1,19 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.scheduler.BukkitTask;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompParticle;
 import ca.tweetzy.tweety.remain.Remain;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.util.*;
 
 /**
  *

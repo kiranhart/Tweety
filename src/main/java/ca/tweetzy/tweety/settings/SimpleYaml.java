@@ -1,13 +1,9 @@
 package ca.tweetzy.tweety.settings;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.FileUtil;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.Valid;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
@@ -16,15 +12,19 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConstructor;
 import org.bukkit.configuration.file.YamlRepresenter;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.representer.Representer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * A frustration-free implementation of {@link Configuration} which saves all files in Yaml.

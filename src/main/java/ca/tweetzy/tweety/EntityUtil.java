@@ -1,40 +1,27 @@
 package ca.tweetzy.tweety;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-
+import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.HookManager;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Utility class for managing entities.

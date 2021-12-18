@@ -1,14 +1,14 @@
 package ca.tweetzy.tweety;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Utility class for calculating time from ticks and back.

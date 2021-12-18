@@ -1,25 +1,20 @@
 package ca.tweetzy.tweety.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-
-import org.bukkit.Bukkit;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 /**
  * A simple class performing an update check for Spigot free and premium resources

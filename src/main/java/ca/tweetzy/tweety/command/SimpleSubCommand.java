@@ -1,13 +1,12 @@
 package ca.tweetzy.tweety.command;
 
-import java.util.Arrays;
-
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Arrays;
 
 /**
  * A simple subcommand belonging to a {@link SimpleCommandGroup}

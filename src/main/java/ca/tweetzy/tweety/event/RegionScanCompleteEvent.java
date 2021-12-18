@@ -1,11 +1,10 @@
 package ca.tweetzy.tweety.event;
 
-import org.bukkit.World;
-import org.bukkit.event.HandlerList;
 import ca.tweetzy.tweety.model.OfflineRegionScanner;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.World;
+import org.bukkit.event.HandlerList;
 
 /**
  * Triggered when {@link OfflineRegionScanner} finishes scanning all offline regions on your disk

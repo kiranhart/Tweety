@@ -1,14 +1,13 @@
 package ca.tweetzy.tweety.slider;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.remain.CompMaterial;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example slider iterating through items and highlighting one.

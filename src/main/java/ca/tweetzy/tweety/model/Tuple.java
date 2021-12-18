@@ -4,7 +4,6 @@ import ca.tweetzy.tweety.SerializeUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.TweetyException;
-
 import lombok.Data;
 
 /**

@@ -1,16 +1,5 @@
 package ca.tweetzy.tweety.command;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.MinecraftVersion;
@@ -19,8 +8,18 @@ import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleYaml;
-
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * A sample sub-command that you can automatically add

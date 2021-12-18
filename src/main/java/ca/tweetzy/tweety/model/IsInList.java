@@ -1,12 +1,11 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.StrictSet;
-
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * A simple class allowing you to match if something is in that list.

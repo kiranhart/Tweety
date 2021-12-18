@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.remain.nbt;
 
+import ca.tweetzy.tweety.exception.TweetyException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import ca.tweetzy.tweety.exception.TweetyException;
 
 /**
  * Integer implementation for NBTLists

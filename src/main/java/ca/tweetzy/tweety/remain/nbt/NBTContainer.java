@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import java.io.InputStream;
-
 import ca.tweetzy.tweety.exception.TweetyException;
+
+import java.io.InputStream;
 
 /**
  * A Standalone {@link NBTCompound} implementation. All data is just kept inside

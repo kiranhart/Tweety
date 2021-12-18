@@ -22,31 +22,23 @@
  */
 package ca.tweetzy.tweety.remain;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.ItemUtil;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.debug.Debugger;
-
 import lombok.Getter;
 import lombok.NonNull;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * <b>CompMaterial</b> - Data Values/Pre-flattening<br>

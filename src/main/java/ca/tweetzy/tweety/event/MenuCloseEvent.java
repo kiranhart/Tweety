@@ -1,13 +1,12 @@
 package ca.tweetzy.tweety.event;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.Inventory;
 import ca.tweetzy.tweety.menu.Menu;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.Inventory;
 
 /**
  * Triggered when a menu is closed from a player at the very end of the pipeline.

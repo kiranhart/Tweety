@@ -1,15 +1,5 @@
 package ca.tweetzy.tweety.visual;
 
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import ca.tweetzy.tweety.BlockUtil;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
@@ -17,9 +7,17 @@ import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.region.Region;
 import ca.tweetzy.tweety.remain.CompParticle;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A simply way to visualize two locations in the world

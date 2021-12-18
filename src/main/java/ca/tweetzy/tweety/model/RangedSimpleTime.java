@@ -2,7 +2,6 @@ package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.RandomUtil;
 import ca.tweetzy.tweety.Valid;
-
 import lombok.Getter;
 
 /**

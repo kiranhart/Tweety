@@ -1,5 +1,14 @@
 package ca.tweetzy.tweety.settings;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.FileUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.collection.StrictMap;
+import lombok.NonNull;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -9,17 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.configuration.file.YamlConfiguration;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.StrictMap;
-
-import lombok.NonNull;
 
 /**
  * A special class that can store loaded {@link YamlConfig} files

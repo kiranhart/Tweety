@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.model;
 
+import com.google.common.collect.ForwardingQueue;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Queue;
-
-import com.google.common.collect.ForwardingQueue;
 
 /**
  * Represents a simple limited queue only storing a handful of entries in

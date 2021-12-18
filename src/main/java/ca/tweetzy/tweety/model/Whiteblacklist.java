@@ -1,14 +1,13 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.Valid;
+import lombok.Getter;
+import lombok.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import ca.tweetzy.tweety.Valid;
-
-import lombok.Getter;
-import lombok.NonNull;
 
 /**
  * Represents a simple way of checking for whitelist or blacklist according

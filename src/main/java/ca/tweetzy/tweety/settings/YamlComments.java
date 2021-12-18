@@ -1,32 +1,21 @@
 package ca.tweetzy.tweety.settings;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.Remain;
+import lombok.NonNull;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import lombok.NonNull;
+import javax.annotation.Nullable;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * A class to update/add new sections/keys to your config while keeping your current values and keeping your comments

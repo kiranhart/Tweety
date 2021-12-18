@@ -1,20 +1,7 @@
 package ca.tweetzy.tweety.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.*;
 import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.RandomUtil;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictList;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.ChatPaginator;
@@ -23,8 +10,11 @@ import ca.tweetzy.tweety.model.SimpleComponent;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleSettings;
-
 import lombok.Getter;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.*;
 
 /**
  * A command group contains a set of different subcommands

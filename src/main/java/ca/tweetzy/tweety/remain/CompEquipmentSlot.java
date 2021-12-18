@@ -1,19 +1,18 @@
 package ca.tweetzy.tweety.remain;
 
-import javax.annotation.Nullable;
-
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.exception.TweetyException;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.exception.TweetyException;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import javax.annotation.Nullable;
 
 /**
  * Represents {@link EquipmentSlot}

@@ -1,5 +1,10 @@
 package ca.tweetzy.tweety.remain.nbt;
 
+import ca.tweetzy.tweety.exception.TweetyException;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -8,11 +13,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Set;
-
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.meta.ItemMeta;
-import ca.tweetzy.tweety.exception.TweetyException;
 
 /**
  * Utility class for translating NBTApi calls to reflections into NMS code All

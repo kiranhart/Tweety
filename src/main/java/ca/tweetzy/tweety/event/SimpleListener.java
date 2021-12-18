@@ -1,14 +1,5 @@
 package ca.tweetzy.tweety.event;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.plugin.EventExecutor;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Messenger;
 import ca.tweetzy.tweety.PlayerUtil;
@@ -19,10 +10,14 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.Variables;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.*;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.plugin.EventExecutor;
 
 /**
  * A simply way of allowing plugin to change the event listening priority

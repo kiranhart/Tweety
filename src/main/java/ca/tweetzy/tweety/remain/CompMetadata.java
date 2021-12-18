@@ -1,23 +1,5 @@
 package ca.tweetzy.tweety.remain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.block.TileState;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.metadata.Metadatable;
-import org.bukkit.persistence.PersistentDataType;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
@@ -32,12 +14,21 @@ import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.nbt.NBTCompound;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
 import ca.tweetzy.tweety.settings.YamlSectionConfig;
+import lombok.*;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.TileState;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.persistence.PersistentDataType;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import java.util.*;
 
 /**
  * Utility class for persistent metadata manipulation

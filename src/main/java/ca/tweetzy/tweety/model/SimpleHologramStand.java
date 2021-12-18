@@ -1,12 +1,11 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
-import ca.tweetzy.tweety.remain.CompMaterial;
-
-import lombok.Getter;
 
 /**
  *

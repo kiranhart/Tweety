@@ -1,12 +1,12 @@
 package ca.tweetzy.tweety.conversation;
 
-import java.util.Arrays;
-import java.util.List;
-
+import ca.tweetzy.tweety.Valid;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationCanceller;
 import org.bukkit.conversations.ConversationContext;
-import ca.tweetzy.tweety.Valid;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple conversation canceller

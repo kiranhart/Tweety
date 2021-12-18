@@ -1,17 +1,16 @@
 package ca.tweetzy.tweety.menu.button;
 
-import java.util.concurrent.Callable;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.remain.CompMaterial;
-
 import lombok.Getter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.concurrent.Callable;
 
 /**
  * A button that opens another menu

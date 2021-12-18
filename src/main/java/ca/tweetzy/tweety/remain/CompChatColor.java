@@ -1,20 +1,15 @@
 package ca.tweetzy.tweety.remain;
 
-import java.awt.Color;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-
 import ca.tweetzy.tweety.ItemUtil;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.Valid;
-
 import lombok.Getter;
 import lombok.NonNull;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * Simplistic enumeration of all supported color values for chat.

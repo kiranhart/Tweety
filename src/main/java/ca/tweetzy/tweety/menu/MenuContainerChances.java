@@ -1,10 +1,5 @@
 package ca.tweetzy.tweety.menu;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
 import ca.tweetzy.tweety.Valid;
@@ -16,11 +11,15 @@ import ca.tweetzy.tweety.menu.model.MenuClickLocation;
 import ca.tweetzy.tweety.menu.model.MenuQuantity;
 import ca.tweetzy.tweety.model.Tuple;
 import ca.tweetzy.tweety.remain.CompMaterial;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * A menu that lets players put items into the container and save them.

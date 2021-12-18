@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.exception;
 
 import ca.tweetzy.tweety.debug.Debugger;
-
 import lombok.Getter;
 import lombok.Setter;
 

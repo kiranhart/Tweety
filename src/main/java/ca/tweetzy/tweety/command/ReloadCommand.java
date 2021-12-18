@@ -1,13 +1,13 @@
 package ca.tweetzy.tweety.command;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleLocalization.Commands;
 import ca.tweetzy.tweety.settings.SimpleYaml;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple predefined sub-command for quickly reloading the plugin

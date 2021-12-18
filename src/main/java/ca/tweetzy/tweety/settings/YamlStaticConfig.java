@@ -1,21 +1,5 @@
 package ca.tweetzy.tweety.settings;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import org.bukkit.configuration.file.FileConfiguration;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
@@ -31,8 +15,17 @@ import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.YamlConfig.CasusHelper;
 import ca.tweetzy.tweety.settings.YamlConfig.TitleHelper;
-
 import lombok.Setter;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * A special case {@link YamlConfig} that allows static access to this config. This is unsafe

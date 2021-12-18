@@ -1,17 +1,16 @@
 package ca.tweetzy.tweety.visual;
 
-import java.util.List;
-
+import ca.tweetzy.tweety.menu.tool.BlockTool;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import ca.tweetzy.tweety.menu.tool.BlockTool;
-import ca.tweetzy.tweety.remain.CompMaterial;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import java.util.List;
 
 /**
  * A class that can visualize selection of blocks in the arena

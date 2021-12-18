@@ -1,5 +1,20 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.event.RegionScanCompleteEvent;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.Constructor;
@@ -9,22 +24,6 @@ import java.util.Arrays;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.event.RegionScanCompleteEvent;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.Remain;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * A class that has ability to scan saved regions on the disk and execute

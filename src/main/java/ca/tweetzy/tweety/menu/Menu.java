@@ -1,30 +1,7 @@
 package ca.tweetzy.tweety.menu;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.Messenger;
-import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.*;
 import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.event.MenuCloseEvent;
 import ca.tweetzy.tweety.event.MenuOpenEvent;
@@ -43,11 +20,26 @@ import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompSound;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The core class of Menu. Represents a simple menu.

@@ -1,28 +1,23 @@
 package ca.tweetzy.tweety.model;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-
-import java.io.File;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchEvent.Kind;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.scheduler.BukkitTask;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
-
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.io.File;
+import java.nio.file.*;
+import java.nio.file.WatchEvent.Kind;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 @Getter(value = AccessLevel.PROTECTED)
 public abstract class FolderWatcher extends Thread {

@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import java.lang.reflect.Method;
-
 import ca.tweetzy.tweety.exception.TweetyException;
+
+import java.lang.reflect.Method;
 
 final class CheckUtil {
 

@@ -1,13 +1,12 @@
 package ca.tweetzy.tweety.model;
 
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
-
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * Represents a runnable timer task that counts down to 0 and stops

@@ -1,14 +1,11 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.NonNull;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,17 +19,10 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ca.tweetzy.tweety.ChatUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.NonNull;
-import net.md_5.bungee.api.ChatColor;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * Represents a simple way of getting your own enchantments into Minecraft

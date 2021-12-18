@@ -1,5 +1,17 @@
 package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.GeoAPI.GeoResponse;
+import ca.tweetzy.tweety.collection.StrictList;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleSettings;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,23 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.GeoAPI;
-import ca.tweetzy.tweety.GeoAPI.GeoResponse;
-import ca.tweetzy.tweety.Messenger;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleSettings;
 
 /**
  * A simple engine that replaces variables in a message.

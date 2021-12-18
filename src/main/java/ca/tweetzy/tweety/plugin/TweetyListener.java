@@ -1,8 +1,9 @@
 package ca.tweetzy.tweety.plugin;
 
-import java.util.List;
-import java.util.Map;
-
+import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.model.*;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,18 +12,9 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServiceRegisterEvent;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.Messenger;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.model.ChatPaginator;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.SimpleComponent;
-import ca.tweetzy.tweety.model.SimpleScoreboard;
-import ca.tweetzy.tweety.model.SpigotUpdater;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Listens for some events we handle for you automatically

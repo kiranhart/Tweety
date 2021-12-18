@@ -1,14 +1,5 @@
 package ca.tweetzy.tweety;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffectType;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.SerializeUtil.EnchantmentWrapper;
 import ca.tweetzy.tweety.SerializeUtil.PotionWrapper;
@@ -16,10 +7,18 @@ import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompChatColor;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for managing items.

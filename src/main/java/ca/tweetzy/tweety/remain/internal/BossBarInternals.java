@@ -1,8 +1,14 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import java.util.HashMap;
-import java.util.UUID;
-
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompBarColor;
+import ca.tweetzy.tweety.remain.CompBarStyle;
+import ca.tweetzy.tweety.remain.Remain;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -15,16 +21,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.PluginDisableEvent;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompBarColor;
-import ca.tweetzy.tweety.remain.CompBarStyle;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.Getter;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * The classes handling Boss Bar cross-server compatibility are based off of the

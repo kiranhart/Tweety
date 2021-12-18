@@ -1,10 +1,9 @@
 package ca.tweetzy.tweety.plugin;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.LogRecord;
-
+import ca.tweetzy.tweety.settings.SimpleSettings;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -14,11 +13,11 @@ import org.apache.logging.log4j.message.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
-import ca.tweetzy.tweety.settings.SimpleSettings;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.LogRecord;
 
 /**
  * Represents the console filtering module

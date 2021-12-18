@@ -1,12 +1,11 @@
 package ca.tweetzy.tweety.event;
 
+import ca.tweetzy.tweety.menu.tool.Rocket;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
-import ca.tweetzy.tweety.menu.tool.Rocket;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * The event that is triggered when a {@link Rocket} explodes.

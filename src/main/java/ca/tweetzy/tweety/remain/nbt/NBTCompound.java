@@ -1,5 +1,8 @@
 package ca.tweetzy.tweety.remain.nbt;
 
+import ca.tweetzy.tweety.exception.TweetyException;
+import org.bukkit.inventory.ItemStack;
+
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -8,9 +11,6 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.exception.TweetyException;
 
 /**
  * Base class representing NMS Compounds. For a standalone implementation check

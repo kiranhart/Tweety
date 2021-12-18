@@ -1,16 +1,15 @@
 package ca.tweetzy.tweety.model;
 
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.CompSound;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 /**
  * A class holding a sound, volume and a pitch

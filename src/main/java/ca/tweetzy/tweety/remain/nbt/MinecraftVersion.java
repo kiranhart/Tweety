@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import org.bukkit.Bukkit;
 import ca.tweetzy.tweety.Common;
+import org.bukkit.Bukkit;
 
 /**
  * This class acts as the "Brain" of the NBTApi. It contains the main logger for

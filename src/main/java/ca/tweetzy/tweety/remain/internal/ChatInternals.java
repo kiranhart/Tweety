@@ -1,11 +1,5 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
@@ -15,6 +9,12 @@ import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.remain.Remain;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * Reflection class for handling chat-related methods

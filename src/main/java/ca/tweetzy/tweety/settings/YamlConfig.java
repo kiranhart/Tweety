@@ -1,28 +1,5 @@
 package ca.tweetzy.tweety.settings;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.SerializeUtil;
@@ -33,23 +10,25 @@ import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.BoxedMessage;
-import ca.tweetzy.tweety.model.ConfigSerializable;
-import ca.tweetzy.tweety.model.IsInList;
-import ca.tweetzy.tweety.model.SimpleSound;
-import ca.tweetzy.tweety.model.SimpleTime;
-import ca.tweetzy.tweety.model.Tuple;
+import ca.tweetzy.tweety.model.*;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
+
+import java.io.*;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * The core configuration class. Manages all settings files.

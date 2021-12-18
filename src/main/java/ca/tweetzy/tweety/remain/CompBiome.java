@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.remain;
 
-import java.util.Map.Entry;
-
-import org.bukkit.block.Biome;
 import ca.tweetzy.tweety.collection.StrictMap;
+import org.bukkit.block.Biome;
+
+import java.util.Map.Entry;
 
 /**
  * A simple class for getting biome ID for legacy biomes.

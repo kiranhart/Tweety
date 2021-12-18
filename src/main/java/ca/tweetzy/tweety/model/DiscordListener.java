@@ -1,35 +1,17 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
-
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.JDA;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.User;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.HierarchyException;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -37,6 +19,13 @@ import github.scarsz.discordsrv.util.WebhookUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public abstract class DiscordListener implements Listener {
 

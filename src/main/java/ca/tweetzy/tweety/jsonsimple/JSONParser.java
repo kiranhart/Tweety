@@ -203,16 +203,15 @@
  */
 package ca.tweetzy.tweety.jsonsimple;
 
+import ca.tweetzy.tweety.exception.TweetyException;
+import lombok.Getter;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import ca.tweetzy.tweety.exception.TweetyException;
-
-import lombok.Getter;
 
 /**
  * Parses JSON data (<u>not</u> thread-safe).

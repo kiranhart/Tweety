@@ -1,13 +1,13 @@
 package ca.tweetzy.tweety.remain.nbt;
 
+import ca.tweetzy.tweety.exception.TweetyException;
+import org.bukkit.inventory.ItemStack;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.UUID;
-
-import org.bukkit.inventory.ItemStack;
-import ca.tweetzy.tweety.exception.TweetyException;
 
 /**
  * This class caches method reflections, keeps track of method name changes between versions and allows early checking for problems

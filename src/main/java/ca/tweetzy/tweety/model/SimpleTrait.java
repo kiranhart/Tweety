@@ -1,13 +1,9 @@
 package ca.tweetzy.tweety.model;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.ClickType;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Messenger;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.EventHandledException;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +12,9 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.ClickType;
 
 /**
  * This is a trait that will be applied to a NPC using the /trait killboss command. Each NPC gets its own instance of this class.

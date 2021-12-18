@@ -10,32 +10,8 @@
  */
 package ca.tweetzy.tweety.plugin;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.Messenger;
-import ca.tweetzy.tweety.BungeeUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.*;
 import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.annotation.AutoRegister;
 import ca.tweetzy.tweety.bungee.BungeeListener;
 import ca.tweetzy.tweety.command.SimpleCommand;
@@ -49,24 +25,32 @@ import ca.tweetzy.tweety.menu.MenuListener;
 import ca.tweetzy.tweety.menu.tool.Tool;
 import ca.tweetzy.tweety.menu.tool.ToolsListener;
 import ca.tweetzy.tweety.metrics.Metrics;
-import ca.tweetzy.tweety.model.DiscordListener;
-import ca.tweetzy.tweety.model.FolderWatcher;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.JavaScriptExecutor;
-import ca.tweetzy.tweety.model.SimpleHologram;
-import ca.tweetzy.tweety.model.SimpleScoreboard;
-import ca.tweetzy.tweety.model.SpigotUpdater;
+import ca.tweetzy.tweety.model.*;
 import ca.tweetzy.tweety.remain.CompMetadata;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.Lang;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
-import ca.tweetzy.tweety.settings.SimpleSettings;
-import ca.tweetzy.tweety.settings.YamlConfig;
-import ca.tweetzy.tweety.settings.YamlStaticConfig;
+import ca.tweetzy.tweety.settings.*;
 import ca.tweetzy.tweety.visual.BlockVisualizer;
-
 import lombok.Getter;
 import lombok.NonNull;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a basic Java plugin using enhanced library functionality

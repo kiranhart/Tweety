@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import java.util.Map;
-
 import org.bukkit.persistence.PersistentDataContainer;
+
+import java.util.Map;
 
 public class NBTPersistentDataContainer extends NBTCompound {
 

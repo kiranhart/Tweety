@@ -1,8 +1,5 @@
 package ca.tweetzy.tweety.settings;
 
-import java.util.Arrays;
-import java.util.List;
-
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Messenger;
 import ca.tweetzy.tweety.SerializeUtil;
@@ -11,6 +8,9 @@ import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.JavaScriptExecutor;
 import ca.tweetzy.tweety.model.SimpleComponent;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents the new way of internalization, with the greatest

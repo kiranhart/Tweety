@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.remain.internal;
 
+import ca.tweetzy.tweety.ReflectionUtil;
+import org.bukkit.Location;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import org.bukkit.Location;
-import ca.tweetzy.tweety.ReflectionUtil;
 
 /**
  * Represents a fake dragon entity for Minecraft 1.8 protocol hack

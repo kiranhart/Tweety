@@ -1,12 +1,12 @@
 package ca.tweetzy.tweety.plugin;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.StrictList;
 import ca.tweetzy.tweety.command.SimpleCommandGroup;
 import ca.tweetzy.tweety.event.SimpleListener;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
 /**
  * A simple way of registering events and other things that

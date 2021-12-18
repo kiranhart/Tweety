@@ -1,12 +1,11 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import org.bukkit.Location;
 import ca.tweetzy.tweety.remain.CompBarColor;
 import ca.tweetzy.tweety.remain.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
 
 /**
  * Represents the fake dragon entity
