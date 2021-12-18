@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Listens for some events we handle for you automatically
  */
-final class TweetyListener implements Listener {
+public final class TweetyListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onQuit(PlayerQuitEvent event) {
