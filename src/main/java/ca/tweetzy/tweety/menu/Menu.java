@@ -862,6 +862,10 @@ public abstract class Menu {
 			PlayerUtil.updateInventoryTitle(this.viewer, title);
 	}
 
+	protected boolean allowShiftClick() {
+		return false;
+	}
+
 	/**
 	 * Return the parent menu or null
 	 *

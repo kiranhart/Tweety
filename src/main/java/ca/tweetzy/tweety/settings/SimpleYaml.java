@@ -57,9 +57,7 @@ public final class SimpleYaml extends FileConfiguration {
 			}
 
 			this.yaml = yaml;
-		}
-
-		else
+		} else
 			this.yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
 	}
 
@@ -73,11 +71,11 @@ public final class SimpleYaml extends FileConfiguration {
 	/**
 	 * Return the internal map with all value-key pairs stored in the memory
 	 *
-	 * @deprecated potentially dangerous
 	 * @return
+	 * @deprecated potentially dangerous
 	 */
 	@Deprecated
-	public Map<String, Object> getMap() {
+	public Map getMap() {
 		return this.map;
 	}
 
@@ -89,7 +87,7 @@ public final class SimpleYaml extends FileConfiguration {
 	public String saveToString(Map<String, Object> values) {
 		yamlOptions.setIndent(2);
 		yamlOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		yamlOptions.setWidth(4096); // Tweety: Do not wrap long lines
+		yamlOptions.setWidth(4096); // Foundation: Do not wrap long lines
 
 		yamlRepresenter.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
@@ -238,7 +236,6 @@ public final class SimpleYaml extends FileConfiguration {
 
 	/**
 	 * Loads YAML configuration from file, failing if anything happens or the file does not exist
-	 *
 	 *
 	 * @param file
 	 * @return
