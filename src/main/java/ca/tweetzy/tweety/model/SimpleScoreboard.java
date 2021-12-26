@@ -1,15 +1,10 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.RandomUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.Remain;
-import lombok.*;
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,11 +13,20 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.RandomUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.collection.StrictList;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.Remain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 public class SimpleScoreboard {
 
@@ -324,7 +328,7 @@ public class SimpleScoreboard {
 	 * @return
 	 */
 	private final String fixDuplicates(final StrictList<String> duplicates, String message) {
-		message = StringUtils.substring(message, 0, 40);
+		message = message.substring(0, 40);
 
 		final boolean cut = MinecraftVersion.olderThan(V.v1_8);
 

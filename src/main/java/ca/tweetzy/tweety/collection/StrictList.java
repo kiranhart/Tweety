@@ -1,13 +1,14 @@
 package ca.tweetzy.tweety.collection;
 
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import ca.tweetzy.tweety.collection.StrictCollection;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.SerializeUtil;
+import ca.tweetzy.tweety.Valid;
 
 /**
  * Strict list that only allows to remove elements that are contained within, or add elements that are not.
@@ -285,7 +286,7 @@ public final class StrictList<E> extends StrictCollection implements Iterable<E>
 	 * @return
 	 */
 	public String join(String separator) {
-		return StringUtils.join(list, separator);
+		return Common.join(list, separator);
 	}
 
 	/**

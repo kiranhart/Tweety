@@ -1,16 +1,16 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.ChatUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.remain.Remain;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.StringUtils;
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ca.tweetzy.tweety.ChatUtil;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.remain.Remain;
 
-import java.util.Arrays;
-import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Represents a chat message surrounded by chat-wide line on the top and bottom:
@@ -184,12 +184,12 @@ public final class BoxedMessage {
 	}
 
 	public String getMessage() {
-		return StringUtils.join(messages, "\n");
+		return String.join("\n", messages);
 	}
 
 	@Override
 	public String toString() {
-		return "Boxed{" + StringUtils.join(messages, ", ") + "}";
+		return "Boxed{" + String.join(", ", messages) + "}";
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -340,7 +340,7 @@ public final class BoxedMessage {
 		 * @return
 		 */
 		public final BoxedMessage replace(Object... replacements) {
-			String message = StringUtils.join(messages, "%delimiter%");
+			String message = String.join("%delimiter%", messages);
 
 			for (int i = 0; i < variables.length; i++) {
 				String find = variables[i];

@@ -68,17 +68,6 @@ public final class SimpleYaml extends FileConfiguration {
 		this.map.clear();
 	}
 
-	/**
-	 * Return the internal map with all value-key pairs stored in the memory
-	 *
-	 * @return
-	 * @deprecated potentially dangerous
-	 */
-	@Deprecated
-	public Map getMap() {
-		return this.map;
-	}
-
 	@Override
 	public String saveToString() {
 		return this.saveToString(getValues(false));
@@ -87,7 +76,7 @@ public final class SimpleYaml extends FileConfiguration {
 	public String saveToString(Map<String, Object> values) {
 		yamlOptions.setIndent(2);
 		yamlOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		yamlOptions.setWidth(4096); // Foundation: Do not wrap long lines
+		yamlOptions.setWidth(4096); // Tweety: Do not wrap long lines
 
 		yamlRepresenter.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 

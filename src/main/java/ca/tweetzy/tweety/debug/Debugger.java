@@ -1,5 +1,13 @@
 package ca.tweetzy.tweety.debug;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.TimeUtil;
@@ -7,15 +15,11 @@ import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleSettings;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * Utility class for solving problems and errors
@@ -112,7 +116,7 @@ public final class Debugger {
 		if (parts == null)
 			return;
 
-		final String whole = StringUtils.join(parts, "");
+		final String whole = String.join("", parts);
 
 		for (final String message : whole.split("\n"))
 			debug(section, message);
@@ -155,11 +159,11 @@ public final class Debugger {
 				"------------------------------------[ " + TimeUtil.getFormattedDate() + " ]-----------------------------------",
 				header,
 				"Running " + Bukkit.getName() + " " + Bukkit.getBukkitVersion() + " and Java " + System.getProperty("java.version"),
-				"Plugins: " + StringUtils.join(Bukkit.getPluginManager().getPlugins(), ", "),
+				"Plugins: " + Common.join(Bukkit.getPluginManager().getPlugins(), ", "),
 				"----------------------------------------------------------------------------------------------");
 
 		// Write additional data
-		if (messages != null && !StringUtils.join(messages, "").isEmpty()) {
+		if (messages != null && !String.join("", messages).isEmpty()) {
 			fill(lines, "\nMore Information: ");
 			fill(lines, messages);
 		}

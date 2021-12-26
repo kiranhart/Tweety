@@ -1,5 +1,21 @@
 package ca.tweetzy.tweety.model;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import ca.tweetzy.tweety.model.LimitedQueue;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.scheduler.BukkitRunnable;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
@@ -8,22 +24,9 @@ import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
 import ca.tweetzy.tweety.event.RegionScanCompleteEvent;
 import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Queue;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A class that has ability to scan saved regions on the disk and execute
@@ -352,7 +355,7 @@ public abstract class OfflineRegionScanner {
 	public static int getEstimatedWaitTimeSec(World world) {
 		final File[] files = getRegionFiles(world);
 
-		return (WAIT_TIME_BETWEEN_SCAN_SECONDS + 2) * files.length;
+		return (int) (Math.round(WAIT_TIME_BETWEEN_SCAN_SECONDS * 1.5D) * files.length);
 	}
 }
 
@@ -364,7 +367,7 @@ class RegionAccessor {
 	private static Constructor<?> regionFileConstructor;
 	private static Method isChunkSaved;
 
-	private static final boolean atleast1_13, atleast1_14, atleast1_15, atleast1_16;
+	private static final boolean atleast1_13, atleast1_14, atleast1_15, atleast1_16, atleast1_18;
 	private static final String saveMethodName;
 
 	static {
@@ -372,13 +375,19 @@ class RegionAccessor {
 		atleast1_14 = MinecraftVersion.atLeast(V.v1_14);
 		atleast1_15 = MinecraftVersion.atLeast(V.v1_15);
 		atleast1_16 = MinecraftVersion.atLeast(V.v1_16);
+		atleast1_18 = MinecraftVersion.atLeast(V.v1_18);
 
 		saveMethodName = atleast1_13 ? "close" : "c";
 
 		try {
 			final Class<?> regionFileClass = ReflectionUtil.getNMSClass("RegionFile", "net.minecraft.world.level.chunk.storage.RegionFile");
-			regionFileConstructor = atleast1_16 ? regionFileClass.getConstructor(File.class, File.class, boolean.class) : atleast1_15 ? regionFileClass.getConstructor(File.class, File.class) : regionFileClass.getConstructor(File.class);
-			isChunkSaved = atleast1_14 ? regionFileClass.getMethod("b", ReflectionUtil.getNMSClass("ChunkCoordIntPair", "net.minecraft.world.level.ChunkCoordIntPair")) : regionFileClass.getMethod(atleast1_13 ? "b" : "c", int.class, int.class);
+			regionFileConstructor = atleast1_18 ? regionFileClass.getConstructor(Path.class, Path.class, boolean.class)
+					: atleast1_16 ? regionFileClass.getConstructor(File.class, File.class, boolean.class)
+					: atleast1_15 ? regionFileClass.getConstructor(File.class, File.class)
+					: regionFileClass.getConstructor(File.class);
+
+			isChunkSaved = atleast1_14 ? regionFileClass.getMethod("b", ReflectionUtil.getNMSClass("ChunkCoordIntPair", "net.minecraft.world.level.ChunkCoordIntPair"))
+					: regionFileClass.getMethod(atleast1_13 ? "b" : "c", int.class, int.class);
 
 		} catch (final ReflectiveOperationException ex) {
 			Remain.sneaky(ex);
@@ -389,7 +398,11 @@ class RegionAccessor {
 		try {
 			final File container = new File(Bukkit.getWorldContainer(), worldName);
 
-			return atleast1_16 ? regionFileConstructor.newInstance(file, container, true) : atleast1_15 ? regionFileConstructor.newInstance(file, container) : regionFileConstructor.newInstance(file);
+			return atleast1_18 ? regionFileConstructor.newInstance(file.toPath(), container.toPath(), false)
+					: atleast1_16 ? regionFileConstructor.newInstance(file, container, false)
+					: atleast1_15 ? regionFileConstructor.newInstance(file, container)
+					: regionFileConstructor.newInstance(file);
+
 		} catch (final Throwable ex) {
 			throw new RuntimeException("Could not create region file from " + file, ex);
 		}
@@ -398,7 +411,8 @@ class RegionAccessor {
 	static boolean isChunkSaved(Object region, int x, int z) {
 		try {
 			if (MinecraftVersion.newerThan(V.v1_13)) {
-				final Object chunkCoordinates = ReflectionUtil.getNMSClass("ChunkCoordIntPair", "net.minecraft.world.level.ChunkCoordIntPair").getConstructor(int.class, int.class).newInstance(x, z);
+				final Object chunkCoordinates = ReflectionUtil.getNMSClass("ChunkCoordIntPair", "net.minecraft.world.level.ChunkCoordIntPair")
+						.getConstructor(int.class, int.class).newInstance(x, z);
 
 				return (boolean) isChunkSaved.invoke(region, chunkCoordinates);
 			}

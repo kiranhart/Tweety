@@ -1,21 +1,25 @@
 package ca.tweetzy.tweety;
 
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.model.Whiteblacklist;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-
-import java.awt.*;
+import java.awt.Color;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
+
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MathUtil;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.RandomUtil;
+import org.bukkit.ChatColor;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.model.Whiteblacklist;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class for managing in-game chat.
@@ -550,7 +554,7 @@ public final class ChatUtil {
 			if (isDomain(parts[i]))
 				parts[i] = parts[i].toLowerCase();
 
-		final String msg = StringUtils.join(parts, " ");
+		final String msg = String.join(" ", parts);
 
 		for (int i = 0; i < msg.length(); i++)
 			if (Character.isUpperCase(msg.charAt(i)) && Character.isLetter(msg.charAt(i)))
@@ -572,7 +576,7 @@ public final class ChatUtil {
 			if (isDomain(parts[i]))
 				parts[i] = parts[i].toLowerCase();
 
-		final String msg = StringUtils.join(parts, " ");
+		final String msg = String.join(" ", parts);
 
 		for (int i = 0; i < msg.length(); i++)
 			if (Character.isUpperCase(msg.charAt(i)) && Character.isLetter(msg.charAt(i)))

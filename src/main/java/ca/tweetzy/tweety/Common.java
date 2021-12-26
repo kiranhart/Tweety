@@ -1,26 +1,25 @@
 package ca.tweetzy.tweety;
 
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.exception.RegexTimeoutException;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.DiscordSender;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.Replacer;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
-import ca.tweetzy.tweety.settings.SimpleSettings;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.lang.StringUtils;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -39,16 +38,27 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictList;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.debug.Debugger;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.exception.RegexTimeoutException;
+import ca.tweetzy.tweety.model.DiscordSender;
+import ca.tweetzy.tweety.model.HookManager;
+import ca.tweetzy.tweety.model.Replacer;
+import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
+import ca.tweetzy.tweety.settings.SimpleSettings;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import net.md_5.bungee.api.chat.TextComponent;
 
 /**
  * Our main utility class hosting a large variety of different convenience functions
@@ -548,7 +558,7 @@ public final class Common {
 	 * @return the colored message
 	 */
 	public static String colorize(final String... messages) {
-		return colorize(StringUtils.join(messages, "\n"));
+		return colorize(String.join("\n", messages));
 	}
 
 	/**
@@ -1255,7 +1265,7 @@ public final class Common {
 			return;
 
 		if (CONSOLE_SENDER == null)
-			throw new TweetyException("Failed to initialize Console Sender, are you running Tweety under a Bukkit/Spigot server?");
+			throw new TweetyException("Failed to initialize Console Sender, are you running Foundation under a Bukkit/Spigot server?");
 
 		for (String message : messages) {
 			if (message.equals("none"))
@@ -1530,6 +1540,60 @@ public final class Common {
 				"on there when testing: https://i.imgur.com/PRR5Rfn.png");
 	}
 
+	/**
+	 * <p>Capitalizes all the delimiter separated words in a String.
+	 * Only the first letter of each word is changed. To convert the 
+	 * rest of each word to lowercase at the same time, 
+	 * use {@link #capitalizeFully(String, char[])}.</p>
+	 *
+	 * <p>The delimiters represent a set of characters understood to separate words.
+	 * The first string character and the first non-delimiter character after a
+	 * delimiter will be capitalized. </p>
+	 *
+	 * <p>A <code>null</code> input String returns <code>null</code>.
+	 * Capitalization uses the unicode title case, normally equivalent to
+	 * upper case.</p>
+	 *
+	 * <pre>
+	 * WordUtils.capitalize(null, *)            = null
+	 * WordUtils.capitalize("", *)              = ""
+	 * WordUtils.capitalize(*, new char[0])     = *
+	 * WordUtils.capitalize("i am fine", null)  = "I Am Fine"
+	 * WordUtils.capitalize("i aM.fine", {'.'}) = "I aM.Fine"
+	 * </pre>
+	 *
+	 * @param message  the String to capitalize, may be null
+	 *
+	 * @return capitalized String, <code>null</code> if null String input
+	 */
+	public static String capitalize(String message) {
+
+		if (message == null || message.isEmpty())
+			return message;
+
+		final int strLen = message.length();
+		final StringBuffer buffer = new StringBuffer(strLen);
+		boolean capitalizeNext = true;
+
+		for (int i = 0; i < strLen; i++) {
+			final char ch = message.charAt(i);
+
+			if (Character.isWhitespace(ch)) {
+				buffer.append(ch);
+				capitalizeNext = true;
+
+			} else if (capitalizeNext) {
+				buffer.append(Character.toTitleCase(ch));
+				capitalizeNext = false;
+
+			} else {
+				buffer.append(ch);
+			}
+		}
+
+		return buffer.toString();
+	}
+
 	// ------------------------------------------------------------------------------------------------------------
 	// Joining strings and lists
 	// ------------------------------------------------------------------------------------------------------------
@@ -1638,6 +1702,19 @@ public final class Common {
 	 */
 	public static <T> String join(final Iterable<T> array) {
 		return array == null ? "null" : join(array, ", ");
+	}
+
+	/**
+	 * A convenience method for converting list of objects into array of strings
+	 * We invoke "toString" for each object given it is not null, or return "" if it is
+	 *
+	 * @param <T>
+	 * @param array
+	 * @param delimiter
+	 * @return
+	 */
+	public static <T> String join(final T[] array, final String delimiter) {
+		return join(array, delimiter, object -> object == null ? "" : simplify(object));
 	}
 
 	/**

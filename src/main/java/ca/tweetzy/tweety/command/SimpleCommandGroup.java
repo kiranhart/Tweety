@@ -250,9 +250,9 @@ public abstract class SimpleCommandGroup {
 		return false;
 	}
 
-	// Return the TM symbol in case we have it for kangarko's plugins
+	// Return the TM symbol in case we have it for Kiran's plugins
 	private String getTrademark() {
-		return SimplePlugin.getInstance().getDescription().getAuthors().contains("kangarko") ? getHeaderPrefix() + "&8\u2122" : "";
+		return SimplePlugin.getInstance().getDescription().getAuthors().contains("Kiran Hart") ? getHeaderPrefix() + "&8\u2122" : "";
 	}
 
 	/**
@@ -263,7 +263,7 @@ public abstract class SimpleCommandGroup {
 	 * @return
 	 */
 	protected String getCredits() {
-		return "&7Visit &fmineacademy.org &7for more information.";
+		return "&7Visit &fdocs.tweetzy.ca &7for more information.";
 	}
 
 	/**
