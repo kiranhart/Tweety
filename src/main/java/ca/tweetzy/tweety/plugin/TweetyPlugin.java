@@ -1,13 +1,3 @@
-/**
- * (c) 2013 - 2019 - All rights reserved.
- * <p>
- * Do not share, copy, reproduce or sell any part of this library
- * unless you have written permission from MineAcademy.org.
- * All infringements will be prosecuted.
- * <p>
- * If you are the personal owner of the MineAcademy.org End User License
- * then you may use it for your own use in plugins but not for any other purpose.
- */
 package ca.tweetzy.tweety.plugin;
 
 import ca.tweetzy.tweety.*;
@@ -55,7 +45,7 @@ import java.util.Set;
 /**
  * Represents a basic Java plugin using enhanced library functionality
  */
-public abstract class SimplePlugin extends JavaPlugin {
+public abstract class TweetyPlugin extends JavaPlugin {
 
 	// ----------------------------------------------------------------------------------------
 	// Static
@@ -64,7 +54,7 @@ public abstract class SimplePlugin extends JavaPlugin {
 	/**
 	 * The instance of this plugin
 	 */
-	private static volatile SimplePlugin instance;
+	private static volatile TweetyPlugin instance;
 
 	/**
 	 * Shortcut for getDescription().getVersion()
@@ -105,17 +95,17 @@ public abstract class SimplePlugin extends JavaPlugin {
 	private static volatile boolean reloading = false;
 
 	/**
-	 * Returns the instance of {@link SimplePlugin}.
+	 * Returns the instance of {@link TweetyPlugin}.
 	 * <p>
-	 * It is recommended to override this in your own {@link SimplePlugin}
+	 * It is recommended to override this in your own {@link TweetyPlugin}
 	 * implementation so you will get the instance of that, directly.
 	 *
 	 * @return this instance
 	 */
-	public static SimplePlugin getInstance() {
+	public static TweetyPlugin getInstance() {
 		if (instance == null) {
 			try {
-				instance = JavaPlugin.getPlugin(SimplePlugin.class);
+				instance = JavaPlugin.getPlugin(TweetyPlugin.class);
 
 			} catch (final IllegalStateException ex) {
 				if (Bukkit.getPluginManager().getPlugin("PlugMan") != null)
@@ -342,7 +332,7 @@ public abstract class SimplePlugin extends JavaPlugin {
 	 * Register a simple bungee class as a custom bungeecord listener,
 	 * for sample implementation you can see the SimpleBungee field at:
 	 * https://github.com/kangarko/PluginTemplate/blob/main/src/main/java/org/mineacademy/template/PluginTemplate.java
-	 *
+	 * <p>
 	 * DO NOT use this if you only have that one field there with a getter, we already register it automatically,
 	 * this method is intended to be used if you have multiple fields there and want to register multiple channels.
 	 * Then you just call this method and parse the field into it from your onReloadablesStart method.
@@ -368,7 +358,7 @@ public abstract class SimplePlugin extends JavaPlugin {
 	}
 
 	/**
-	 * The exception enabling us to check if for some reason {@link SimplePlugin}'s instance
+	 * The exception enabling us to check if for some reason {@link TweetyPlugin}'s instance
 	 * does not match this class' instance, which is most likely caused by wrong repackaging
 	 * or no repackaging at all (two plugins using Tweety must both have different packages
 	 * for their own Tweety version).
@@ -379,7 +369,7 @@ public abstract class SimplePlugin extends JavaPlugin {
 		private static final long serialVersionUID = 1L;
 
 		public ShadingException() {
-			if (!SimplePlugin.getNamed().equals(getDescription().getName())) {
+			if (!TweetyPlugin.getNamed().equals(getDescription().getName())) {
 				Bukkit.getLogger().severe(Common.consoleLine());
 				Bukkit.getLogger().severe("We have a class path problem in the Tweety library");
 				Bukkit.getLogger().severe("preventing " + getDescription().getName() + " from loading correctly!");
@@ -389,8 +379,8 @@ public abstract class SimplePlugin extends JavaPlugin {
 				Bukkit.getLogger().severe("relocale the package! If you are testing using");
 				Bukkit.getLogger().severe("Ant, only test one plugin at the time.");
 				Bukkit.getLogger().severe("");
-				Bukkit.getLogger().severe("Possible cause: " + SimplePlugin.getNamed());
-				Bukkit.getLogger().severe("Tweety package: " + SimplePlugin.class.getPackage().getName());
+				Bukkit.getLogger().severe("Possible cause: " + TweetyPlugin.getNamed());
+				Bukkit.getLogger().severe("Tweety package: " + TweetyPlugin.class.getPackage().getName());
 				Bukkit.getLogger().severe(Common.consoleLine());
 
 				throw new TweetyException("Shading exception, see above for details.");
@@ -450,7 +440,7 @@ public abstract class SimplePlugin extends JavaPlugin {
 					"*** WARNING ***",
 					"Your Minecraft version " + MinecraftVersion.getCurrent() + " has not yet",
 					"been officialy tested with the Tweety,",
-					"the library that " + SimplePlugin.getNamed() + " plugin uses.",
+					"the library that " + TweetyPlugin.getNamed() + " plugin uses.",
 					"",
 					"Loading the plugin at your own risk...",
 					Common.consoleLine());
@@ -722,9 +712,9 @@ public abstract class SimplePlugin extends JavaPlugin {
 	/**
 	 * Convenience method for quickly registering events in all classes in your plugin that
 	 * extend the given class.
-	 *
+	 * <p>
 	 * NB: You must have a no arguments constructor otherwise it will not be registered
-	 *
+	 * <p>
 	 * TIP: Set your Debug key in your settings.yml to ["auto-register"] to see what is registered.
 	 *
 	 * @param extendingClass
@@ -787,9 +777,9 @@ public abstract class SimplePlugin extends JavaPlugin {
 	/**
 	 * Convenience method for quickly registering all command classes in your plugin that
 	 * extend the given class.
-	 *
+	 * <p>
 	 * NB: You must have a no arguments constructor otherwise it will not be registered
-	 *
+	 * <p>
 	 * TIP: Set your Debug key in your settings.yml to ["auto-register"] to see what is registered.
 	 *
 	 * @param extendingClass
@@ -925,8 +915,8 @@ public abstract class SimplePlugin extends JavaPlugin {
 	}
 
 	/**
-	 * @deprecated do not use, internal use only
 	 * @param group
+	 * @deprecated do not use, internal use only
 	 */
 	@Deprecated
 	public final void setMainCommand(SimpleCommandGroup group) {
@@ -969,7 +959,7 @@ public abstract class SimplePlugin extends JavaPlugin {
 	/**
 	 * Tweety automatically can filter console commands for you, including
 	 * messages from other plugins or the server itself, preventing unnecessary console spam.
-	 *
+	 * <p>
 	 * You can return a list of messages that will be matched using "startsWith OR contains" method
 	 * and will be filtered.
 	 *

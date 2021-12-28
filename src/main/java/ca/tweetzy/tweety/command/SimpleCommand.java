@@ -13,7 +13,7 @@ import ca.tweetzy.tweety.model.ChatPaginator;
 import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.model.SimpleComponent;
 import ca.tweetzy.tweety.model.SimpleTime;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
@@ -50,7 +50,7 @@ public abstract class SimpleCommand extends Command {
 	 * @return
 	 */
 	protected static final String getDefaultPermission() {
-		return SimplePlugin.getNamed().toLowerCase() + ".command.{label}";
+		return TweetyPlugin.getNamed().toLowerCase() + ".command.{label}";
 	}
 
 	/**
@@ -256,7 +256,7 @@ public abstract class SimpleCommand extends Command {
 		if (oldCommand != null && unregisterOldCommand) {
 			final String owningPlugin = oldCommand.getPlugin().getName();
 
-			if (!owningPlugin.equals(SimplePlugin.getNamed()))
+			if (!owningPlugin.equals(TweetyPlugin.getNamed()))
 				Debugger.debug("command", "Command /" + getLabel() + " already (" + owningPlugin + "), overriding and unregistering /" + oldCommand.getLabel() + ", /" + String.join(", /", oldCommand.getAliases()));
 
 			Remain.unregisterCommand(oldCommand.getLabel(), unregisterOldAliases);
@@ -303,8 +303,8 @@ public abstract class SimpleCommand extends Command {
 	@Override
 	public final boolean execute(final CommandSender sender, final String label, final String[] args) {
 
-		if (SimplePlugin.isReloading() || !SimplePlugin.getInstance().isEnabled()) {
-			Common.tell(sender, SimpleLocalization.Commands.USE_WHILE_NULL.replace("{state}", (SimplePlugin.isReloading() ? SimpleLocalization.Commands.RELOADING : SimpleLocalization.Commands.DISABLED)));
+		if (TweetyPlugin.isReloading() || !TweetyPlugin.getInstance().isEnabled()) {
+			Common.tell(sender, SimpleLocalization.Commands.USE_WHILE_NULL.replace("{state}", (TweetyPlugin.isReloading() ? SimpleLocalization.Commands.RELOADING : SimpleLocalization.Commands.DISABLED)));
 
 			return false;
 		}

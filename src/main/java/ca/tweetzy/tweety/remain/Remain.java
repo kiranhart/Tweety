@@ -7,7 +7,7 @@ import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.UUIDToNameConverter;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.internal.BossBarInternals;
 import ca.tweetzy.tweety.remain.internal.ChatInternals;
 import ca.tweetzy.tweety.remain.nbt.NBTEntity;
@@ -208,7 +208,7 @@ public final class Remain {
 	 * Initialize all fields and methods automatically when we set the plugin
 	 */
 	static {
-		Valid.checkBoolean(MinecraftVersion.getCurrent().isTested(), "Your Minecraft version " + MinecraftVersion.getCurrent() + " is unsupported by " + SimplePlugin.getNamed());
+		Valid.checkBoolean(MinecraftVersion.getCurrent().isTested(), "Your Minecraft version " + MinecraftVersion.getCurrent() + " is unsupported by " + TweetyPlugin.getNamed());
 
 		// Check compatibility
 		try {
@@ -367,7 +367,7 @@ public final class Remain {
 			}
 
 		} catch (final ReflectiveOperationException ex) {
-			throw new UnsupportedOperationException("Failed to set up reflection, " + SimplePlugin.getNamed() + " won't work properly", ex);
+			throw new UnsupportedOperationException("Failed to set up reflection, " + TweetyPlugin.getNamed() + " won't work properly", ex);
 		}
 	}
 
@@ -1126,7 +1126,7 @@ public final class Remain {
 			final Constructor<PluginCommand> con = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
 			con.setAccessible(true);
 
-			return con.newInstance(label, SimplePlugin.getInstance());
+			return con.newInstance(label, TweetyPlugin.getInstance());
 
 		} catch (final ReflectiveOperationException ex) {
 			throw new TweetyException(ex, "Unable to create command: /" + label);
@@ -1701,7 +1701,7 @@ public final class Remain {
 
 		} catch (final NoSuchMethodError err) {
 			if (Bukkit.isPrimaryThread())
-				Common.log("getOfflinePlayerByUUID required two blocking calls on main thread - please notify " + SimplePlugin.getNamed() + " plugin authors.");
+				Common.log("getOfflinePlayerByUUID required two blocking calls on main thread - please notify " + TweetyPlugin.getNamed() + " plugin authors.");
 
 			final UUIDToNameConverter f = new UUIDToNameConverter(id);
 
@@ -2464,7 +2464,7 @@ public final class Remain {
 	 */
 	public static void injectServerName() {
 		final Properties properties = new Properties();
-		final File props = new File(SimplePlugin.getData().getParentFile().getParentFile(), "server.properties");
+		final File props = new File(TweetyPlugin.getData().getParentFile().getParentFile(), "server.properties");
 
 		// If user has Bungee_Server_Name in their settings, move it automatically
 		final File settingsFile = FileUtil.getFile("settings.yml");
@@ -2489,7 +2489,7 @@ public final class Remain {
 				properties.setProperty("server-name", previousName != null ? previousName : "Undefined - see mineacademy.org/server-properties to configure");
 
 				try (FileWriter fileWriter = new FileWriter(props)) {
-					properties.store(fileWriter, "Minecraft server properties\nModified by " + SimplePlugin.getNamed() + ", see mineacademy.org/server-properties for more information");
+					properties.store(fileWriter, "Minecraft server properties\nModified by " + TweetyPlugin.getNamed() + ", see mineacademy.org/server-properties for more information");
 				}
 			}
 
@@ -2816,7 +2816,7 @@ class AdvancementAccessor {
 	private final String message;
 
 	AdvancementAccessor(final String message, final String icon) {
-		this.key = new NamespacedKey(SimplePlugin.getInstance(), UUID.randomUUID().toString());
+		this.key = new NamespacedKey(TweetyPlugin.getInstance(), UUID.randomUUID().toString());
 		this.message = message;
 		this.icon = icon;
 	}

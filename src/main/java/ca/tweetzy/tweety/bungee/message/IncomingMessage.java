@@ -5,7 +5,7 @@ import ca.tweetzy.tweety.bungee.BungeeAction;
 import ca.tweetzy.tweety.bungee.BungeeListener;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
@@ -50,7 +50,7 @@ public final class IncomingMessage extends Message {
 	 * @param data
 	 */
 	public IncomingMessage(byte[] data) {
-		this(SimplePlugin.getInstance().getBungeeCord(), data);
+		this(TweetyPlugin.getInstance().getBungeeCord(), data);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public final class IncomingMessage extends Message {
 	 * @param player
 	 */
 	public void forward(Player player) {
-		player.sendPluginMessage(SimplePlugin.getInstance(), getChannel(), data);
+		player.sendPluginMessage(TweetyPlugin.getInstance(), getChannel(), data);
 
 		Debugger.debug("bungee", "Forwarding data on " + getChannel() + " channel from " + getAction() + " as " + player.getName() + " player to BungeeCord.");
 	}

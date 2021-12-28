@@ -8,14 +8,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.RandomUtil;
 import org.bukkit.ChatColor;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.model.Whiteblacklist;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompChatColor;
 
 import lombok.AccessLevel;
@@ -410,7 +406,7 @@ public final class ChatUtil {
 	 */
 	private static String removeSimilarity(String message) {
 
-		if (SimplePlugin.getInstance().similarityStripAccents())
+		if (TweetyPlugin.getInstance().similarityStripAccents())
 			message = replaceDiacritic(message);
 
 		message = Common.stripColors(message);

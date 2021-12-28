@@ -20,9 +20,6 @@ import java.util.jar.JarFile;
 
 import javax.annotation.Nullable;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.Valid;
 import org.apache.commons.lang.ClassUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -32,7 +29,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 
@@ -901,7 +898,7 @@ public final class ReflectionUtil {
 					Class<?> clazz = null;
 
 					try {
-						clazz = Class.forName(name, false, SimplePlugin.class.getClassLoader());
+						clazz = Class.forName(name, false, TweetyPlugin.class.getClassLoader());
 
 						if (extendingClass == null || (extendingClass.isAssignableFrom(clazz) && clazz != extendingClass))
 							classes.add((Class<T>) clazz);

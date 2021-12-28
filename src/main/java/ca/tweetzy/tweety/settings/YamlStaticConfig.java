@@ -10,7 +10,7 @@ import ca.tweetzy.tweety.model.BoxedMessage;
 import ca.tweetzy.tweety.model.IsInList;
 import ca.tweetzy.tweety.model.SimpleSound;
 import ca.tweetzy.tweety.model.SimpleTime;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.YamlConfig.CasusHelper;
@@ -120,13 +120,13 @@ public abstract class YamlStaticConfig {
 		boolean loadedManually = false;
 		boolean fileExists = false;
 
-		// Step 1: See if the plugin author added the class to getSettings in SimplePlugin
+		// Step 1: See if the plugin author added the class to getSettings in TweetyPlugin
 		for (final Class<? extends YamlStaticConfig> clazz : manuallyLoadedClasses)
 			if (classToPick.isAssignableFrom(clazz))
 				loadedManually = true;
 
 		// Step 2: See if there is a file found in the plugin jar
-		try (JarFile jarFile = new JarFile(SimplePlugin.getSource())) {
+		try (JarFile jarFile = new JarFile(TweetyPlugin.getSource())) {
 
 			for (final Enumeration<JarEntry> it = jarFile.entries(); it.hasMoreElements();) {
 				final JarEntry type = it.nextElement();
@@ -146,7 +146,7 @@ public abstract class YamlStaticConfig {
 		// Otherwise scan through all plugin classe
 		final List<Class<? extends YamlStaticConfig>> foundClasses = new ArrayList<>();
 
-		for (final Class<? extends YamlStaticConfig> configClass : ReflectionUtil.getClasses(SimplePlugin.getInstance(), YamlStaticConfig.class))
+		for (final Class<? extends YamlStaticConfig> configClass : ReflectionUtil.getClasses(TweetyPlugin.getInstance(), YamlStaticConfig.class))
 			if (classToPick.isAssignableFrom(configClass))
 				foundClasses.add(configClass);
 
@@ -278,7 +278,7 @@ public abstract class YamlStaticConfig {
 	private void invokeMethodsIn(final Class<?> clazz) throws Exception {
 		for (final Method m : clazz.getDeclaredMethods()) {
 
-			if (!SimplePlugin.getInstance().isEnabled())
+			if (!TweetyPlugin.getInstance().isEnabled())
 				return;
 
 			final int mod = m.getModifiers();

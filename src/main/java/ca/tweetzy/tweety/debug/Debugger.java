@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import org.bukkit.Bukkit;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.TimeUtil;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.settings.SimpleSettings;
 
 import lombok.AccessLevel;
@@ -41,10 +41,10 @@ public final class Debugger {
 	private static boolean debugModeEnabled = false;
 
 	/**
-	 * Loads debug mode, called automatically in {@link SimplePlugin}
+	 * Loads debug mode, called automatically in {@link TweetyPlugin}
 	 */
 	public static void detectDebugMode() {
-		if (new File(SimplePlugin.getData(), "debug.lock").exists()) {
+		if (new File(TweetyPlugin.getData(), "debug.lock").exists()) {
 			debugModeEnabled = true;
 
 			Bukkit.getLogger().info("Detected debug.lock file, debug features enabled!");
@@ -65,7 +65,7 @@ public final class Debugger {
 	public static void debug(String section, String... messages) {
 		if (isDebugged(section)) {
 			for (final String message : messages)
-				if (SimplePlugin.hasInstance())
+				if (TweetyPlugin.hasInstance())
 					Common.log("[" + section + "] " + message);
 				else
 					System.out.println("[" + section + "] " + message);
@@ -152,7 +152,7 @@ public final class Debugger {
 			return;
 
 		final List<String> lines = new ArrayList<>();
-		final String header = SimplePlugin.getNamed() + " " + SimplePlugin.getVersion() + " encountered " + Common.article(t.getClass().getSimpleName());
+		final String header = TweetyPlugin.getNamed() + " " + TweetyPlugin.getVersion() + " encountered " + Common.article(t.getClass().getSimpleName());
 
 		// Write out header and server info
 		fill(lines,
@@ -341,7 +341,7 @@ public final class Debugger {
 
 	// Print a simple console message
 	private static void print(String message) {
-		if (SimplePlugin.hasInstance())
+		if (TweetyPlugin.hasInstance())
 			Common.logNoPrefix(message);
 		else
 			System.out.println(message);

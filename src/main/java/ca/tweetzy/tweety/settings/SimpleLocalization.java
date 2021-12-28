@@ -6,7 +6,7 @@ import ca.tweetzy.tweety.command.PermsCommand;
 import ca.tweetzy.tweety.command.ReloadCommand;
 import ca.tweetzy.tweety.command.SimpleCommand;
 import ca.tweetzy.tweety.model.ChatPaginator;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.plugin.TweetyListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ public class SimpleLocalization extends YamlStaticConfig {
 	/**
 	 * A flag indicating that this class has been loaded
 	 * <p>
-	 * You can place this class to {@link SimplePlugin#getSettings()} to make
+	 * You can place this class to {@link TweetyPlugin#getSettings()} to make
 	 * it load automatically
 	 */
 	private static boolean localizationClassCalled;
@@ -204,12 +204,12 @@ public class SimpleLocalization extends YamlStaticConfig {
 		public static ChatColor HEADER_SECONDARY_COLOR = ChatColor.RED;
 
 		/**
-		 * Key for when plugin is reloading {@link ca.tweetzy.tweety.plugin.SimplePlugin}
+		 * Key for when plugin is reloading {@link TweetyPlugin}
 		 */
 		public static String RELOADING = "reloading";
 
 		/**
-		 * Key for when plugin is disabled {@link ca.tweetzy.tweety.plugin.SimplePlugin}
+		 * Key for when plugin is disabled {@link TweetyPlugin}
 		 */
 		public static String DISABLED = "disabled";
 

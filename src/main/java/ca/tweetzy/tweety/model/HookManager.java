@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,7 +44,6 @@ import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.region.Region;
 import ca.tweetzy.tweety.remain.Remain;
 
@@ -171,7 +171,7 @@ public final class HookManager {
 				discordSRVHook = new DiscordSRVHook();
 
 			} catch (final ClassNotFoundException ex) {
-				Common.error(ex, "&c" + SimplePlugin.getNamed() + " failed to hook DiscordSRV because the plugin is outdated (1.18.x is supported)!");
+				Common.error(ex, "&c" + TweetyPlugin.getNamed() + " failed to hook DiscordSRV because the plugin is outdated (1.18.x is supported)!");
 			}
 
 		if (Common.doesPluginExist("Essentials"))
@@ -2095,7 +2095,7 @@ class VaultHook {
 		if (fallback == null)
 			fallback = "";
 
-		if (vaultPart == VaultPart.PREFIX /*&& !SimplePlugin.getInstance().vaultMultiPrefix()*/ || vaultPart == VaultPart.SUFFIX /*&& !SimplePlugin.getInstance().vaultMultiSuffix()*/)
+		if (vaultPart == VaultPart.PREFIX /*&& !TweetyPlugin.getInstance().vaultMultiPrefix()*/ || vaultPart == VaultPart.SUFFIX /*&& !TweetyPlugin.getInstance().vaultMultiSuffix()*/)
 			return fallback;
 
 		final List<String> list = new ArrayList<>();
@@ -2311,7 +2311,7 @@ class PlaceholderAPIHook {
 		 */
 		@Override
 		public String getAuthor() {
-			return SimplePlugin.getInstance().getDescription().getAuthors().toString();
+			return TweetyPlugin.getInstance().getDescription().getAuthors().toString();
 		}
 
 		/**
@@ -2325,7 +2325,7 @@ class PlaceholderAPIHook {
 		 */
 		@Override
 		public String getIdentifier() {
-			return SimplePlugin.getNamed().toLowerCase().replace("%", "").replace(" ", "").replace("_", "");
+			return TweetyPlugin.getNamed().toLowerCase().replace("%", "").replace(" ", "").replace("_", "");
 		}
 
 		/**
@@ -2338,7 +2338,7 @@ class PlaceholderAPIHook {
 		 */
 		@Override
 		public String getVersion() {
-			return SimplePlugin.getInstance().getDescription().getVersion();
+			return TweetyPlugin.getInstance().getDescription().getVersion();
 		}
 
 		/**
@@ -3156,7 +3156,7 @@ class DiscordSRVHook {
 			final DiscordSRV instance = JavaPlugin.getPlugin(DiscordSRV.class);
 
 			// Dirty: We have to temporarily unset value in DiscordSRV to enable the processChatMessage method to function
-			final File file = new File(SimplePlugin.getData().getParent(), "DiscordSRV/config.yml");
+			final File file = new File(TweetyPlugin.getData().getParent(), "DiscordSRV/config.yml");
 
 			if (file.exists()) {
 				final FileConfiguration discordConfig = YamlConfiguration.loadConfiguration(file);
@@ -3269,7 +3269,7 @@ class LandsHook {
 		final Class<?> landsIntegration = ReflectionUtil.lookupClass("me.angeschossen.lands.api.integration.LandsIntegration");
 		final Constructor<?> con = ReflectionUtil.getConstructor(landsIntegration, Plugin.class);
 
-		this.lands = ReflectionUtil.instantiate(con, SimplePlugin.getInstance());
+		this.lands = ReflectionUtil.instantiate(con, TweetyPlugin.getInstance());
 		this.getLand = ReflectionUtil.getMethod(landsIntegration, "getLand", Location.class);
 	}
 

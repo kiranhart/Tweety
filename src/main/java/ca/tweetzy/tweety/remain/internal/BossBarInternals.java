@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompBarColor;
 import ca.tweetzy.tweety.remain.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
@@ -106,7 +106,7 @@ public final class BossBarInternals implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPluginDisable(final PluginDisableEvent event) {
-		if (event.getPlugin().equals(SimplePlugin.getInstance()))
+		if (event.getPlugin().equals(TweetyPlugin.getInstance()))
 			this.stop();
 	}
 

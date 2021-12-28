@@ -9,7 +9,7 @@ import ca.tweetzy.tweety.jsonsimple.JSONObject;
 import ca.tweetzy.tweety.jsonsimple.JSONParser;
 import ca.tweetzy.tweety.model.IsInList;
 import ca.tweetzy.tweety.model.Tuple;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -569,7 +569,7 @@ public final class SerializedMap extends StrictCollection {
 
 					Common.log(
 							"**************** NOTICE ****************",
-							SimplePlugin.getNamed() + " manually deserialized your item.",
+							TweetyPlugin.getNamed() + " manually deserialized your item.",
 							"Item: " + item,
 							"This is ONLY supported for basic items, items having",
 							"special flags like monster eggs will NOT function.");
@@ -1003,12 +1003,12 @@ public final class SerializedMap extends StrictCollection {
 
 				override(path, newCollection);
 
-				Common.logNoPrefix("[" + SimplePlugin.getNamed() + "] Converted '" + path + "' from " + from.getSimpleName() + "[] to " + to.getSimpleName() + "[]");
+				Common.logNoPrefix("[" + TweetyPlugin.getNamed() + "] Converted '" + path + "' from " + from.getSimpleName() + "[] to " + to.getSimpleName() + "[]");
 
 			} else if (from.isAssignableFrom(old.getClass())) {
 				override(path, converter.apply((O) old));
 
-				Common.logNoPrefix("[" + SimplePlugin.getNamed() + "] Converted '" + path + "' from '" + from.getSimpleName() + "' to '" + to.getSimpleName() + "'");
+				Common.logNoPrefix("[" + TweetyPlugin.getNamed() + "] Converted '" + path + "' from '" + from.getSimpleName() + "' to '" + to.getSimpleName() + "'");
 			}
 	}
 

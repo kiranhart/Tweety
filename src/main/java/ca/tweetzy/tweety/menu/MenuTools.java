@@ -5,7 +5,7 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.menu.button.Button;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.menu.tool.Tool;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -73,7 +73,7 @@ public abstract class MenuTools extends Menu {
 	protected Object[] lookupTools(final Class<? extends Tool> extendingClass) {
 		final List<Object> instances = new ArrayList<>();
 
-		for (final Class<?> clazz : ReflectionUtil.getClasses(SimplePlugin.getInstance(), extendingClass))
+		for (final Class<?> clazz : ReflectionUtil.getClasses(TweetyPlugin.getInstance(), extendingClass))
 			try {
 				final Object instance = ReflectionUtil.getFieldContent(clazz, "instance", null);
 

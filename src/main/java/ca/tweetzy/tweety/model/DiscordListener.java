@@ -3,7 +3,7 @@ package ca.tweetzy.tweety.model;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
@@ -456,7 +456,7 @@ public abstract class DiscordListener implements Listener {
 		 */
 		public void registerHook() {
 			try {
-				DiscordSRV.getPlugin().getPluginHooks().add(SimplePlugin::getInstance);
+				DiscordSRV.getPlugin().getPluginHooks().add(TweetyPlugin::getInstance);
 
 			} catch (final Error err) {
 				// Support previous Discord versions

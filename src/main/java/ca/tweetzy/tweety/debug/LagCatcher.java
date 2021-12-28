@@ -3,7 +3,7 @@ package ca.tweetzy.tweety.debug;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
 import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleSettings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -78,7 +78,7 @@ public final class LagCatcher {
 		final double lag = finishAndCalculate(section);
 
 		if (lag > thresholdMs && SimpleSettings.LAG_THRESHOLD_MILLIS != -1) {
-			message = (SimplePlugin.hasInstance() ? "[" + SimplePlugin.getNamed() + " " + SimplePlugin.getVersion() + "] " : "") + message
+			message = (TweetyPlugin.hasInstance() ? "[" + TweetyPlugin.getNamed() + " " + TweetyPlugin.getVersion() + "] " : "") + message
 					.replace("{section}", section)
 					.replace("{time}", MathUtil.formatTwoDigits(lag));
 
@@ -178,7 +178,7 @@ public final class LagCatcher {
 		final Long nanoTime = startTimesMap.get(section);
 		final String message = section + " took " + MathUtil.formatTwoDigits(nanoTime == null ? 0D : (System.nanoTime() - nanoTime) / 1_000_000D) + " ms";
 
-		if (SimplePlugin.hasInstance())
+		if (TweetyPlugin.hasInstance())
 			Common.logNoPrefix("[{plugin_name} {plugin_version}] " + message);
 		else
 			System.out.println("[LagCatcher] " + message);

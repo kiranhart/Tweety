@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleYaml;
@@ -56,7 +56,7 @@ public final class DebugCommand extends SimpleSubCommand {
 		tell(SimpleLocalization.Commands.DEBUG_PREPARING);
 
 		final File debugFolder = FileUtil.getFile("debug");
-		final List<File> files = listFilesRecursively(SimplePlugin.getData(), new ArrayList<>());
+		final List<File> files = listFilesRecursively(TweetyPlugin.getData(), new ArrayList<>());
 
 		// Clean up the old folder if exists
 		FileUtil.deleteRecursivelly(debugFolder);
@@ -81,7 +81,7 @@ public final class DebugCommand extends SimpleSubCommand {
 		final List<String> lines = Common.toList(Common.consoleLine(),
 				" Debug log generated " + TimeUtil.getFormattedDate(),
 				Common.consoleLine(),
-				"Plugin: " + SimplePlugin.getInstance().getDescription().getFullName(),
+				"Plugin: " + TweetyPlugin.getInstance().getDescription().getFullName(),
 				"Server Version: " + Bukkit.getName() + " " + MinecraftVersion.getServerVersion(),
 				"Java: " + System.getProperty("java.version") + " (" + System.getProperty("java.specification.vendor") + "/" + System.getProperty("java.vm.vendor") + ")",
 				"OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version"),
@@ -104,7 +104,7 @@ public final class DebugCommand extends SimpleSubCommand {
 
 			try {
 				// Get the path in our folder
-				final String path = file.getPath().replace("\\", "/").replace("plugins/" + SimplePlugin.getNamed(), "");
+				final String path = file.getPath().replace("\\", "/").replace("plugins/" + TweetyPlugin.getNamed(), "");
 
 				// Create a copy file
 				final File copy = FileUtil.createIfNotExists("debug/" + path);

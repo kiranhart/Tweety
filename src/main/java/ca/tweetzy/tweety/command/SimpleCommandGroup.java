@@ -7,7 +7,7 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.ChatPaginator;
 import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.model.SimpleComponent;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleSettings;
 import lombok.Getter;
@@ -205,24 +205,24 @@ public abstract class SimpleCommandGroup {
 	 * default we give credits
 	 * <p>
 	 * If you specify "author" in your plugin.yml we display author information
-	 * If you override {@link SimplePlugin#getFoundedYear()} we display copyright
+	 * If you override {@link TweetyPlugin#getFoundedYear()} we display copyright
 	 *
 	 * @param sender the command sender that requested this to be shown to him
 	 *               may be null
 	 * @return
 	 */
 	protected List<SimpleComponent> getNoParamsHeader(CommandSender sender) {
-		final int foundedYear = SimplePlugin.getInstance().getFoundedYear();
+		final int foundedYear = TweetyPlugin.getInstance().getFoundedYear();
 		final int yearNow = Calendar.getInstance().get(Calendar.YEAR);
 
 		final List<String> messages = new ArrayList<>();
 
 		messages.add("&8" + Common.chatLineSmooth());
-		messages.add(getHeaderPrefix() + "  " + SimplePlugin.getNamed() + getTrademark() + " &7" + SimplePlugin.getVersion());
+		messages.add(getHeaderPrefix() + "  " + TweetyPlugin.getNamed() + getTrademark() + " &7" + TweetyPlugin.getVersion());
 		messages.add(" ");
 
 		{
-			final String authors = String.join(", ", SimplePlugin.getInstance().getDescription().getAuthors());
+			final String authors = String.join(", ", TweetyPlugin.getInstance().getDescription().getAuthors());
 
 			if (!authors.isEmpty())
 				messages.add("   &7" + SimpleLocalization.Commands.LABEL_AUTHORS + " &f" + authors + (foundedYear != -1 ? " &7\u00A9 " + foundedYear + (yearNow != foundedYear ? " - " + yearNow : "") : ""));
@@ -252,7 +252,7 @@ public abstract class SimpleCommandGroup {
 
 	// Return the TM symbol in case we have it for Kiran's plugins
 	private String getTrademark() {
-		return SimplePlugin.getInstance().getDescription().getAuthors().contains("Kiran Hart") ? getHeaderPrefix() + "&8\u2122" : "";
+		return TweetyPlugin.getInstance().getDescription().getAuthors().contains("Kiran Hart") ? getHeaderPrefix() + "&8\u2122" : "";
 	}
 
 	/**
@@ -290,7 +290,7 @@ public abstract class SimpleCommandGroup {
 		return new String[] {
 				"&8",
 				"&8" + Common.chatLineSmooth(),
-				getHeaderPrefix() + "  " + SimplePlugin.getNamed() + getTrademark() + " &7" + SimplePlugin.getVersion(),
+				getHeaderPrefix() + "  " + TweetyPlugin.getNamed() + getTrademark() + " &7" + TweetyPlugin.getVersion(),
 				" ",
 				"&2  [] &f= " + SimpleLocalization.Commands.LABEL_OPTIONAL_ARGS,
 				this.getTheme() + "  <> &f= " + SimpleLocalization.Commands.LABEL_REQUIRED_ARGS,

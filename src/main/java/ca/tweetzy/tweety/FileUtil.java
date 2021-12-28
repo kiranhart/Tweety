@@ -2,7 +2,7 @@ package ca.tweetzy.tweety;
 
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.Tuple;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -106,7 +106,7 @@ public final class FileUtil {
 	 * @return
 	 */
 	public static File createIfNotExists(String path) {
-		final File datafolder = SimplePlugin.getInstance().getDataFolder();
+		final File datafolder = TweetyPlugin.getInstance().getDataFolder();
 		final int lastIndex = path.lastIndexOf('/');
 		final File directory = new File(datafolder, path.substring(0, lastIndex >= 0 ? lastIndex : 0));
 
@@ -133,7 +133,7 @@ public final class FileUtil {
 	 * @return
 	 */
 	public static File getFile(String path) {
-		return new File(SimplePlugin.getInstance().getDataFolder(), path);
+		return new File(TweetyPlugin.getInstance().getDataFolder(), path);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public final class FileUtil {
 		if (extension.startsWith("."))
 			extension = extension.substring(1);
 
-		final File dataFolder = new File(SimplePlugin.getData(), directory);
+		final File dataFolder = new File(TweetyPlugin.getData(), directory);
 
 		if (!dataFolder.exists())
 			dataFolder.mkdirs();
@@ -323,7 +323,7 @@ public final class FileUtil {
 	 * @return the extracted file
 	 */
 	public static File extract(String from, String to) {
-		File file = new File(SimplePlugin.getInstance().getDataFolder(), to);
+		File file = new File(TweetyPlugin.getInstance().getDataFolder(), to);
 
 		final List<String> lines = getInternalResource(from);
 		Valid.checkNotNull(lines, "Inbuilt file not found: " + from);
@@ -359,9 +359,9 @@ public final class FileUtil {
 	 * @return
 	 */
 	public static File extractRaw(String path) {
-		File file = new File(SimplePlugin.getInstance().getDataFolder(), path);
+		File file = new File(TweetyPlugin.getInstance().getDataFolder(), path);
 
-		try (JarFile jarFile = new JarFile(SimplePlugin.getSource())) {
+		try (JarFile jarFile = new JarFile(TweetyPlugin.getSource())) {
 
 			for (final Enumeration<JarEntry> it = jarFile.entries(); it.hasMoreElements();) {
 				final JarEntry entry = it.nextElement();
@@ -403,8 +403,8 @@ public final class FileUtil {
 	 */
 	private static String replaceVariables(String line, String fileName) {
 		return line
-				.replace("{plugin_name}", SimplePlugin.getNamed())
-				.replace("{plugin_name_lower}", SimplePlugin.getNamed().toLowerCase())
+				.replace("{plugin_name}", TweetyPlugin.getNamed())
+				.replace("{plugin_name_lower}", TweetyPlugin.getNamed().toLowerCase())
 				.replace("{file}", fileName)
 				.replace("{file_lowercase}", fileName);
 	}
@@ -423,7 +423,7 @@ public final class FileUtil {
 		if (getFile(folder).exists())
 			return;
 
-		try (JarFile jarFile = new JarFile(SimplePlugin.getSource())) {
+		try (JarFile jarFile = new JarFile(TweetyPlugin.getSource())) {
 			for (final Enumeration<JarEntry> it = jarFile.entries(); it.hasMoreElements();) {
 				final JarEntry jarEntry = it.nextElement();
 				final String entryName = jarEntry.getName();
@@ -446,7 +446,7 @@ public final class FileUtil {
 	 */
 	public static List<String> getInternalResource(@NonNull String path) {
 
-		try (JarFile jarFile = new JarFile(SimplePlugin.getSource())) {
+		try (JarFile jarFile = new JarFile(TweetyPlugin.getSource())) {
 
 			for (final Enumeration<JarEntry> it = jarFile.entries(); it.hasMoreElements();) {
 				final JarEntry entry = it.nextElement();
@@ -597,7 +597,7 @@ public final class FileUtil {
 	 * @throws IOException
 	 */
 	public static void zip(String sourceDirectory, String to) throws IOException {
-		final File parent = SimplePlugin.getInstance().getDataFolder().getParentFile().getParentFile();
+		final File parent = TweetyPlugin.getInstance().getDataFolder().getParentFile().getParentFile();
 		final File toFile = new File(parent, to + ".zip");
 
 		if (toFile.exists())

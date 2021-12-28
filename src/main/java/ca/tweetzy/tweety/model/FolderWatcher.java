@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.scheduler.BukkitTask;
@@ -96,7 +96,7 @@ public abstract class FolderWatcher extends Thread {
 
 						if (kind == ENTRY_MODIFY) {
 							final Path watchEventPath = (Path) watchEvent.context();
-							final File fileModified = new File(SimplePlugin.getData(), watchEventPath.toFile().getName());
+							final File fileModified = new File(TweetyPlugin.getData(), watchEventPath.toFile().getName());
 
 							final String path = fileModified.getAbsolutePath();
 							final BukkitTask pendingTask = scheduledUpdates.remove(path);

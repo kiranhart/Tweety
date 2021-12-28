@@ -11,7 +11,6 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ca.tweetzy.tweety.model.LimitedQueue;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -22,7 +21,7 @@ import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
 import ca.tweetzy.tweety.event.RegionScanCompleteEvent;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 
 import lombok.Getter;
@@ -194,7 +193,7 @@ public abstract class OfflineRegionScanner {
 
 				scanFile(file, queue);
 			}
-		}.runTask(SimplePlugin.getInstance());
+		}.runTask(TweetyPlugin.getInstance());
 	}
 
 	/*

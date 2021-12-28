@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -48,7 +49,6 @@ import ca.tweetzy.tweety.exception.RegexTimeoutException;
 import ca.tweetzy.tweety.model.DiscordSender;
 import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.model.Replacer;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.CompChatColor;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
@@ -127,13 +127,13 @@ public final class Common {
 	 * The tell prefix applied on tell() methods
 	 */
 	@Getter
-	private static String tellPrefix = "[" + SimplePlugin.getNamed() + "]";
+	private static String tellPrefix = "[" + TweetyPlugin.getNamed() + "]";
 
 	/**
 	 * The log prefix applied on log() methods
 	 */
 	@Getter
-	private static String logPrefix = "[" + SimplePlugin.getNamed() + "]";
+	private static String logPrefix = "[" + TweetyPlugin.getNamed() + "]";
 
 	/**
 	 * Set the tell prefix applied for messages to players from tell() methods
@@ -590,8 +590,8 @@ public final class Common {
 		String result = ChatColor.translateAlternateColorCodes('&', message
 				.replace("{prefix}", message.startsWith(tellPrefix) ? "" : removeSurroundingSpaces(tellPrefix.trim()))
 				.replace("{server}", SimpleLocalization.SERVER_PREFIX)
-				.replace("{plugin_name}", SimplePlugin.getNamed())
-				.replace("{plugin_version}", SimplePlugin.getVersion()));
+				.replace("{plugin_name}", TweetyPlugin.getNamed())
+				.replace("{plugin_version}", TweetyPlugin.getVersion()));
 
 		// RGB colors
 		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_16)) {
@@ -1085,7 +1085,7 @@ public final class Common {
 			return false;
 
 		if (!found.isEnabled())
-			runLaterAsync(0, () -> Valid.checkBoolean(found.isEnabled(), SimplePlugin.getNamed() + " could not hook into " + pluginName + " as the plugin is disabled! (DO NOT REPORT THIS TO " + SimplePlugin.getNamed() + ", look for errors above and contact support of '" + pluginName + "')"));
+			runLaterAsync(0, () -> Valid.checkBoolean(found.isEnabled(), TweetyPlugin.getNamed() + " could not hook into " + pluginName + " as the plugin is disabled! (DO NOT REPORT THIS TO " + TweetyPlugin.getNamed() + ", look for errors above and contact support of '" + pluginName + "')"));
 
 		return true;
 	}
@@ -1324,7 +1324,7 @@ public final class Common {
 		}
 
 		if (disablePlugin)
-			Bukkit.getPluginManager().disablePlugin(SimplePlugin.getInstance());
+			Bukkit.getPluginManager().disablePlugin(TweetyPlugin.getInstance());
 	}
 
 	/**
@@ -1418,7 +1418,7 @@ public final class Common {
 	/**
 	 * Returns true if the given matcher matches. We also evaluate
 	 * how long the evaluation took and stop it in case it takes too long,
-	 * see {@link SimplePlugin#getRegexTimeout()}
+	 * see {@link TweetyPlugin#getRegexTimeout()}
 	 *
 	 * @param matcher
 	 * @return
@@ -1440,7 +1440,7 @@ public final class Common {
 	 * Compiles a matches for the given pattern and message. Colors are stripped.
 	 * <p>
 	 * We also evaluate how long the evaluation took and stop it in case it takes too long,
-	 * see {@link SimplePlugin#getRegexTimeout()}
+	 * see {@link TweetyPlugin#getRegexTimeout()}
 	 *
 	 * @param pattern
 	 * @param message
@@ -1449,8 +1449,8 @@ public final class Common {
 	public static Matcher compileMatcher(@NonNull final Pattern pattern, final String message) {
 
 		try {
-			String strippedMessage = SimplePlugin.getInstance().regexStripColors() ? stripColors(message) : message;
-			strippedMessage = SimplePlugin.getInstance().regexStripAccents() ? ChatUtil.replaceDiacritic(strippedMessage) : strippedMessage;
+			String strippedMessage = TweetyPlugin.getInstance().regexStripColors() ? stripColors(message) : message;
+			strippedMessage = TweetyPlugin.getInstance().regexStripAccents() ? ChatUtil.replaceDiacritic(strippedMessage) : strippedMessage;
 
 			return pattern.matcher(TimedCharSequence.withSettingsLimit(strippedMessage));
 
@@ -1480,11 +1480,11 @@ public final class Common {
 	 * @return
 	 */
 	public static Pattern compilePattern(String regex) {
-		final SimplePlugin instance = SimplePlugin.getInstance();
+		final TweetyPlugin instance = TweetyPlugin.getInstance();
 		Pattern pattern = null;
 
-		regex = SimplePlugin.getInstance().regexStripColors() ? stripColors(regex) : regex;
-		regex = SimplePlugin.getInstance().regexStripAccents() ? ChatUtil.replaceDiacritic(regex) : regex;
+		regex = TweetyPlugin.getInstance().regexStripColors() ? stripColors(regex) : regex;
+		regex = TweetyPlugin.getInstance().regexStripAccents() ? ChatUtil.replaceDiacritic(regex) : regex;
 
 		try {
 
@@ -1518,7 +1518,7 @@ public final class Common {
 	 * @param pattern
 	 */
 	public static void handleRegexTimeoutException(RegexTimeoutException ex, Pattern pattern) {
-		final boolean caseInsensitive = SimplePlugin.getInstance().regexCaseInsensitive();
+		final boolean caseInsensitive = TweetyPlugin.getInstance().regexCaseInsensitive();
 
 		Common.error(ex,
 				"A regular expression took too long to process, and was",
@@ -2415,7 +2415,7 @@ public final class Common {
 	 */
 	public static BukkitTask runLater(final int delayTicks, Runnable task) {
 		final BukkitScheduler scheduler = Bukkit.getScheduler();
-		final JavaPlugin instance = SimplePlugin.getInstance();
+		final JavaPlugin instance = TweetyPlugin.getInstance();
 
 		try {
 			return runIfDisabled(task) ? null : delayTicks == 0 ? task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTask(instance) : scheduler.runTask(instance, task) : task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskLater(instance, delayTicks) : scheduler.runTaskLater(instance, task, delayTicks);
@@ -2465,7 +2465,7 @@ public final class Common {
 	 */
 	public static BukkitTask runLaterAsync(final int delayTicks, Runnable task) {
 		final BukkitScheduler scheduler = Bukkit.getScheduler();
-		final JavaPlugin instance = SimplePlugin.getInstance();
+		final JavaPlugin instance = TweetyPlugin.getInstance();
 
 		try {
 			return runIfDisabled(task) ? null : delayTicks == 0 ? task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskAsynchronously(instance) : scheduler.runTaskAsynchronously(instance, task) : task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskLaterAsynchronously(instance, delayTicks) : scheduler.runTaskLaterAsynchronously(instance, task, delayTicks);
@@ -2500,11 +2500,11 @@ public final class Common {
 	public static BukkitTask runTimer(final int delayTicks, final int repeatTicks, Runnable task) {
 
 		try {
-			return runIfDisabled(task) ? null : task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskTimer(SimplePlugin.getInstance(), delayTicks, repeatTicks) : Bukkit.getScheduler().runTaskTimer(SimplePlugin.getInstance(), task, delayTicks, repeatTicks);
+			return runIfDisabled(task) ? null : task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskTimer(TweetyPlugin.getInstance(), delayTicks, repeatTicks) : Bukkit.getScheduler().runTaskTimer(TweetyPlugin.getInstance(), task, delayTicks, repeatTicks);
 
 		} catch (final NoSuchMethodError err) {
 			return runIfDisabled(task) ? null
-					: getTaskFromId(Bukkit.getScheduler().scheduleSyncRepeatingTask(SimplePlugin.getInstance(), task, delayTicks, repeatTicks));
+					: getTaskFromId(Bukkit.getScheduler().scheduleSyncRepeatingTask(TweetyPlugin.getInstance(), task, delayTicks, repeatTicks));
 		}
 	}
 
@@ -2530,11 +2530,11 @@ public final class Common {
 	public static BukkitTask runTimerAsync(final int delayTicks, final int repeatTicks, Runnable task) {
 
 		try {
-			return runIfDisabled(task) ? null : task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskTimerAsynchronously(SimplePlugin.getInstance(), delayTicks, repeatTicks) : Bukkit.getScheduler().runTaskTimerAsynchronously(SimplePlugin.getInstance(), task, delayTicks, repeatTicks);
+			return runIfDisabled(task) ? null : task instanceof BukkitRunnable ? ((BukkitRunnable) task).runTaskTimerAsynchronously(TweetyPlugin.getInstance(), delayTicks, repeatTicks) : Bukkit.getScheduler().runTaskTimerAsynchronously(TweetyPlugin.getInstance(), task, delayTicks, repeatTicks);
 
 		} catch (final NoSuchMethodError err) {
 			return runIfDisabled(task) ? null
-					: getTaskFromId(Bukkit.getScheduler().scheduleAsyncRepeatingTask(SimplePlugin.getInstance(), task, delayTicks, repeatTicks));
+					: getTaskFromId(Bukkit.getScheduler().scheduleAsyncRepeatingTask(TweetyPlugin.getInstance(), task, delayTicks, repeatTicks));
 		}
 	}
 
@@ -2555,7 +2555,7 @@ public final class Common {
 	// Otherwise we return false and the task will be run correctly in Bukkit scheduler
 	// This is fail-safe to critical save-on-exit operations in case our plugin is improperly reloaded (PlugMan) or malfunctions
 	private static boolean runIfDisabled(final Runnable run) {
-		if (!SimplePlugin.getInstance().isEnabled()) {
+		if (!TweetyPlugin.getInstance().isEnabled()) {
 			run.run();
 
 			return true;
@@ -2583,7 +2583,7 @@ public final class Common {
 	 * @param listener
 	 */
 	public static void registerEvents(final Listener listener) {
-		Bukkit.getPluginManager().registerEvents(listener, SimplePlugin.getInstance());
+		Bukkit.getPluginManager().registerEvents(listener, TweetyPlugin.getInstance());
 	}
 
 	// ------------------------------------------------------------------------------------------------------------

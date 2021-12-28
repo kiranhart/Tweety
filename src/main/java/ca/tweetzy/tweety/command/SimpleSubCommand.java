@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.command;
 
 import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,9 +40,9 @@ public abstract class SimpleSubCommand extends SimpleCommand {
 	 * Attempts to get the main command group, failing with an error if not defined
 	 */
 	private static SimpleCommandGroup getMainCommandGroup0() {
-		final SimpleCommandGroup main = SimplePlugin.getInstance().getMainCommand();
+		final SimpleCommandGroup main = TweetyPlugin.getInstance().getMainCommand();
 
-		Valid.checkNotNull(main, SimplePlugin.getNamed() + " does not define a main command group!"
+		Valid.checkNotNull(main, TweetyPlugin.getNamed() + " does not define a main command group!"
 				+ " You need to put @AutoRegister over your class extending a SimpleCommandGroup that has a no args constructor to register it automatically");
 
 		return main;
@@ -64,7 +64,7 @@ public abstract class SimpleSubCommand extends SimpleCommand {
 
 		// If the default perm was not changed, improve it
 		if (getRawPermission().equals(getDefaultPermission())) {
-			if (SimplePlugin.getInstance().getMainCommand() != null && SimplePlugin.getInstance().getMainCommand().getLabel().equals(this.getMainLabel()))
+			if (TweetyPlugin.getInstance().getMainCommand() != null && TweetyPlugin.getInstance().getMainCommand().getLabel().equals(this.getMainLabel()))
 				setPermission(getRawPermission().replace("{label}", "{sublabel}")); // simply replace label with sublabel
 
 			else

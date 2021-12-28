@@ -3,7 +3,7 @@ package ca.tweetzy.tweety.model;
 import ca.tweetzy.tweety.ChatUtil;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.command.PermsCommand;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -218,8 +218,8 @@ public final class ChatPaginator {
 				player.removeMetadata("FoPages", owningPlugin);
 			}
 
-			player.setMetadata("FoPages", new FixedMetadataValue(SimplePlugin.getInstance(), SimplePlugin.getNamed()));
-			player.setMetadata(getPageNbtTag(), new FixedMetadataValue(SimplePlugin.getInstance(), this));
+			player.setMetadata("FoPages", new FixedMetadataValue(TweetyPlugin.getInstance(), TweetyPlugin.getNamed()));
+			player.setMetadata(getPageNbtTag(), new FixedMetadataValue(TweetyPlugin.getInstance(), this));
 
 			player.chat("/#flp " + page);
 		}
@@ -240,6 +240,6 @@ public final class ChatPaginator {
 	}
 
 	public static String getPageNbtTag() {
-		return "FoPages_" + SimplePlugin.getNamed();
+		return "FoPages_" + TweetyPlugin.getNamed();
 	}
 }

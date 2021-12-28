@@ -10,7 +10,7 @@ import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.model.ConfigSerializable;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.nbt.NBTCompound;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
 import ca.tweetzy.tweety.settings.YamlSectionConfig;
@@ -94,7 +94,7 @@ public final class CompMetadata {
 				entity.addScoreboardTag(tag);
 
 		} else {
-			entity.setMetadata(key, new FixedMetadataValue(SimplePlugin.getInstance(), value));
+			entity.setMetadata(key, new FixedMetadataValue(TweetyPlugin.getInstance(), value));
 
 			MetadataFile.getInstance().addMetadata(entity, key, value);
 		}
@@ -102,7 +102,7 @@ public final class CompMetadata {
 
 	// Format the syntax of stored tags
 	private static String format(final String key, final String value) {
-		return SimplePlugin.getNamed() + DELIMITER + key + DELIMITER + value;
+		return TweetyPlugin.getNamed() + DELIMITER + key + DELIMITER + value;
 	}
 
 	/**
@@ -124,7 +124,7 @@ public final class CompMetadata {
 			tileEntity.update();
 
 		} else {
-			tileEntity.setMetadata(key, new FixedMetadataValue(SimplePlugin.getInstance(), value));
+			tileEntity.setMetadata(key, new FixedMetadataValue(TweetyPlugin.getInstance(), value));
 			tileEntity.update();
 
 			MetadataFile.getInstance().addMetadata(tileEntity, key, value);
@@ -132,7 +132,7 @@ public final class CompMetadata {
 	}
 
 	private static void setNamedspaced(final TileState tile, final String key, final String value) {
-		tile.getPersistentDataContainer().set(new NamespacedKey(SimplePlugin.getInstance(), key), PersistentDataType.STRING, value);
+		tile.getPersistentDataContainer().set(new NamespacedKey(TweetyPlugin.getInstance(), key), PersistentDataType.STRING, value);
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ public final class CompMetadata {
 	private static String getTag(final String raw, final String key) {
 		final String[] parts = raw.split(DELIMITER);
 
-		return parts.length == 3 && parts[0].equals(SimplePlugin.getNamed()) && parts[1].equals(key) ? parts[2] : null;
+		return parts.length == 3 && parts[0].equals(TweetyPlugin.getNamed()) && parts[1].equals(key) ? parts[2] : null;
 	}
 
 	/**
@@ -215,7 +215,7 @@ public final class CompMetadata {
 	}
 
 	private static String getNamedspaced(final TileState tile, final String key) {
-		final String value = tile.getPersistentDataContainer().get(new NamespacedKey(SimplePlugin.getInstance(), key), PersistentDataType.STRING);
+		final String value = tile.getPersistentDataContainer().get(new NamespacedKey(TweetyPlugin.getInstance(), key), PersistentDataType.STRING);
 
 		return Common.getOrNull(value);
 	}
@@ -286,14 +286,14 @@ public final class CompMetadata {
 	}
 
 	private static boolean hasNamedspaced(final TileState tile, final String key) {
-		return tile.getPersistentDataContainer().has(new NamespacedKey(SimplePlugin.getInstance(), key), PersistentDataType.STRING);
+		return tile.getPersistentDataContainer().has(new NamespacedKey(TweetyPlugin.getInstance(), key), PersistentDataType.STRING);
 	}
 
 	// Parses the tag and gets its value
 	private static boolean hasTag(final String raw, final String tag) {
 		final String[] parts = raw.split(DELIMITER);
 
-		return parts.length == 3 && parts[0].equals(SimplePlugin.getNamed()) && parts[1].equals(tag);
+		return parts.length == 3 && parts[0].equals(TweetyPlugin.getNamed()) && parts[1].equals(tag);
 	}
 
 	/**
@@ -306,7 +306,7 @@ public final class CompMetadata {
 	 * @param tag
 	 */
 	public static void setTempMetadata(final Entity entity, final String tag) {
-		entity.setMetadata(tag, new FixedMetadataValue(SimplePlugin.getInstance(), tag));
+		entity.setMetadata(tag, new FixedMetadataValue(TweetyPlugin.getInstance(), tag));
 	}
 
 	/**
@@ -320,7 +320,7 @@ public final class CompMetadata {
 	 * @param key
 	 */
 	public static void setTempMetadata(final Entity entity, final String tag, final Object key) {
-		entity.setMetadata(tag, new FixedMetadataValue(SimplePlugin.getInstance(), key));
+		entity.setMetadata(tag, new FixedMetadataValue(TweetyPlugin.getInstance(), key));
 	}
 
 	/**
@@ -356,7 +356,7 @@ public final class CompMetadata {
 	 */
 	public static void removeTempMetadata(final Entity player, final String key) {
 		if (player.hasMetadata(key))
-			player.removeMetadata(key, SimplePlugin.getInstance());
+			player.removeMetadata(key, TweetyPlugin.getInstance());
 	}
 
 	/**
@@ -456,7 +456,7 @@ public final class CompMetadata {
 					final String key = lines[1];
 					final String value = lines[2];
 
-					entity.setMetadata(key, new FixedMetadataValue(SimplePlugin.getInstance(), value));
+					entity.setMetadata(key, new FixedMetadataValue(TweetyPlugin.getInstance(), value));
 				}
 			}
 		}

@@ -7,7 +7,7 @@ import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
 import ca.tweetzy.tweety.menu.Menu;
 import ca.tweetzy.tweety.model.BoxedMessage;
 import ca.tweetzy.tweety.model.Variables;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompSound;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.AccessLevel;
@@ -176,7 +176,7 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 	 * @return
 	 */
 	protected boolean insertPrefix() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -270,7 +270,7 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 		/**
 		 */
 		public CustomCanceller() {
-			super(SimplePlugin.getInstance(), getTimeout());
+			super(TweetyPlugin.getInstance(), getTimeout());
 		}
 
 		/**
@@ -294,7 +294,7 @@ public abstract class SimpleConversation implements ConversationAbandonedListene
 		private SimplePrompt lastSimplePrompt;
 
 		private CustomConversation(final Conversable forWhom) {
-			super(SimplePlugin.getInstance(), forWhom, SimpleConversation.this.getFirstPrompt());
+			super(TweetyPlugin.getInstance(), forWhom, SimpleConversation.this.getFirstPrompt());
 
 			localEchoEnabled = false;
 

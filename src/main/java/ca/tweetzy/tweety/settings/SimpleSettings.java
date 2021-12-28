@@ -8,7 +8,7 @@ import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.debug.LagCatcher;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.SpigotUpdater;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,7 +27,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	/**
 	 * A flag indicating that this class has been loaded
 	 * <p>
-	 * You can place this class to {@link ca.tweetzy.tweety.plugin.SimplePlugin#getSettings()} ()} to
+	 * You can place this class to {@link TweetyPlugin#getSettings()} ()} to
 	 * make it load automatically
 	 */
 	private static boolean settingsClassCalled;
@@ -117,7 +117,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	 * <p>
 	 * Prefix: "&8[&3ChatControl&8]&7 "
 	 */
-	public static String PLUGIN_PREFIX = "&7" + SimplePlugin.getNamed() + " //";
+	public static String PLUGIN_PREFIX = "&7" + TweetyPlugin.getNamed() + " //";
 
 	/**
 	 * The lag threshold used for {@link LagCatcher} in milliseconds. Set to -1 to disable.
@@ -137,13 +137,13 @@ public class SimpleSettings extends YamlStaticConfig {
 	public static Integer REGEX_TIMEOUT = 100;
 
 	/**
-	 * What commands should trigger the your main plugin command (separated by a comma ,)? See {@link SimplePlugin#getMainCommand()}
+	 * What commands should trigger the your main plugin command (separated by a comma ,)? See {@link TweetyPlugin#getMainCommand()}
 	 * <p>
 	 * Typical values for ChatControl:
 	 * <p>
 	 * Command_Aliases: [chatcontrol, chc, cc]
 	 * <p>
-	 * // ONLY MANDATORY IF YOU OVERRIDE {@link SimplePlugin#getMainCommand()} //
+	 * // ONLY MANDATORY IF YOU OVERRIDE {@link TweetyPlugin#getMainCommand()} //
 	 */
 	public static StrictList<String> MAIN_COMMAND_ALIASES = new StrictList<>();
 
@@ -160,13 +160,13 @@ public class SimpleSettings extends YamlStaticConfig {
 	/**
 	 * Should we check for updates from SpigotMC and notify the console and users with permission?
 	 * <p>
-	 * See {@link SimplePlugin#getUpdateCheck()} that you can make to return {@link SpigotUpdater} with your Spigot plugin ID.
+	 * See {@link TweetyPlugin#getUpdateCheck()} that you can make to return {@link SpigotUpdater} with your Spigot plugin ID.
 	 * <p>
 	 * Typically for ChatControl:
 	 * <p>
 	 * Notify_Updates: true
 	 * <p>
-	 * // ONLY MANDATORY IF YOU OVERRIDE {@link SimplePlugin#getUpdateCheck()} //
+	 * // ONLY MANDATORY IF YOU OVERRIDE {@link TweetyPlugin#getUpdateCheck()} //
 	 */
 	public static Boolean NOTIFY_UPDATES = true;
 
@@ -225,7 +225,7 @@ public class SimpleSettings extends YamlStaticConfig {
 
 			final boolean keySet = isSetDefault("Command_Aliases");
 
-			if (SimplePlugin.getInstance().getMainCommand() != null && !keySet)
+			if (TweetyPlugin.getInstance().getMainCommand() != null && !keySet)
 				throw new TweetyException("Since you override getMainCommand in your main plugin class you must set the 'Command_Aliases' key in " + getFileName());
 
 			MAIN_COMMAND_ALIASES = keySet ? getCommandList("Command_Aliases") : MAIN_COMMAND_ALIASES;
@@ -247,7 +247,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	 * @return
 	 */
 	private static boolean hasLocalization() {
-		final SimplePlugin plugin = SimplePlugin.getInstance();
+		final TweetyPlugin plugin = TweetyPlugin.getInstance();
 		int localeClasses = 0;
 
 		if (plugin.getSettings() != null)

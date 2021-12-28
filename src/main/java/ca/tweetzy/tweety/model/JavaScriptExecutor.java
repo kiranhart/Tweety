@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
 import ca.tweetzy.tweety.exception.EventHandledException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import lombok.NonNull;
 import org.bukkit.command.CommandSender;
@@ -38,7 +38,7 @@ public final class JavaScriptExecutor {
 
 	// Load the engine
 	static {
-		Thread.currentThread().setContextClassLoader(SimplePlugin.class.getClassLoader());
+		Thread.currentThread().setContextClassLoader(TweetyPlugin.class.getClassLoader());
 
 		ScriptEngineManager engineManager = new ScriptEngineManager();
 		ScriptEngine scriptEngine = engineManager.getEngineByName("Nashorn");

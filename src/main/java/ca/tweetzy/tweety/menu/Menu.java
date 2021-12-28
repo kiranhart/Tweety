@@ -16,7 +16,7 @@ import ca.tweetzy.tweety.menu.model.InventoryDrawer;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.menu.model.MenuClickLocation;
 import ca.tweetzy.tweety.model.SimpleSound;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompSound;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
@@ -449,7 +449,7 @@ public abstract class Menu {
 			final Menu previous = getMenu(player);
 
 			if (previous != null)
-				player.setMetadata(TweetyConstants.NBT.TAG_MENU_PREVIOUS, new FixedMetadataValue(SimplePlugin.getInstance(), previous));
+				player.setMetadata(TweetyConstants.NBT.TAG_MENU_PREVIOUS, new FixedMetadataValue(TweetyPlugin.getInstance(), previous));
 		}
 
 		// Register current menu
@@ -463,7 +463,7 @@ public abstract class Menu {
 				return;
 			}
 
-			player.setMetadata(TweetyConstants.NBT.TAG_MENU_CURRENT, new FixedMetadataValue(SimplePlugin.getInstance(), Menu.this));
+			player.setMetadata(TweetyConstants.NBT.TAG_MENU_CURRENT, new FixedMetadataValue(TweetyPlugin.getInstance(), Menu.this));
 
 			opened = true;
 		});
@@ -1058,8 +1058,8 @@ public abstract class Menu {
 	 */
 	@Deprecated
 	public final void handleClose(Inventory inventory) {
-		this.viewer.removeMetadata(TweetyConstants.NBT.TAG_MENU_CURRENT, SimplePlugin.getInstance());
-		this.viewer.setMetadata(TweetyConstants.NBT.TAG_MENU_LAST_CLOSED, new FixedMetadataValue(SimplePlugin.getInstance(), this));
+		this.viewer.removeMetadata(TweetyConstants.NBT.TAG_MENU_CURRENT, TweetyPlugin.getInstance());
+		this.viewer.setMetadata(TweetyConstants.NBT.TAG_MENU_LAST_CLOSED, new FixedMetadataValue(TweetyPlugin.getInstance(), this));
 		this.closed = true;
 
 		this.onMenuClose(this.viewer, inventory);

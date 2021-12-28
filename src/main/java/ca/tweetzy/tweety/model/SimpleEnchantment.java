@@ -2,7 +2,7 @@ package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.*;
 import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
@@ -76,7 +76,7 @@ public abstract class SimpleEnchantment extends Enchantment {
 		name = ChatUtil.replaceDiacritic(name);
 
 		Valid.checkBoolean(name != null && VALID_NAMESPACE.matcher(name).matches(), "Enchant name must only contain English alphabet names: " + name);
-		return new NamespacedKey(SimplePlugin.getInstance(), name);
+		return new NamespacedKey(TweetyPlugin.getInstance(), name);
 	}
 
 	// ------------------------------------------------------------------------------------------

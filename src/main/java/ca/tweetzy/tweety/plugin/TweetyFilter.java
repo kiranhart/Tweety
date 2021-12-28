@@ -25,7 +25,7 @@ import java.util.logging.LogRecord;
 final class TweetyFilter {
 
 	/**
-	 * The messages we should filter, plugin authors can customize this in {@link SimplePlugin}
+	 * The messages we should filter, plugin authors can customize this in {@link TweetyPlugin}
 	 */
 	@Setter(value = AccessLevel.PACKAGE)
 	private static List<String> MESSAGES_TO_FILTER = new ArrayList<>();
@@ -89,8 +89,8 @@ final class TweetyFilter {
 				return true;
 
 			// Filter user-defined commands
-			if (SimplePlugin.hasInstance())
-				for (String filter : SimplePlugin.getInstance().getConsoleFilter()) {
+			if (TweetyPlugin.hasInstance())
+				for (String filter : TweetyPlugin.getInstance().getConsoleFilter()) {
 					filter = filter.toLowerCase();
 
 					if (message.startsWith(filter) || message.contains(filter))

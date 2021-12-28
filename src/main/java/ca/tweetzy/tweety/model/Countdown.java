@@ -2,7 +2,7 @@ package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -128,7 +128,7 @@ public abstract class Countdown implements Runnable {
 	public final void launch() {
 		Valid.checkBoolean(!isRunning(), "Task " + this + " already scheduled!");
 
-		final BukkitTask task = Bukkit.getScheduler().runTaskTimer(SimplePlugin.getInstance(), this, START_DELAY, TICK_PERIOD);
+		final BukkitTask task = Bukkit.getScheduler().runTaskTimer(TweetyPlugin.getInstance(), this, START_DELAY, TICK_PERIOD);
 		taskId = task.getTaskId();
 
 		onStart();

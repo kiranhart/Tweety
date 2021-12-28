@@ -3,7 +3,7 @@ package ca.tweetzy.tweety;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.SerializeUtil.EnchantmentWrapper;
 import ca.tweetzy.tweety.SerializeUtil.PotionWrapper;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompChatColor;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
@@ -170,7 +170,7 @@ public final class ItemUtil {
 			final NBTItem firstNbt = new NBTItem(first);
 			final NBTItem secondNbt = new NBTItem(second);
 
-			return matchNbt(SimplePlugin.getNamed(), firstNbt, secondNbt) && matchNbt(SimplePlugin.getNamed() + "_Item", firstNbt, secondNbt);
+			return matchNbt(TweetyPlugin.getNamed(), firstNbt, secondNbt) && matchNbt(TweetyPlugin.getNamed() + "_Item", firstNbt, secondNbt);
 		}
 
 		return true;

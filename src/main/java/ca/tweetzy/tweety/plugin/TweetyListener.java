@@ -63,7 +63,7 @@ public final class TweetyListener implements Listener {
 		}
 
 		// Prevent shading issue with multiple plugins having Tweety shaded
-		if (player.hasMetadata("FoPages") && !player.getMetadata("FoPages").get(0).asString().equals(SimplePlugin.getNamed()))
+		if (player.hasMetadata("FoPages") && !player.getMetadata("FoPages").get(0).asString().equals(TweetyPlugin.getNamed()))
 			return;
 
 		final String numberRaw = args[1];
@@ -162,9 +162,9 @@ public final class TweetyListener implements Listener {
 
 		@EventHandler(priority = EventPriority.LOW)
 		public void onJoin(PlayerJoinEvent event) {
-			final SpigotUpdater check = SimplePlugin.getInstance().getUpdateCheck();
+			final SpigotUpdater check = TweetyPlugin.getInstance().getUpdateCheck();
 
-			if (check != null && check.isNewVersionAvailable() && PlayerUtil.hasPerm(event.getPlayer(), check.getPermission().replace("{plugin_name}", SimplePlugin.getNamed().toLowerCase().replace(" ", "_"))))
+			if (check != null && check.isNewVersionAvailable() && PlayerUtil.hasPerm(event.getPlayer(), check.getPermission().replace("{plugin_name}", TweetyPlugin.getNamed().toLowerCase().replace(" ", "_"))))
 				Common.tellLater(4 * 20, event.getPlayer(), check.getNotifyMessage());
 		}
 	}

@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.command;
 
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleLocalization.Commands;
 import ca.tweetzy.tweety.settings.SimpleYaml;
@@ -45,7 +45,7 @@ public final class ReloadCommand extends SimpleSubCommand {
 
 			final List<File> yamlFiles = new ArrayList<>();
 
-			collectYamlFiles(SimplePlugin.getData(), yamlFiles);
+			collectYamlFiles(TweetyPlugin.getData(), yamlFiles);
 
 			for (final File file : yamlFiles) {
 				try {
@@ -64,7 +64,7 @@ public final class ReloadCommand extends SimpleSubCommand {
 				return;
 			}
 
-			SimplePlugin.getInstance().reload();
+			TweetyPlugin.getInstance().reload();
 			tell(SimpleLocalization.Commands.RELOAD_SUCCESS);
 
 		} catch (final Throwable t) {

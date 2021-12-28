@@ -8,7 +8,7 @@ import ca.tweetzy.tweety.debug.LagCatcher;
 import ca.tweetzy.tweety.exception.EventHandledException;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.Variables;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -222,6 +222,6 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 	 * A shortcut for registering this event in Bukkit
 	 */
 	public final void register() {
-		Bukkit.getPluginManager().registerEvent(eventClass, this, priority, this, SimplePlugin.getInstance(), ignoreCancelled);
+		Bukkit.getPluginManager().registerEvent(eventClass, this, priority, this, TweetyPlugin.getInstance(), ignoreCancelled);
 	}
 }

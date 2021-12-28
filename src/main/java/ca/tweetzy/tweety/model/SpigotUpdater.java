@@ -3,7 +3,7 @@ package ca.tweetzy.tweety.model;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.FileUtil;
 import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import lombok.Getter;
 import lombok.Setter;
@@ -80,7 +80,7 @@ public class SpigotUpdater implements Runnable {
 		if (resourceId == -1)
 			return;
 
-		final String currentVersion = SimplePlugin.getVersion();
+		final String currentVersion = TweetyPlugin.getVersion();
 
 		if (!canUpdateFrom(currentVersion))
 			return;
@@ -105,15 +105,15 @@ public class SpigotUpdater implements Runnable {
 					final ReadableByteChannel channel;
 
 					connection = (HttpURLConnection) new URL("https://api.spiget.org/v2/resources/" + resourceId + "/download").openConnection();
-					connection.setRequestProperty("User-Agent", SimplePlugin.getNamed());
-					Valid.checkBoolean(connection.getResponseCode() == 200, "Downloading update for " + SimplePlugin.getNamed() + " returned " + connection.getResponseCode() + ", aborting.");
+					connection.setRequestProperty("User-Agent", TweetyPlugin.getNamed());
+					Valid.checkBoolean(connection.getResponseCode() == 200, "Downloading update for " + TweetyPlugin.getNamed() + " returned " + connection.getResponseCode() + ", aborting.");
 
 					channel = Channels.newChannel(connection.getInputStream());
 
 					final File updateFolder = Bukkit.getUpdateFolderFile();
 					FileUtil.createIfNotExists(updateFolder);
 
-					final File destination = new File(updateFolder, SimplePlugin.getNamed() + "-" + newVersion + ".jar");
+					final File destination = new File(updateFolder, TweetyPlugin.getNamed() + "-" + newVersion + ".jar");
 					final FileOutputStream output = new FileOutputStream(destination);
 
 					output.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
@@ -134,10 +134,10 @@ public class SpigotUpdater implements Runnable {
 			} else if (ex.getMessage().startsWith("Server returned HTTP response code:"))
 				Common.log("Could not check for update, SpigotMC site appears to be down (or unaccessible): " + ex.getMessage());
 			else
-				Common.error(ex, "IOException performing update from SpigotMC.org check for " + SimplePlugin.getNamed());
+				Common.error(ex, "IOException performing update from SpigotMC.org check for " + TweetyPlugin.getNamed());
 
 		} catch (final Exception ex) {
-			Common.error(ex, "Unknown error performing update from SpigotMC.org check for " + SimplePlugin.getNamed());
+			Common.error(ex, "Unknown error performing update from SpigotMC.org check for " + TweetyPlugin.getNamed());
 		}
 	}
 
@@ -246,9 +246,9 @@ public class SpigotUpdater implements Runnable {
 	protected String replaceVariables(final String message) {
 		return message
 				.replace("{resource_id}", resourceId + "")
-				.replace("{plugin_name}", SimplePlugin.getNamed())
+				.replace("{plugin_name}", TweetyPlugin.getNamed())
 				.replace("{new}", newVersion)
-				.replace("{current}", SimplePlugin.getVersion())
+				.replace("{current}", TweetyPlugin.getVersion())
 				.replace("{user_id}", "%%__USER__%%");
 	}
 }

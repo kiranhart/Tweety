@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,7 +20,6 @@ import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.RandomUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
 import ca.tweetzy.tweety.remain.Remain;
 
 import lombok.AccessLevel;
@@ -223,7 +223,7 @@ public class SimpleScoreboard {
 					stop();
 				}
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), 0, updateDelayTicks);
+		}.runTaskTimer(TweetyPlugin.getInstance(), 0, updateDelayTicks);
 	}
 
 	/**

@@ -8,7 +8,7 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.ChatPaginator;
 import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.model.SimpleComponent;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization.Commands;
 import ca.tweetzy.tweety.settings.SimpleSettings;
 import lombok.NonNull;
@@ -75,10 +75,10 @@ public final class PermsCommand extends SimpleSubCommand {
 		this.classToList = classToList;
 		this.variables = variables;
 
-		if (!this.variables.containsKey("label") && SimplePlugin.getInstance().getMainCommand() != null)
+		if (!this.variables.containsKey("label") && TweetyPlugin.getInstance().getMainCommand() != null)
 			this.variables.put("label", SimpleSettings.MAIN_COMMAND_ALIASES.get(0));
 
-		setPermission(SimplePlugin.getNamed().toLowerCase() + ".command.permissions");
+		setPermission(TweetyPlugin.getNamed().toLowerCase() + ".command.permissions");
 		setDescription(Commands.PERMS_DESCRIPTION);
 		setUsage(Commands.PERMS_USAGE);
 

@@ -9,7 +9,7 @@ import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.EventHandledException;
 import ca.tweetzy.tweety.exception.RegexTimeoutException;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -212,7 +212,7 @@ public abstract class PacketListener {
 			}
 
 			// Ignore dummy instances and rare reload case
-			if (!this.player.isOnline() || SimplePlugin.isReloading())
+			if (!this.player.isOnline() || TweetyPlugin.isReloading())
 				return;
 
 			// Prevent deadlock
@@ -404,7 +404,7 @@ public abstract class PacketListener {
 		 * @param type
 		 */
 		public SimpleAdapter(final ListenerPriority priority, final PacketType type) {
-			super(SimplePlugin.getInstance(), priority, type);
+			super(TweetyPlugin.getInstance(), priority, type);
 
 			this.type = type;
 		}

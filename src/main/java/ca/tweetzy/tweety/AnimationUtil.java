@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety;
 
 import ca.tweetzy.tweety.model.SimpleScoreboard;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompBarColor;
 import ca.tweetzy.tweety.remain.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
@@ -236,7 +236,7 @@ public class AnimationUtil {
 				if (frame == animatedFrames.size())
 					frame = 0;
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), delay, period);
+		}.runTaskTimer(TweetyPlugin.getInstance(), delay, period);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class AnimationUtil {
 
 		final int finalSmoothnessLevel = smoothnessLevel;
 
-		return SimplePlugin.getInstance().getServer().getScheduler().runTaskTimer(SimplePlugin.getInstance(), new Runnable() {
+		return TweetyPlugin.getInstance().getServer().getScheduler().runTaskTimer(TweetyPlugin.getInstance(), new Runnable() {
 			boolean run = true;
 			int frame = 0;
 			float health = 1F;
@@ -322,7 +322,7 @@ public class AnimationUtil {
 				if (frame == animatedFrames.size())
 					frame = 0;
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), delay, period);
+		}.runTaskTimer(TweetyPlugin.getInstance(), delay, period);
 	}
 
 	/**
@@ -351,10 +351,10 @@ public class AnimationUtil {
 				frame++;
 
 				if (frame == Math.max(titleFrames != null ? titleFrames.size() : 0,
-						subtitleFrames != null ? subtitleFrames.size() : 0) || SimplePlugin.isReloading())
+						subtitleFrames != null ? subtitleFrames.size() : 0) || TweetyPlugin.isReloading())
 					cancel();
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), 0, period);
+		}.runTaskTimer(TweetyPlugin.getInstance(), 0, period);
 	}
 
 	/**
@@ -381,7 +381,7 @@ public class AnimationUtil {
 				if (frame > animatedFrames.size())
 					frame = 0;
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), delay, period);
+		}.runTaskTimer(TweetyPlugin.getInstance(), delay, period);
 	}
 
 	/**
@@ -418,7 +418,7 @@ public class AnimationUtil {
 				if (frame > animatedFrames.size())
 					frame = 0;
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), delay, period);
+		}.runTaskTimer(TweetyPlugin.getInstance(), delay, period);
 	}
 
 	/**
@@ -441,7 +441,7 @@ public class AnimationUtil {
 				if (frame > animatedFrames.size())
 					frame = 0;
 			}
-		}.runTaskTimer(SimplePlugin.getInstance(), delay, period);
+		}.runTaskTimer(TweetyPlugin.getInstance(), delay, period);
 	}
 
 	// ------------------------------------------------------------------------------------------------------------

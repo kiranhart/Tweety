@@ -53,7 +53,7 @@ final class AutoRegisterScanner {
 		// Ignore anonymous inner classes
 		final Pattern anonymousClassPattern = Pattern.compile("\\w+\\$[0-9]$");
 
-		try (final JarFile file = new JarFile(SimplePlugin.getSource())) {
+		try (final JarFile file = new JarFile(TweetyPlugin.getSource())) {
 
 			for (final Enumeration<JarEntry> entry = file.entries(); entry.hasMoreElements();) {
 				final JarEntry jar = entry.nextElement();
@@ -70,7 +70,7 @@ final class AutoRegisterScanner {
 
 					// Look up the Java class, silently ignore if failing
 					try {
-						clazz = SimplePlugin.class.getClassLoader().loadClass(className);
+						clazz = TweetyPlugin.class.getClassLoader().loadClass(className);
 
 					} catch (final NoClassDefFoundError | ClassNotFoundException | IncompatibleClassChangeError error) {
 						continue;
@@ -168,7 +168,7 @@ final class AutoRegisterScanner {
 			return;
 		}
 
-		final SimplePlugin plugin = SimplePlugin.getInstance();
+		final TweetyPlugin plugin = TweetyPlugin.getInstance();
 		final Tuple<RegisterMode, Object> tuple = findInstance(clazz);
 
 		final RegisterMode mode = tuple.getKey();
@@ -200,7 +200,7 @@ final class AutoRegisterScanner {
 			final boolean isMainCommand = group.getLabel().equals(SimpleSettings.MAIN_COMMAND_ALIASES.get(0));
 
 			if (isMainCommand)
-				SimplePlugin.getInstance().setMainCommand(group);
+				TweetyPlugin.getInstance().setMainCommand(group);
 
 			plugin.registerCommands(group);
 		}
@@ -216,7 +216,7 @@ final class AutoRegisterScanner {
 			// Automatically called onLoadFinish when getting instance
 			enforceModeFor(clazz, mode, RegisterMode.SINGLETON);
 
-			if (SimplePlugin.isReloading()) {
+			if (TweetyPlugin.isReloading()) {
 				((YamlConfig) instance).save();
 				((YamlConfig) instance).reload();
 			}

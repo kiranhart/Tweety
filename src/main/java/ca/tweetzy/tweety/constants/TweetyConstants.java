@@ -2,7 +2,7 @@ package ca.tweetzy.tweety.constants;
 
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.YamlConfig;
 import org.bukkit.entity.Player;
 
@@ -107,13 +107,13 @@ public final class TweetyConstants {
 				Common.configLine(),
 				"",
 				" Your file has been automatically updated at " + TimeUtil.getFormattedDate(),
-				" to " + SimplePlugin.getNamed() + " " + SimplePlugin.getVersion(),
+				" to " + TweetyPlugin.getNamed() + " " + TweetyPlugin.getVersion(),
 				"",
 				" Unfortunatelly, due to how Bukkit saves all .yml files, it was not possible",
 				" preserve the documentation comments in your file. We apologize.",
 				"",
 				" If you'd like to view the default file, you can either:",
-				" a) Open the " + SimplePlugin.getSource().getName() + " with a WinRar or similar",
+				" a) Open the " + TweetyPlugin.getSource().getName() + " with a WinRar or similar",
 				"",
 				Common.configLine(),
 				""
@@ -125,7 +125,7 @@ public final class TweetyConstants {
 		/**
 		 * Represents our NBT tag used in {@link NBTUtil}
 		 */
-		public static final String TAG = SimplePlugin.getNamed() + "_NbtTag";
+		public static final String TAG = TweetyPlugin.getNamed() + "_NbtTag";
 
 		/**
 		 * An internal metadata tag the player gets when he opens the menu.
@@ -133,7 +133,7 @@ public final class TweetyConstants {
 		 * <p>
 		 * Used in {@link #getMenu(Player)}
 		 */
-		public static final String TAG_MENU_CURRENT = SimplePlugin.getNamed() + "_Menu";
+		public static final String TAG_MENU_CURRENT = TweetyPlugin.getNamed() + "_Menu";
 
 		/**
 		 * An internal metadata tag the player gets when he opens another menu.
@@ -141,7 +141,7 @@ public final class TweetyConstants {
 		 * <p>
 		 * Used in {@link #getPreviousMenu(Player)}
 		 */
-		public static final String TAG_MENU_PREVIOUS = SimplePlugin.getNamed() + "_Previous_Menu";
+		public static final String TAG_MENU_PREVIOUS = TweetyPlugin.getNamed() + "_Previous_Menu";
 
 		/**
 		 * An internal metadata tag the player gets when he closes our menu so you can
@@ -150,6 +150,6 @@ public final class TweetyConstants {
 		 * <p>
 		 * Used in {@link #getPreviousMenu(Player)}
 		 */
-		public static final String TAG_MENU_LAST_CLOSED = SimplePlugin.getNamed() + "_Last_Closed_Menu";
+		public static final String TAG_MENU_LAST_CLOSED = TweetyPlugin.getNamed() + "_Last_Closed_Menu";
 	}
 }

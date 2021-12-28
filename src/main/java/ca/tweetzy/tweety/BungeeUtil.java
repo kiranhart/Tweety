@@ -6,7 +6,7 @@ import ca.tweetzy.tweety.bungee.BungeeListener;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -31,7 +31,7 @@ public final class BungeeUtil {
 	/**
 	 * See {@link #tellBungee(String, BungeeAction, Object...)}
 	 * <p>
-	 * NB: This one uses the default channel name specified in {@link SimplePlugin}. By
+	 * NB: This one uses the default channel name specified in {@link TweetyPlugin}. By
 	 * default, nothing is specified there and so an exception will be thrown.
 	 *
 	 * @param <T>
@@ -40,8 +40,8 @@ public final class BungeeUtil {
 	 */
 	@SafeVarargs
 	public static <T> void tellBungee(BungeeAction action, T... datas) {
-		final BungeeListener bungee = SimplePlugin.getInstance().getBungeeCord();
-		Valid.checkNotNull(bungee, "Cannot call tellBungee() without channel name because " + SimplePlugin.getInstance().getClass() + " does not implement getBungeeCord()!");
+		final BungeeListener bungee = TweetyPlugin.getInstance().getBungeeCord();
+		Valid.checkNotNull(bungee, "Cannot call tellBungee() without channel name because " + TweetyPlugin.getInstance().getClass() + " does not implement getBungeeCord()!");
 
 		tellBungee(bungee.getChannel(), action, datas);
 	}
@@ -165,7 +165,7 @@ public final class BungeeUtil {
 		final byte[] byteArray = out.toByteArray();
 
 		try {
-			recipient.sendPluginMessage(SimplePlugin.getInstance(), channel, byteArray);
+			recipient.sendPluginMessage(TweetyPlugin.getInstance(), channel, byteArray);
 
 		} catch (final ChannelNotRegisteredException ex) {
 			Common.log("Cannot send Bungee '" + action + "' message because channel '" + channel + "' is not registered. "
@@ -212,7 +212,7 @@ public final class BungeeUtil {
 				throw new TweetyException("Unknown type of data: " + data + " (" + data.getClass().getSimpleName() + ")");
 		}
 
-		sender.sendPluginMessage(SimplePlugin.getInstance(), "BungeeCord", out.toByteArray());
+		sender.sendPluginMessage(TweetyPlugin.getInstance(), "BungeeCord", out.toByteArray());
 	}
 
 	/**
@@ -235,7 +235,7 @@ public final class BungeeUtil {
 					"Error: %error");
 		}
 
-		player.sendPluginMessage(SimplePlugin.getInstance(), "BungeeCord", byteArray.toByteArray());
+		player.sendPluginMessage(TweetyPlugin.getInstance(), "BungeeCord", byteArray.toByteArray());
 	}
 
 	/**

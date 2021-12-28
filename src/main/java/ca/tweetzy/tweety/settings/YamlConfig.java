@@ -11,7 +11,7 @@ import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.*;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 import com.google.common.base.Charsets;
@@ -185,9 +185,9 @@ public abstract class YamlConfig {
 
 				final String localePath = "localization/messages_" + localePrefix + ".yml";
 				final List<String> lines = FileUtil.getInternalResource(localePath);
-				Valid.checkNotNull(lines, SimplePlugin.getNamed() + " does not support the localization: messages_" + localePrefix + ".yml (For custom locale, set the Locale to 'en' and edit your English file instead)");
+				Valid.checkNotNull(lines, TweetyPlugin.getNamed() + " does not support the localization: messages_" + localePrefix + ".yml (For custom locale, set the Locale to 'en' and edit your English file instead)");
 
-				final File file = new File(SimplePlugin.getData(), localePath);
+				final File file = new File(TweetyPlugin.getData(), localePath);
 				ConfigInstance instance = findInstance(file.getName());
 
 				if (instance == null) {
@@ -289,7 +289,7 @@ public abstract class YamlConfig {
 					SimpleYaml defaultsConfig = null;
 
 					// Reformat afterwards with comments engine
-					if (!new File(SimplePlugin.getInstance().getDataFolder(), to).exists() && saveComments())
+					if (!new File(TweetyPlugin.getInstance().getDataFolder(), to).exists() && saveComments())
 						save = true;
 
 					// We will have the default file to return to

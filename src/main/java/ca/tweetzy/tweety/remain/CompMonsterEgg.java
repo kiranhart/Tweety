@@ -5,7 +5,7 @@ import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.plugin.SimplePlugin;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.nbt.NBTCompound;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
 import lombok.NonNull;
@@ -27,7 +27,7 @@ public final class CompMonsterEgg {
 	/**
 	 * Our universal tag we use to mark our eggs
 	 */
-	private static final String TAG = SimplePlugin.getNamed() + "_NbtTag";
+	private static final String TAG = TweetyPlugin.getNamed() + "_NbtTag";
 
 	/**
 	 * Suppress errors when entity type cannot be detected from an item stack and
