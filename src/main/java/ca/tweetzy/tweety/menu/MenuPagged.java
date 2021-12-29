@@ -36,6 +36,18 @@ public abstract class MenuPagged<T> extends Menu {
 	@Getter
 	private final List<Integer> slots;
 
+	/**
+	 * The raw items iterated
+	 */
+	private final Iterable<T> items;
+
+	/**
+	 * The page size overriding automatic pagination system adjusting menu
+	 * size based on item count
+	 */
+	private final Integer manualPageSize;
+
+
 	@Getter
 	@Setter
 	private static ItemStack nextPageButton = CompMaterial.ARROW.toItem();
@@ -195,6 +207,9 @@ public abstract class MenuPagged<T> extends Menu {
 	private MenuPagged(final Integer pageSize, final Menu parent, final List<Integer> slots, final Iterable<T> pages, final boolean returnMakesNewInstance) {
 		super(parent, returnMakesNewInstance);
 
+		this.items = pages;
+		this.manualPageSize = pageSize;
+
 		final int items = getItemAmount(pages);
 		final int autoPageSize = pageSize != null ? pageSize : items <= 9 ? 9 * 1 : items <= 9 * 2 ? 9 * 2 : items <= 9 * 3 ? 9 * 3 : items <= 9 * 4 ? 9 * 4 : 9 * 5;
 
@@ -328,6 +343,14 @@ public abstract class MenuPagged<T> extends Menu {
 	 */
 	@Override
 	void onRestart() {
+		final int items = getItemAmount(this.items);
+		final int autoPageSize = this.manualPageSize != null ? this.manualPageSize : items <= 9 ? 9 * 1 : items <= 9 * 2 ? 9 * 2 : items <= 9 * 3 ? 9 * 3 : items <= 9 * 4 ? 9 * 4 : 9 * 5;
+
+		this.pages.clear();
+		this.pages.putAll(Common.fillPages(this.slots.size(), this.items));
+
+		setSize(9 + autoPageSize);
+		setButtons();
 	}
 
 	/**

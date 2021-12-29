@@ -138,6 +138,8 @@ public abstract class Menu {
 	 */
 	private boolean slotNumbersVisible;
 
+	private boolean asyncFill;
+
 	/**
 	 * A one way boolean indicating this menu has been opened at least once
 	 */
@@ -984,6 +986,10 @@ public abstract class Menu {
 	 */
 	protected final void setSlotNumbersVisible() {
 		this.slotNumbersVisible = true;
+	}
+
+	protected final void setAsyncFill() {
+		this.asyncFill = true;
 	}
 
 	/**
