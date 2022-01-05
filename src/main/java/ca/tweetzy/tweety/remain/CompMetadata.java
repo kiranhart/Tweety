@@ -1,5 +1,24 @@
 package ca.tweetzy.tweety.remain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import ca.tweetzy.tweety.remain.CompMaterial;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.TileState;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.persistence.PersistentDataType;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
@@ -14,21 +33,12 @@ import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.nbt.NBTCompound;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
 import ca.tweetzy.tweety.settings.YamlSectionConfig;
-import lombok.*;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.block.TileState;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.metadata.Metadatable;
-import org.bukkit.persistence.PersistentDataType;
 
-import java.util.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Utility class for persistent metadata manipulation
@@ -52,7 +62,6 @@ public final class CompMetadata {
 	 * A shortcut for setting a tag with key-value pair on an item
 	 *
 	 * @param item
-	 * @param compoundTag
 	 * @param key
 	 * @param value
 	 * @return
@@ -87,9 +96,9 @@ public final class CompMetadata {
 	public static void setMetadata(final Entity entity, final String key, final String value) {
 		Valid.checkNotNull(entity);
 
-		final String tag = format(key, value);
-
 		if (Remain.hasScoreboardTags()) {
+			final String tag = format(key, value);
+
 			if (!entity.getScoreboardTags().contains(tag))
 				entity.addScoreboardTag(tag);
 
@@ -143,7 +152,6 @@ public final class CompMetadata {
 	 * A shortcut from reading a certain key from an item's given compound tag
 	 *
 	 * @param item
-	 * @param compoundTag
 	 * @param key
 	 * @return
 	 */
@@ -196,7 +204,7 @@ public final class CompMetadata {
 	 * Return saved tile entity metadata, or null if none
 	 *
 	 * @param tileEntity
-	 * @param key,       or null if none
+	 * @param key       or null if none
 	 * @return
 	 */
 	public static String getMetadata(final BlockState tileEntity, final String key) {
@@ -226,7 +234,7 @@ public final class CompMetadata {
 
 	/**
 	 * Return true if the given itemstack has the given key stored at its compound
-	 * tag {@link TweetyConstants.NBT#TAG}
+	 * tag {@link ca.tweetzy.tweety.constants.TweetyConstants.NBT#TAG}
 	 *
 	 * @param item
 	 * @param key
@@ -330,7 +338,7 @@ public final class CompMetadata {
 	 * because otherwise the tag is the same as the value we return
 	 *
 	 * @param entity
-	 * @param tag
+	 * @param key
 	 * @return
 	 */
 	public static MetadataValue getTempMetadata(final Entity entity, final String key) {
@@ -352,7 +360,7 @@ public final class CompMetadata {
 	 * Remove temporary metadata from the entity
 	 *
 	 * @param player
-	 * @param tag
+	 * @param key
 	 */
 	public static void removeTempMetadata(final Entity player, final String key) {
 		if (player.hasMetadata(key))

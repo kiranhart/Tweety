@@ -1,25 +1,24 @@
 package ca.tweetzy.tweety;
 
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictCollection;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.exception.InvalidWorldException;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
-import ca.tweetzy.tweety.model.*;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.YamlConfig;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
+import java.awt.Color;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+
+import ca.tweetzy.tweety.ItemUtil;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.Valid;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,16 +31,32 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictCollection;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.exception.InvalidWorldException;
+import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.model.ConfigSerializable;
+import ca.tweetzy.tweety.model.IsInList;
+import ca.tweetzy.tweety.model.RangedSimpleTime;
+import ca.tweetzy.tweety.model.RangedValue;
+import ca.tweetzy.tweety.model.SimpleSound;
+import ca.tweetzy.tweety.model.SimpleTime;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.YamlConfig;
 
-import java.awt.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 
 /**
  * Utility class for serializing objects to writeable YAML data and back.
@@ -72,112 +87,114 @@ public final class SerializeUtil {
 	/**
 	 * Converts the given object into something you can safely save in file as a string
 	 *
-	 * @param obj
+	 * @param object
 	 * @return
 	 */
-	public static Object serialize(final Object obj) {
-		if (obj == null)
+	public static Object serialize(Object object) {
+		if (object == null)
 			return null;
 
-		if (serializers.containsKey(obj.getClass()))
-			return serializers.get(obj.getClass()).apply(obj);
+		object = Remain.getRootOfSectionPathData(object);
 
-		if (obj instanceof ConfigSerializable)
-			return serialize(((ConfigSerializable) obj).serialize().serialize());
+		if (serializers.containsKey(object.getClass()))
+			return serializers.get(object.getClass()).apply(object);
 
-		else if (obj instanceof StrictCollection)
-			return serialize(((StrictCollection) obj).serialize());
+		if (object instanceof ConfigSerializable)
+			return serialize(((ConfigSerializable) object).serialize().serialize());
 
-		else if (obj instanceof ChatColor)
-			return ((ChatColor) obj).name();
+		else if (object instanceof StrictCollection)
+			return serialize(((StrictCollection) object).serialize());
 
-		else if (obj instanceof CompChatColor)
-			return ((CompChatColor) obj).getName();
+		else if (object instanceof ChatColor)
+			return ((ChatColor) object).name();
 
-		else if (obj instanceof net.md_5.bungee.api.ChatColor) {
-			final net.md_5.bungee.api.ChatColor color = ((net.md_5.bungee.api.ChatColor) obj);
+		else if (object instanceof CompChatColor)
+			return ((CompChatColor) object).getName();
+
+		else if (object instanceof net.md_5.bungee.api.ChatColor) {
+			final net.md_5.bungee.api.ChatColor color = ((net.md_5.bungee.api.ChatColor) object);
 
 			return MinecraftVersion.atLeast(V.v1_16) ? color.toString() : color.name();
 		}
 
-		else if (obj instanceof CompMaterial)
-			return obj.toString();
+		else if (object instanceof CompMaterial)
+			return object.toString();
 
-		else if (obj instanceof Location)
-			return serializeLoc((Location) obj);
+		else if (object instanceof Location)
+			return serializeLoc((Location) object);
 
-		else if (obj instanceof UUID)
-			return obj.toString();
+		else if (object instanceof UUID)
+			return object.toString();
 
-		else if (obj instanceof Enum<?>)
-			return obj.toString();
+		else if (object instanceof Enum<?>)
+			return object.toString();
 
-		else if (obj instanceof CommandSender)
-			return ((CommandSender) obj).getName();
+		else if (object instanceof CommandSender)
+			return ((CommandSender) object).getName();
 
-		else if (obj instanceof World)
-			return ((World) obj).getName();
+		else if (object instanceof World)
+			return ((World) object).getName();
 
-		else if (obj instanceof PotionEffectType)
-			return ((PotionEffectType) obj).getName();
+		else if (object instanceof PotionEffectType)
+			return ((PotionEffectType) object).getName();
 
-		else if (obj instanceof PotionEffect)
-			return serializePotionEffect((PotionEffect) obj);
+		else if (object instanceof PotionEffect)
+			return serializePotionEffect((PotionEffect) object);
 
-		else if (obj instanceof ItemCreator)
-			return ((ItemCreator) obj).make();
+		else if (object instanceof ItemCreator)
+			return ((ItemCreator) object).make();
 
-		else if (obj instanceof SimpleTime)
-			return ((SimpleTime) obj).getRaw();
+		else if (object instanceof SimpleTime)
+			return ((SimpleTime) object).getRaw();
 
-		else if (obj instanceof SimpleSound)
-			return ((SimpleSound) obj).toString();
+		else if (object instanceof SimpleSound)
+			return ((SimpleSound) object).toString();
 
-		else if (obj instanceof Color)
-			return "#" + ((Color) obj).getRGB();
+		else if (object instanceof Color)
+			return "#" + ((Color) object).getRGB();
 
-		else if (obj instanceof RangedValue)
-			return ((RangedValue) obj).toLine();
+		else if (object instanceof RangedValue)
+			return ((RangedValue) object).toLine();
 
-		else if (obj instanceof RangedSimpleTime)
-			return ((RangedSimpleTime) obj).toLine();
+		else if (object instanceof RangedSimpleTime)
+			return ((RangedSimpleTime) object).toLine();
 
-		else if (obj instanceof BaseComponent)
-			return Remain.toJson((BaseComponent) obj);
+		else if (object instanceof BaseComponent)
+			return Remain.toJson((BaseComponent) object);
 
-		else if (obj instanceof BaseComponent[])
-			return Remain.toJson((BaseComponent[]) obj);
+		else if (object instanceof BaseComponent[])
+			return Remain.toJson((BaseComponent[]) object);
 
-		else if (obj instanceof HoverEvent) {
-			final HoverEvent event = (HoverEvent) obj;
-
-			return SerializedMap.ofArray("Action", event.getAction(), "Value", event.getValue()).serialize();
-		}
-
-		else if (obj instanceof ClickEvent) {
-			final ClickEvent event = (ClickEvent) obj;
+		else if (object instanceof HoverEvent) {
+			final HoverEvent event = (HoverEvent) object;
 
 			return SerializedMap.ofArray("Action", event.getAction(), "Value", event.getValue()).serialize();
 		}
 
-		else if (obj instanceof Path)
-			throw new TweetyException("Cannot serialize Path " + obj + ", did you mean to convert it into a name?");
+		else if (object instanceof ClickEvent) {
+			final ClickEvent event = (ClickEvent) object;
 
-		else if (obj instanceof Iterable || obj.getClass().isArray() || obj instanceof IsInList) {
+			return SerializedMap.ofArray("Action", event.getAction(), "Value", event.getValue()).serialize();
+		}
+
+		else if (object instanceof Path)
+			throw new TweetyException("Cannot serialize Path " + object + ", did you mean to convert it into a name?");
+
+		else if (object instanceof Iterable || object.getClass().isArray() || object instanceof IsInList) {
 			final List<Object> serialized = new ArrayList<>();
 
-			if (obj instanceof Iterable || obj instanceof IsInList)
-				for (final Object element : obj instanceof IsInList ? ((IsInList<?>) obj).getList() : (Iterable<?>) obj)
+			if (object instanceof Iterable || object instanceof IsInList)
+				for (final Object element : object instanceof IsInList ? ((IsInList<?>) object).getList() : (Iterable<?>) object)
 					serialized.add(serialize(element));
 
 			else
-				for (final Object element : (Object[]) obj)
+				for (final Object element : (Object[]) object)
 					serialized.add(serialize(element));
 
 			return serialized;
 
-		} else if (obj instanceof StrictMap) {
-			final StrictMap<Object, Object> oldMap = (StrictMap<Object, Object>) obj;
+		} else if (object instanceof StrictMap) {
+			final StrictMap<Object, Object> oldMap = (StrictMap<Object, Object>) object;
 			final StrictMap<Object, Object> newMap = new StrictMap<>();
 
 			for (final Map.Entry<Object, Object> entry : oldMap.entrySet())
@@ -185,8 +202,8 @@ public final class SerializeUtil {
 
 			return newMap;
 
-		} else if (obj instanceof Map) {
-			final Map<Object, Object> oldMap = (Map<Object, Object>) obj;
+		} else if (object instanceof Map) {
+			final Map<Object, Object> oldMap = (Map<Object, Object>) object;
 			final Map<Object, Object> newMap = new LinkedHashMap<>();
 
 			for (final Map.Entry<Object, Object> entry : oldMap.entrySet())
@@ -194,21 +211,21 @@ public final class SerializeUtil {
 
 			return newMap;
 
-		} else if (obj instanceof YamlConfig)
-			throw new SerializeFailedException("Called serialize for YamlConfig's '" + obj.getClass().getSimpleName()
+		} else if (object instanceof YamlConfig)
+			throw new SerializeFailedException("Called serialize for YamlConfig's '" + object.getClass().getSimpleName()
 					+ "' but failed, if you're trying to save it make it implement ConfigSerializable!");
 
-		else if (obj instanceof Integer || obj instanceof Double || obj instanceof Float || obj instanceof Long || obj instanceof Short
-				|| obj instanceof String || obj instanceof Boolean || obj instanceof Map
-				|| obj instanceof ItemStack
-				|| obj instanceof MemorySection
-				|| obj instanceof Pattern)
-			return obj;
+		else if (object instanceof Integer || object instanceof Double || object instanceof Float || object instanceof Long || object instanceof Short
+				|| object instanceof String || object instanceof Boolean || object instanceof Map
+				|| object instanceof ItemStack
+				|| object instanceof MemorySection
+				|| object instanceof Pattern)
+			return object;
 
-		else if (obj instanceof ConfigurationSerializable)
-			return ((ConfigurationSerializable) obj).serialize();
+		else if (object instanceof ConfigurationSerializable)
+			return ((ConfigurationSerializable) object).serialize();
 
-		throw new SerializeFailedException("Does not know how to serialize " + obj.getClass().getSimpleName() + "! Does it extends ConfigSerializable? Data: " + obj);
+		throw new SerializeFailedException("Does not know how to serialize " + object.getClass().getSimpleName() + "! Does it extends ConfigSerializable? Data: " + object);
 	}
 
 	/**
@@ -273,6 +290,7 @@ public final class SerializeUtil {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static <T> T deserialize(@NonNull final Class<T> classOf, @NonNull Object object, final Object... deserializeParameters) {
+		object = Remain.getRootOfSectionPathData(object);
 
 		final SerializedMap map = SerializedMap.of(object);
 
@@ -281,7 +299,7 @@ public final class SerializeUtil {
 
 		if (deserializeMethod != null && deserializeParameters == null) {
 			try {
-				return ca.tweetzy.tweety.ReflectionUtil.invokeStatic(deserializeMethod, map);
+				return ReflectionUtil.invokeStatic(deserializeMethod, map);
 
 			} catch (final ReflectionException ex) {
 				ca.tweetzy.tweety.Common.throwError(ex, "Could not deserialize " + classOf + " from data: " + map);
@@ -312,7 +330,7 @@ public final class SerializeUtil {
 			if (deserializeMethod != null) {
 				Valid.checkBoolean(joinedClasses.size() == joinedParams.size(), "static deserialize method arguments length " + joinedClasses.size() + " != given params " + joinedParams.size());
 
-				return ca.tweetzy.tweety.ReflectionUtil.invokeStatic(deserializeMethod, joinedParams.toArray());
+				return ReflectionUtil.invokeStatic(deserializeMethod, joinedParams.toArray());
 			}
 		}
 
@@ -321,7 +339,7 @@ public final class SerializeUtil {
 			deserializeMethod = ReflectionUtil.getMethod(classOf, "getByName", String.class);
 
 			if (deserializeMethod != null)
-				return ca.tweetzy.tweety.ReflectionUtil.invokeStatic(deserializeMethod, object);
+				return ReflectionUtil.invokeStatic(deserializeMethod, object);
 		}
 
 		// Step 4 - If there is no deserialize method, just deserialize the given object
@@ -429,7 +447,7 @@ public final class SerializeUtil {
 			}
 
 			else if (Enum.class.isAssignableFrom(classOf)) {
-				object = ca.tweetzy.tweety.ReflectionUtil.lookupEnum((Class<Enum>) classOf, object.toString());
+				object = ReflectionUtil.lookupEnum((Class<Enum>) classOf, object.toString());
 
 				if (object == null)
 					return null;

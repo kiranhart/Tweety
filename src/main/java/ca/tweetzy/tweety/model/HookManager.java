@@ -19,7 +19,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.model.SimpleExpansion;
+import ca.tweetzy.tweety.model.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -44,6 +45,7 @@ import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.region.Region;
 import ca.tweetzy.tweety.remain.Remain;
 
@@ -2058,15 +2060,28 @@ class VaultHook {
 	}
 
 	Boolean hasPerm(@NonNull final String player, final String perm) {
-		return permissions != null ? perm != null ? permissions.has((String) null, player, perm) : true : null;
+		try {
+			return permissions != null ? perm != null ? permissions.has((String) null, player, perm) : true : null;
+		} catch (final UnsupportedOperationException t) {
+			return false; // No supported plugin installed
+		}
 	}
 
 	Boolean hasPerm(@NonNull final String world, @NonNull final String player, final String perm) {
-		return permissions != null ? perm != null ? permissions.has(world, player, perm) : true : null;
+		try {
+			return permissions != null ? perm != null ? permissions.has(world, player, perm) : true : null;
+		} catch (final UnsupportedOperationException t) {
+			return false; // No supported plugin installed
+		}
 	}
 
 	String getPrimaryGroup(final Player player) {
-		return permissions != null ? permissions.getPrimaryGroup(player) : "";
+		try {
+			return permissions != null ? permissions.getPrimaryGroup(player) : "";
+
+		} catch (final UnsupportedOperationException t) {
+			return ""; // No supported plugin installed
+		}
 	}
 
 	// ------------------------------------------------------------------------------
@@ -2074,15 +2089,27 @@ class VaultHook {
 	// ------------------------------------------------------------------------------
 
 	String getPlayerPrefix(final Player player) {
-		return lookupVault(player, VaultPart.PREFIX);
+		try {
+			return lookupVault(player, VaultPart.PREFIX);
+		} catch (final UnsupportedOperationException t) {
+			return ""; // No supported plugin installed
+		}
 	}
 
 	String getPlayerSuffix(final Player player) {
-		return lookupVault(player, VaultPart.SUFFIX);
+		try {
+			return lookupVault(player, VaultPart.SUFFIX);
+		} catch (final UnsupportedOperationException t) {
+			return ""; // No supported plugin installed
+		}
 	}
 
 	String getPlayerGroup(final Player player) {
-		return lookupVault(player, VaultPart.GROUP);
+		try {
+			return lookupVault(player, VaultPart.GROUP);
+		} catch (final UnsupportedOperationException t) {
+			return ""; // No supported plugin installed
+		}
 	}
 
 	private String lookupVault(final Player player, final VaultPart vaultPart) {

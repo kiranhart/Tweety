@@ -1,35 +1,60 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.*;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.UUIDToNameConverter;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.internal.BossBarInternals;
-import ca.tweetzy.tweety.remain.internal.ChatInternals;
-import ca.tweetzy.tweety.remain.nbt.NBTEntity;
-import ca.tweetzy.tweety.settings.SimpleYaml;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-import org.bukkit.*;
+import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
+import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import ca.tweetzy.tweety.remain.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
+import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -47,22 +72,35 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.EntityUtil;
+import ca.tweetzy.tweety.FileUtil;
+import ca.tweetzy.tweety.ItemUtil;
+import ca.tweetzy.tweety.MathUtil;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.PlayerUtil;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.TimeUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.UUIDToNameConverter;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.internal.BossBarInternals;
+import ca.tweetzy.tweety.remain.internal.ChatInternals;
+import ca.tweetzy.tweety.remain.nbt.NBTEntity;
+import ca.tweetzy.tweety.settings.SimpleYaml;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
-import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
-import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 /**
  * Our main cross-version compatibility class.
@@ -194,6 +232,11 @@ public final class Remain {
 	 * Stores player cooldowns for old MC versions
 	 */
 	private final static StrictMap<UUID /*Player*/, StrictMap<Material, Integer>> cooldowns = new StrictMap<>();
+
+	/**
+	 * The internal private section path data class
+	 */
+	private static Class<?> sectionPathDataClass = null;
 
 	/**
 	 * The server-name from server.properties (is lacking on new Minecraft version so we have to readd it back)
@@ -364,6 +407,13 @@ public final class Remain {
 
 			} catch (final Exception ex) {
 				hasAddPassenger = false;
+			}
+
+			try {
+				sectionPathDataClass = ReflectionUtil.lookupClass("org.bukkit.configuration.SectionPathData");
+
+			} catch (final ReflectionException ex) {
+				// unsupported
 			}
 
 		} catch (final ReflectiveOperationException ex) {
@@ -661,6 +711,7 @@ public final class Remain {
 	 * @param block
 	 * @param material
 	 * @param data
+	 * @param physics
 	 */
 	public static void setTypeAndData(final Block block, final Material material, final byte data, final boolean physics) {
 		if (MinecraftVersion.atLeast(V.v1_13)) {
@@ -690,9 +741,11 @@ public final class Remain {
 	 * Converts chat message in JSON (IChatBaseComponent) to one lined old style
 	 * message with color codes. e.g. {text:"Hello world",color="red"} converts to
 	 * &cHello world
+	 * @param json
 	 *
 	 * @param denyEvents if an exception should be thrown if hover/click event is
 	 *                   found.
+	 * @return
 	 * @throws InteractiveTextFoundException if click/hover event are found. Such
 	 *                                       events would be removed, and therefore
 	 *                                       message containing them shall not be
@@ -719,11 +772,6 @@ public final class Remain {
 			// Do not catch our own exception
 			if (throwable instanceof InteractiveTextFoundException)
 				throw throwable;
-
-			/*Debugger.saveError(throwable,
-					"Unable to parse JSON message.",
-					"JSON: " + json,
-					"Error: %error");*/
 		}
 
 		return text.toString();
@@ -743,7 +791,6 @@ public final class Remain {
 	 * Convert the given json into list
 	 *
 	 * @param json
-	 * @param typeOf
 	 * @return
 	 */
 	public static List<String> fromJsonList(String json) {
@@ -753,6 +800,8 @@ public final class Remain {
 	/**
 	 * Converts chat message with color codes to Json chat components e.g. &6Hello
 	 * world converts to {text:"Hello world",color="gold"}
+	 * @param message
+	 * @return
 	 */
 	public static String toJson(final String message) {
 		Valid.checkBoolean(bungeeApiPresent, "(Un)packing chat requires Spigot 1.7.10 or newer");
@@ -1080,7 +1129,7 @@ public final class Remain {
 	 * Broadcast a chest open animation at the given block,
 	 * the block must be a chest!
 	 *
-	 * @param location
+	 * @param block
 	 */
 	public static void sendChestOpen(Block block) {
 		sendChestAction(block, 1);
@@ -1172,7 +1221,7 @@ public final class Remain {
 	 * aliases
 	 *
 	 * @param label          the label
-	 * @param removeAliases, also remove aliases?
+	 * @param removeAliases also remove aliases?
 	 */
 	public static void unregisterCommand(final String label, final boolean removeAliases) {
 		try {
@@ -1228,7 +1277,6 @@ public final class Remain {
 
 		ReflectionUtil.setStaticField(Enchantment.class, "acceptingNew", true);
 		Enchantment.registerEnchantment(enchantment);
-
 	}
 
 	/**
@@ -1634,16 +1682,16 @@ public final class Remain {
 	 * <p>
 	 * Backwards compatible.
 	 *
-	 * @param e, the event
+	 * @param event the event
 	 * @return if the event was fired for main hand only
 	 */
-	public static boolean isInteractEventPrimaryHand(final PlayerInteractEvent e) {
+	public static boolean isInteractEventPrimaryHand(final PlayerInteractEvent event) {
 
 		if (MinecraftVersion.olderThan(V.v1_9))
 			return true;
 
 		try {
-			return e.getHand() != null && e.getHand() == org.bukkit.inventory.EquipmentSlot.HAND;
+			return event.getHand() != null && event.getHand() == org.bukkit.inventory.EquipmentSlot.HAND;
 
 		} catch (final NoSuchMethodError err) {
 			return true; // Older MC, always true since there was no off-hand
@@ -1719,6 +1767,7 @@ public final class Remain {
 	 * Tries to find online player by uuid
 	 *
 	 * @param id
+	 *
 	 * @return null if offline or player
 	 */
 	public static Player getPlayerByUUID(final UUID id) {
@@ -1798,13 +1847,6 @@ public final class Remain {
 			meta.spigot().setPages(pages);
 
 		} catch (final NoSuchMethodError ex) {
-			/*final List<String> list = new ArrayList<>();
-			
-			for (final BaseComponent[] page : pages)
-				list.add(TextComponent.toLegacyText(page));
-			
-			meta.setPages(list);*/
-
 			try {
 				final List<Object> chatComponentPages = (List<Object>) ReflectionUtil.getFieldContent(ReflectionUtil.getOBCClass("inventory.CraftMetaBook"), "pages", meta);
 
@@ -1912,9 +1954,10 @@ public final class Remain {
 	 * Calls NMS to find out if the entity is invisible, works for any entity,
 	 * better than Bukkit since it has extreme downwards compatibility and does not require LivingEntity
 	 *
+	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
+	 *
 	 * @param entity
 	 * @return
-	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
 	 */
 	@Deprecated
 	public static boolean isInvisible(Entity entity) {
@@ -1936,6 +1979,7 @@ public final class Remain {
 	 *
 	 * @param entity
 	 * @param invisible
+	 *
 	 * @deprecated use {@link PlayerUtil#setVanished(Player, boolean)} to disable vanish for plugins also
 	 */
 	@Deprecated
@@ -2084,11 +2128,11 @@ public final class Remain {
 	/**
 	 * Send a "toast" notification to the given receivers. This is an advancement notification that cannot
 	 * be modified that much. It imposes a slight performance penalty the more players to send to.
-	 * <p>
+	 *
 	 * Each player sending is delayed by 0.1s
 	 *
-	 * @param receiver
-	 * @param message  you can replace player-specific variables in the message here
+	 * @param receivers
+	 * @param message you can replace player-specific variables in the message here
 	 * @param icon
 	 */
 	public static void sendToast(final List<Player> receivers, final Function<Player, String> message, final CompMaterial icon) {
@@ -2196,9 +2240,9 @@ public final class Remain {
 	/**
 	 * Return the player ping
 	 *
+	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 * @param player
 	 * @return
-	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 */
 	@Deprecated
 	public static int getPing(Player player) {
@@ -2358,6 +2402,7 @@ public final class Remain {
 	 *
 	 * @param item
 	 * @param type
+	 * @param durationTicks
 	 * @param level
 	 */
 	public static void setPotion(final ItemStack item, final PotionEffectType type, final int durationTicks, final int level) {
@@ -2560,6 +2605,30 @@ public final class Remain {
 			// Unsupported
 			return 20;
 		}
+	}
+
+	/**
+	 * Converts the given object that may be a SectionPathData for MC 1.18 back into its root data
+	 * such as {@link MemorySection}
+	 *
+	 * @param objectOrSectionPathData
+	 * @return
+	 */
+	public static Object getRootOfSectionPathData(Object objectOrSectionPathData) {
+		if (objectOrSectionPathData != null && objectOrSectionPathData.getClass() == sectionPathDataClass)
+			objectOrSectionPathData = ReflectionUtil.invoke("getData", objectOrSectionPathData);
+
+		return objectOrSectionPathData;
+	}
+
+	/**
+	 * Return true if the given object is a memory section
+	 *
+	 * @param obj
+	 * @return
+	 */
+	public static boolean isMemorySection(Object obj) {
+		return obj != null && sectionPathDataClass == obj.getClass();
 	}
 
 	// ----------------------------------------------------------------------------------------------------
