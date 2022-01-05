@@ -1,26 +1,25 @@
 package ca.tweetzy.tweety;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictList;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.debug.Debugger;
+import ca.tweetzy.tweety.exception.RegexTimeoutException;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.DiscordSender;
+import ca.tweetzy.tweety.model.HookManager;
+import ca.tweetzy.tweety.model.Replacer;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
+import ca.tweetzy.tweety.settings.SimpleSettings;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -39,27 +38,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.exception.RegexTimeoutException;
-import ca.tweetzy.tweety.model.DiscordSender;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.Replacer;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
-import ca.tweetzy.tweety.settings.SimpleSettings;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import net.md_5.bungee.api.chat.TextComponent;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Our main utility class hosting a large variety of different convenience functions
@@ -2601,7 +2589,7 @@ public final class Common {
 		final Map<String, Object> map = mapOrSection instanceof Map ? (Map<String, Object>) mapOrSection : mapOrSection instanceof MemorySection ? ReflectionUtil.getFieldContent(mapOrSection, "map") : null;
 		Valid.checkNotNull(map, "Unexpected " + mapOrSection.getClass().getSimpleName() + " '" + mapOrSection + "'. Must be Map or MemorySection! (Do not just send config name here, but the actual section with get('section'))");
 
-		final Map<String, Object> copy = new HashMap<>();
+		final Map<String, Object> copy = new LinkedHashMap<>();
 
 		for (final Map.Entry<String, Object> entry : map.entrySet()) {
 			final String key = entry.getKey();
