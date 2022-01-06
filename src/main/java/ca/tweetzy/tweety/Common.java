@@ -2592,7 +2592,7 @@ public final class Common {
 		final Map<String, Object> copy = new LinkedHashMap<>();
 
 		for (final Map.Entry<String, Object> entry : map.entrySet()) {
-			final String key = entry.getKey();
+			final String key = String.valueOf(entry.getKey());
 			final Object value = entry.getValue();
 
 			copy.put(key, Remain.getRootOfSectionPathData(value));
