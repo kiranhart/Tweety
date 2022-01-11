@@ -6,7 +6,6 @@ import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.annotation.AutoRegister;
-import ca.tweetzy.tweety.bungee.BungeeListener;
 import ca.tweetzy.tweety.command.SimpleCommand;
 import ca.tweetzy.tweety.command.SimpleCommandGroup;
 import ca.tweetzy.tweety.debug.Debugger;
@@ -180,13 +179,6 @@ final class AutoRegisterScanner {
 			enforceModeFor(clazz, mode, RegisterMode.SINGLETON);
 
 			plugin.registerEvents((SimpleListener<?>) instance);
-			eventsRegistered = true;
-		}
-
-		else if (BungeeListener.class.isAssignableFrom(clazz)) {
-			enforceModeFor(clazz, mode, RegisterMode.SINGLETON);
-
-			plugin.registerBungeeCord((BungeeListener) instance);
 			eventsRegistered = true;
 		}
 

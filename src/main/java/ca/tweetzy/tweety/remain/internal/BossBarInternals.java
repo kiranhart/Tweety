@@ -70,7 +70,6 @@ public final class BossBarInternals implements Listener {
 		else if (Remain.isProtocol18Hack()) {
 			this.entityClass = NMSDragon_v1_8Hack.class;
 			this.isBelowGround = false;
-
 		} else if (MinecraftVersion.equals(V.v1_6)) {
 			this.entityClass = NMSDragon_v1_6.class;
 			this.isBelowGround = true;

@@ -2504,68 +2504,6 @@ public final class Remain {
 	}
 
 	/**
-	 * New Minecraft versions lack server-name that we rely on for BungeeCord,
-	 * restore it back
-	 */
-	public static void injectServerName() {
-		final Properties properties = new Properties();
-		final File props = new File(TweetyPlugin.getData().getParentFile().getParentFile(), "server.properties");
-
-		// If user has Bungee_Server_Name in their settings, move it automatically
-		final File settingsFile = FileUtil.getFile("settings.yml");
-		String previousName = null;
-
-		if (settingsFile.exists()) {
-			final SimpleYaml settings = SimpleYaml.loadConfiguration(settingsFile);
-			final String previousNameRaw = settings.getString("Bungee_Server_Name");
-
-			if (previousNameRaw != null && !previousNameRaw.isEmpty() && !"none".equals(previousNameRaw) && !"undefined".equals(previousNameRaw)) {
-				Common.warning("Detected Bungee_Server_Name being used in your settings.yml that is now located in server.properties." +
-						" It has been moved there and you can now delete this key from settings.yml if it was not deleted already.");
-
-				previousName = previousNameRaw;
-			}
-		}
-
-		try (final FileReader fileReader = new FileReader(props)) {
-			properties.load(fileReader);
-
-			if (!properties.containsKey("server-name") || previousName != null) {
-				properties.setProperty("server-name", previousName != null ? previousName : "Undefined - see mineacademy.org/server-properties to configure");
-
-				try (FileWriter fileWriter = new FileWriter(props)) {
-					properties.store(fileWriter, "Minecraft server properties\nModified by " + TweetyPlugin.getNamed() + ", see mineacademy.org/server-properties for more information");
-				}
-			}
-
-			serverName = properties.getProperty("server-name");
-
-		} catch (final Throwable e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Return the server name identifier (used for BungeeCord)
-	 *
-	 * @return
-	 */
-	public static String getServerName() {
-		Valid.checkBoolean(isServerNameChanged(), "Detected getServerName call, please configure your 'server-name' in server.properties according to mineacademy.org/server-properties");
-
-		return serverName;
-	}
-
-	/**
-	 * Return true if the server-name property in server.properties got modified
-	 *
-	 * @return
-	 */
-	public static boolean isServerNameChanged() {
-		return !"see mineacademy.org/server-properties to configure".contains(serverName) && !"undefined".equals(serverName) && !"Unknown Server".equals(serverName);
-	}
-
-	/**
 	 * Return the corresponding major Java version such as 8 for Java 1.8, or 11 for Java 11.
 	 *
 	 * @return

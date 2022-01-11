@@ -1,44 +1,29 @@
 package ca.tweetzy.tweety.collection;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-import ca.tweetzy.tweety.collection.StrictCollection;
-import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.SerializeUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.IsInList;
+import ca.tweetzy.tweety.model.Tuple;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.Remain;
+import com.google.gson.*;
+import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.jsonsimple.JSONObject;
-import ca.tweetzy.tweety.jsonsimple.JSONParser;
-import ca.tweetzy.tweety.model.IsInList;
-import ca.tweetzy.tweety.model.Tuple;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.Remain;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.LongSerializationPolicy;
-
-import lombok.NonNull;
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Serialized map enables you to save and retain values from your
@@ -64,7 +49,7 @@ public final class SerializedMap extends StrictCollection {
 	/**
 	 * A fallback Json parser
 	 */
-	private final static JSONParser jsonSimple = new JSONParser();
+	private final static JsonParser jsonSimple = new JsonParser();
 
 	/**
 	 * The internal map with values
@@ -110,10 +95,9 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @see Map#containsKey(Object)
-	 *
 	 * @param key
 	 * @return
+	 * @see Map#containsKey(Object)
 	 */
 	public boolean containsKey(final String key) {
 		return map.containsKey(key);
@@ -180,7 +164,7 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Puts the map into this map if not null and not empty
-	 *
+	 * <p>
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -198,7 +182,7 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Puts the collection into map if not null and not empty
-	 *
+	 * <p>
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -216,7 +200,7 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Puts the boolean into map if true
-	 *
+	 * <p>
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -234,7 +218,7 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Puts the value into map if not null
-	 *
+	 * <p>
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -886,9 +870,8 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @see Map#forEach(BiConsumer)
-	 *
 	 * @param consumer
+	 * @see Map#forEach(BiConsumer)
 	 */
 	public void forEach(final BiConsumer<String, Object> consumer) {
 		for (final Entry<String, Object> e : map.entrySet())
@@ -905,36 +888,32 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @see Map#keySet()
-	 *
 	 * @return
+	 * @see Map#keySet()
 	 */
 	public Set<String> keySet() {
 		return map.keySet();
 	}
 
 	/**
-	 * @see Map#values()
-	 *
 	 * @return
+	 * @see Map#values()
 	 */
 	public Collection<Object> values() {
 		return map.values();
 	}
 
 	/**
-	 * @see Map#entrySet()
-	 *
 	 * @return
+	 * @see Map#entrySet()
 	 */
 	public Set<Entry<String, Object>> entrySet() {
 		return map.entrySet();
 	}
 
 	/**
-	 * @see Map#size()
-	 *
 	 * @return
+	 * @see Map#size()
 	 */
 	public int size() {
 		return map.size();
@@ -976,9 +955,8 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @see Map#isEmpty()
-	 *
 	 * @return
+	 * @see Map#isEmpty()
 	 */
 	public boolean isEmpty() {
 		return map.isEmpty();
@@ -1023,9 +1001,9 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Convert the key pairs into formatted string such as {
-	 * 	"key" = "value"
-	 *  "another" = "value2"
-	 *  ...
+	 * "key" = "value"
+	 * "another" = "value2"
+	 * ...
 	 * }
 	 *
 	 * @return
@@ -1164,7 +1142,7 @@ public final class SerializedMap extends StrictCollection {
 			try {
 				final Object parsed = jsonSimple.parse(json);
 
-				if (parsed instanceof JSONObject)
+				if (parsed instanceof JsonObject)
 					return SerializedMap.of(parsed);
 
 				throw new TweetyException("Unable to deserialize " + (parsed != null ? parsed.getClass() : "unknown class") + " from: " + json);

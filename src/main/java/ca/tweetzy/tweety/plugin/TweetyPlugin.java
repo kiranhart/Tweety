@@ -1,9 +1,11 @@
 package ca.tweetzy.tweety.plugin;
 
-import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.annotation.AutoRegister;
-import ca.tweetzy.tweety.bungee.BungeeListener;
 import ca.tweetzy.tweety.command.SimpleCommand;
 import ca.tweetzy.tweety.command.SimpleCommandGroup;
 import ca.tweetzy.tweety.command.SimpleSubCommand;
@@ -21,7 +23,6 @@ import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.settings.*;
 import ca.tweetzy.tweety.visual.BlockVisualizer;
 import lombok.Getter;
-import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.Messenger;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -233,9 +233,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			Common.ADD_LOG_PREFIX = hadLogPrefix;
 		}
 
-		// Inject server-name to newer MC versions that lack it
-		Remain.injectServerName();
-
 		// Load our dependency system
 		try {
 			HookManager.loadDependencies();
@@ -326,25 +323,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 		} catch (final Throwable t) {
 			displayError0(t);
 		}
-	}
-
-	/**
-	 * Register a simple bungee class as a custom bungeecord listener,
-	 * for sample implementation you can see the SimpleBungee field at:
-	 * https://github.com/kangarko/PluginTemplate/blob/main/src/main/java/org/mineacademy/template/PluginTemplate.java
-	 * <p>
-	 * DO NOT use this if you only have that one field there with a getter, we already register it automatically,
-	 * this method is intended to be used if you have multiple fields there and want to register multiple channels.
-	 * Then you just call this method and parse the field into it from your onReloadablesStart method.
-	 */
-	protected final void registerBungeeCord(@NonNull BungeeListener bungee) {
-		final Messenger messenger = getServer().getMessenger();
-
-		messenger.registerIncomingPluginChannel(this, bungee.getChannel(), bungee);
-		messenger.registerOutgoingPluginChannel(this, bungee.getChannel());
-
-		reloadables.registerEvents(bungee);
-		Debugger.debug("bungee", "Registered BungeeCord listener on channel " + bungee.getChannel());
 	}
 
 	/**
@@ -843,7 +821,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	/**
 	 * Shortcut for calling {@link SimpleCommandGroup#register()}
 	 *
-	 * @param labelAndAliases
 	 * @param group
 	 */
 	protected final void registerCommands(final SimpleCommandGroup group) {
@@ -1028,16 +1005,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	 */
 	public boolean similarityStripAccents() {
 		return true;
-	}
-
-	/**
-	 * Returns the default or "main" bungee listener you use. This is checked from {@link BungeeUtil#tellBungee(ca.tweetzy.tweety.bungee.BungeeAction, Object...)}
-	 * so that you won't have to pass in channel name each time and we use channel name from this listener instead.
-	 *
-	 * @return
-	 */
-	public BungeeListener getBungeeCord() {
-		return null;
 	}
 
 	/**
