@@ -159,10 +159,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	static {
 
 		if (MinecraftVersion.olderThan(V.v1_4) && !ReflectionUtil.isClassAvailable("org.bukkit.Sound")) {
-			Bukkit.getLogger().severe("Ancient MC version detected, please follow install steps here: https://mineacademy.org/oldmcsupport");
-			Bukkit.getLogger().severe("Please note that many features won't work and due to time constraints we can't provide support for such old Minecraft versions.");
-
-			throw new RuntimeException("Ancient MC detected, see above for installation steps.");
+			throw new RuntimeException("Running ancient version");
 		}
 
 		// Add console filters early - no reload support
@@ -458,12 +455,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 		Debugger.printStackTrace(throwable);
 
 		Common.log(
-				"&4    ___                  _ ",
-				"&4   / _ \\  ___  _ __  ___| |",
-				"&4  | | | |/ _ \\| '_ \\/ __| |",
-				"&4  | |_| | (_) | |_) \\__ \\_|",
-				"&4   \\___/ \\___/| .__/|___(_)",
-				"&4             |_|          ",
 				"&4!-----------------------------------------------------!",
 				" &cError loading " + getDescription().getName() + " v" + getDescription().getVersion() + ", plugin is disabled!",
 				" &cRunning on " + getServer().getBukkitVersion() + " (" + MinecraftVersion.getServerVersion() + ") & Java " + System.getProperty("java.version"),

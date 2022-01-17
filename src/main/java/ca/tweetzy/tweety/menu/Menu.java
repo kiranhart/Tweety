@@ -457,16 +457,13 @@ public abstract class Menu {
 		// Register current menu
 		Common.runLater(1, () -> {
 			try {
-				drawer.display(player);
-
+				drawer.display(player, this.asyncFill);
 			} catch (final Throwable t) {
 				Common.error(t, "Error opening menu " + Menu.this);
-
 				return;
 			}
 
 			player.setMetadata(TweetyConstants.NBT.TAG_MENU_CURRENT, new FixedMetadataValue(TweetyPlugin.getInstance(), Menu.this));
-
 			opened = true;
 		});
 	}

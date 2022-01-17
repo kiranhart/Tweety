@@ -128,19 +128,10 @@ public final class InventoryDrawer {
 	 *
 	 * @param player
 	 */
-	public void display(Player player) {
-		final Inventory inv = this.build(player);
+	public void display(Player player, boolean async) {
+		final Inventory inv = this.build(player, async);
 
 		player.openInventory(inv);
-	}
-
-	/**
-	 * Builds the inventory
-	 *
-	 * @return
-	 */
-	public Inventory build() {
-		return this.build(null);
 	}
 
 	/**
@@ -149,12 +140,16 @@ public final class InventoryDrawer {
 	 * @param holder
 	 * @return
 	 */
-	public Inventory build(InventoryHolder holder) {
+	public Inventory build(InventoryHolder holder, boolean async) {
 
 		// Automatically append the black color in the menu, can be overriden by colors
-		final Inventory inv = Bukkit.createInventory(holder, size, Common.colorize("&0" + (title.length() > 30 ? title.substring(0, 30) : title)));
+		final Inventory inv = Bukkit.createInventory(holder, size, Common.colorize("&e" + (title.length() > 30 ? title.substring(0, 30) : title)));
 
-		inv.setContents(content);
+
+		if (async)
+			Common.runAsync(() -> inv.setContents(content));
+		else
+			inv.setContents(content);
 
 		return inv;
 	}
