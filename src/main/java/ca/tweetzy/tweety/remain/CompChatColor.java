@@ -235,15 +235,6 @@ public final class CompChatColor {
 		return isHex() ? toString + "\\" + getName() : ItemUtil.bountify(getName());
 	}
 
-	/**
-	 * Return a string that can be used in saving yml files
-	 *
-	 * @return
-	 */
-	public String toSaveableString() {
-		return isHex() ? getName() : getName();
-	}
-
 	@Override
 	public String toString() {
 		return toString;
