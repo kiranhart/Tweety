@@ -39,57 +39,16 @@ public final class TweetyConstants {
 		 * The data.db file (uses YAML) for saving various data
 		 */
 		public static final String DATA = "data.db";
-
-		/**
-		 * Files related to the ChatControl plugin
-		 */
-		public static final class ChatControl {
-
-			/**
-			 * The command-spy.log file in logs/ folder
-			 */
-			public static final String COMMAND_SPY = "logs/command-spy.log";
-
-			/**
-			 * The chat log file in logs/ folder
-			 */
-			public static final String CHAT_LOG = "logs/chat.log";
-
-			/**
-			 * The admin log in log/s folder
-			 */
-			public static final String ADMIN_CHAT = "logs/admin-chat.log";
-
-			/**
-			 * The bungee chat log file in logs/ folder
-			 */
-			public static final String BUNGEE_CHAT = "logs/bungee-chat.log";
-
-			/**
-			 * The rules log file in logs/ folder
-			 */
-			public static final String RULES_LOG = "logs/rules.log";
-
-			/**
-			 * The console log file in logs/ folder
-			 */
-			public static final String CONSOLE_LOG = "logs/console.log";
-
-			/**
-			 * The file logging channels joins and leaves in logs/ folder
-			 */
-			public static final String CHANNEL_JOINS = "logs/channel-joins.log";
-		}
 	}
 
 	public static final class Header {
 
 		/**
 		 * The header for data.db file
-		 *
+		 * <p>
 		 * Use {@link YamlConfig#setHeader()} to override this.
 		 */
-		public static final String[] DATA_FILE = new String[] {
+		public static final String[] DATA_FILE = new String[]{
 				"",
 				"This file stores various data you create via the plugin.",
 				"",
@@ -100,10 +59,10 @@ public final class TweetyConstants {
 		/**
 		 * The header that is put into the file that has been automatically
 		 * updated and comments were lost.
-		 *
+		 * <p>
 		 * Use {@link YamlConfig#setHeader()} to override this.
 		 */
-		public static final String[] UPDATED_FILE = new String[] {
+		public static final String[] UPDATED_FILE = new String[]{
 				Common.configLine(),
 				"",
 				" Your file has been automatically updated at " + TimeUtil.getFormattedDate(),
