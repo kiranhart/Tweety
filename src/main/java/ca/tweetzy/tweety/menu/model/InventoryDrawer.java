@@ -1,6 +1,7 @@
 package ca.tweetzy.tweety.menu.model;
 
 import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -143,7 +144,11 @@ public final class InventoryDrawer {
 	public Inventory build(InventoryHolder holder, boolean async) {
 
 		// Automatically append the black color in the menu, can be overriden by colors
-		final Inventory inv = Bukkit.createInventory(holder, size, Common.colorize("&e" + (title.length() > 30 ? title.substring(0, 30) : title)));
+		if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9) && title.length() > 32) {
+			title = title.charAt(30) == '\u00A7' ? title.substring(0, 30) : title.substring(0, 31);
+		}
+
+		final Inventory inv = Bukkit.createInventory(holder, size, Common.colorize("&e" + title));
 
 
 		if (async)
