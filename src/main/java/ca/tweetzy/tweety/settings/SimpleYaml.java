@@ -48,7 +48,7 @@ public final class SimpleYaml extends FileConfiguration {
 
 			try {
 				final LoaderOptions loaderOptions = new LoaderOptions();
-				loaderOptions.setMaxAliasesForCollections(512);
+				loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
 
 				yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions, loaderOptions);
 

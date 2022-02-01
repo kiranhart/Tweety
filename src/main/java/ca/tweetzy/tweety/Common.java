@@ -400,6 +400,10 @@ public final class Common {
 		// Replace player
 		message = message.replace("{player}", resolveSenderName(sender));
 
+		if (sender instanceof Player) {
+			message = HookManager.replacePlaceholders((Player) sender, message);
+		}
+
 		// Replace colors
 		if (!hasJSON)
 			message = colorize(message);
