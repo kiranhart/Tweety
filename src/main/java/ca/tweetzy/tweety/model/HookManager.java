@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 import ca.tweetzy.tweety.model.SimpleExpansion;
 import ca.tweetzy.tweety.model.Variables;
+import de.jeff_media.chestsort.api.ChestSortAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,6 +33,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -137,6 +139,8 @@ public final class HookManager {
 	private static WorldEditHook worldeditHook;
 	private static WorldGuardHook worldguardHook;
 
+	private static ChestSortHook chestSortHook;
+
 	private static boolean nbtAPIDummyHook = false;
 	private static boolean nuVotifierDummyHook = false;
 	private static boolean townyChatDummyHook = false;
@@ -216,6 +220,9 @@ public final class HookManager {
 
 		if (Common.doesPluginExist("Lockette"))
 			locketteProHook = new LocketteProHook();
+
+		if (Common.doesPluginExist("ChestSort"))
+			chestSortHook = new ChestSortHook();
 
 		if (Common.doesPluginExist("LWC"))
 			lwcHook = new LWCHook();
@@ -592,6 +599,10 @@ public final class HookManager {
 		return worldguardHook != null;
 	}
 
+	public static boolean isChestSortLoaded() {
+		return chestSortHook != null;
+	}
+
 	// ------------------------------------------------------------------------------------------------------------
 	//
 	//
@@ -599,6 +610,12 @@ public final class HookManager {
 	//
 	//
 	// ------------------------------------------------------------------------------------------------------------
+
+	public static void chestSortInventory(final Inventory inventory) {
+		if (isChestSortLoaded()) {
+			chestSortHook.setSortable(inventory);
+		}
+	}
 
 	// ------------------------------------------------------------------------------------------------------------
 	// AuthMe
@@ -1955,6 +1972,13 @@ class ProtocolLibHook {
 		} catch (final NoClassDefFoundError err) {
 			return false;
 		}
+	}
+}
+
+class ChestSortHook {
+
+	void setSortable(final Inventory inventory) {
+		ChestSortAPI.setSortable(inventory);
 	}
 }
 

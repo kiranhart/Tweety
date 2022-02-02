@@ -6,7 +6,7 @@
 
 	<groupId>ca.tweetzy</groupId>
 	<artifactId>tweety</artifactId>
-	<version>1.11.2</version>
+	<version>1.11.3</version>
 	<packaging>jar</packaging>
 
 	<name>Tweety</name>
@@ -34,6 +34,10 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
 		</repository>
+		<repository>
+			<id>jeff-media-public</id>
+			<url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -50,6 +54,13 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.17.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.jeff_media</groupId>
+			<artifactId>ChestSortAPI</artifactId>
+			<version>12.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 

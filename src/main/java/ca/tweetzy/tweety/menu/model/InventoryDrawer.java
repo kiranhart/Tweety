@@ -2,6 +2,7 @@ package ca.tweetzy.tweety.menu.model;
 
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -131,7 +132,7 @@ public final class InventoryDrawer {
 	 */
 	public void display(Player player, boolean async) {
 		final Inventory inv = this.build(player, async);
-
+		HookManager.chestSortInventory(inv);
 		player.openInventory(inv);
 	}
 
