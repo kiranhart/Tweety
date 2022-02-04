@@ -12,14 +12,6 @@
     <name>Tweety</name>
     <description>Create complex and unique plugins easily and fast.</description>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub kiranhart Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/kiranhart/Tweety</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
