@@ -9,7 +9,6 @@ import org.bukkit.inventory.meta.ItemMeta;
  * autosave to the Itemstack, use getItem to get the changed ItemStack
  *
  * @author tr7zw
- *
  */
 public class NBTItem extends NBTCompound {
 

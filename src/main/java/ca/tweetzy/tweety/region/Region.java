@@ -1,10 +1,8 @@
 package ca.tweetzy.tweety.region;
 
-import ca.tweetzy.tweety.BlockUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.model.ConfigSerializable;
+import ca.tweetzy.tweety.util.BlockUtil;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.Valid;
 import ca.tweetzy.tweety.visual.VisualizedRegion;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,7 +20,7 @@ import java.util.Set;
 /**
  * Represents a cuboid region
  */
-public class Region implements ConfigSerializable {
+public class Region {
 
 	/**
 	 * Represents an empty region
@@ -103,7 +101,7 @@ public class Region implements ConfigSerializable {
 		secondary.setY(Math.max(y1, y2));
 		secondary.setZ(Math.max(z1, z2));
 
-		return new Location[] { primary, secondary };
+		return new Location[]{primary, secondary};
 	}
 
 	/**
@@ -258,8 +256,6 @@ public class Region implements ConfigSerializable {
 
 	/**
 	 * Set the secondary region point
-	 *
-	 * @param primary
 	 */
 	public final void setSecondary(final Location secondary) {
 		this.secondary = secondary;
@@ -283,35 +279,5 @@ public class Region implements ConfigSerializable {
 	@Override
 	public final String toString() {
 		return getClass().getSimpleName() + "{name=" + name + ",location=" + Common.shortLocation(primary) + " - " + Common.shortLocation(secondary) + "}";
-	}
-
-	/**
-	 * Saves the region data into a map you can save in your yaml or json file
-	 */
-	@Override
-	public final SerializedMap serialize() {
-		final SerializedMap map = new SerializedMap();
-
-		map.putIfExist("Name", name);
-		map.putIfExist("Primary", primary);
-		map.putIfExist("Secondary", secondary);
-
-		return map;
-	}
-
-	/**
-	 * Converts a saved map from your yaml/json file into a region if it contains Primary and Secondary keys
-	 *
-	 * @param map
-	 * @return
-	 */
-	public static Region deserialize(final SerializedMap map) {
-		Valid.checkBoolean(map.containsKey("Primary") && map.containsKey("Secondary"), "The region must have Primary and a Secondary location");
-
-		final String name = map.getString("Name");
-		final Location prim = map.getLocation("Primary");
-		final Location sec = map.getLocation("Secondary");
-
-		return new Region(name, prim, sec);
 	}
 }

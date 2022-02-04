@@ -9,7 +9,6 @@ import java.io.InputStream;
  * this Object.
  *
  * @author tr7zw
- *
  */
 public class NBTContainer extends NBTCompound {
 

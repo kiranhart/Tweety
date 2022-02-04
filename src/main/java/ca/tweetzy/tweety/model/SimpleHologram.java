@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompParticle;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -102,7 +102,7 @@ public abstract class SimpleHologram {
 	private static BukkitTask scheduleTickingTask() {
 		return Common.runTimer(1, () -> {
 
-			for (final Iterator<SimpleHologram> it = registeredItems.iterator(); it.hasNext();) {
+			for (final Iterator<SimpleHologram> it = registeredItems.iterator(); it.hasNext(); ) {
 				final SimpleHologram model = it.next();
 
 				if (model.isSpawned()) {
@@ -216,7 +216,6 @@ public abstract class SimpleHologram {
 	}
 
 	/**
-	 *
 	 * @param lore
 	 * @return
 	 */
@@ -314,7 +313,7 @@ public abstract class SimpleHologram {
 	 */
 	public static final void deleteAll() {
 
-		for (final Iterator<SimpleHologram> it = registeredItems.iterator(); it.hasNext();) {
+		for (final Iterator<SimpleHologram> it = registeredItems.iterator(); it.hasNext(); ) {
 			final SimpleHologram item = it.next();
 
 			if (item.isSpawned())

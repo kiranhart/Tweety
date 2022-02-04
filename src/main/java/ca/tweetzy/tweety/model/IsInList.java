@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.StrictSet;
+import ca.tweetzy.tweety.util.Common;
 import lombok.Getter;
 
 import java.util.ArrayList;

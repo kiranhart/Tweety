@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.ReflectionUtil;
+import ca.tweetzy.tweety.util.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.SneakyThrows;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -183,9 +183,7 @@ public enum CompParticle {
 				if (MinecraftVersion.equals(V.v1_7)) {
 					this.nmsEnumParticle = null;
 					this.packetConstructor = ReflectionUtil.getConstructor(packetClass, String.class, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE);
-				}
-
-				else {
+				} else {
 					final Class<? extends Enum> particleClass = (Class<? extends Enum>) ReflectionUtil.getNMSClass("EnumParticle");
 
 					this.nmsEnumParticle = ReflectionUtil.lookupEnumSilent(particleClass, this.name());
@@ -334,9 +332,7 @@ public enum CompParticle {
 				location.getWorld().spawnParticle((Particle) this.bukkitEnumParticle, location, count, offsetX, offsetY, offsetZ, extra, new DustOptions(Color.RED, 1F));
 			else
 				location.getWorld().spawnParticle((Particle) this.bukkitEnumParticle, location, count, offsetX, offsetY, offsetZ, extra, data);
-		}
-
-		else if (this.packetConstructor != null) {
+		} else if (this.packetConstructor != null) {
 			final Object packet = this.preparePacket(location.getX(), location.getY(), location.getZ(), offsetX, offsetY, offsetZ, speed, count, extra, data);
 
 			for (final Player player : Remain.getOnlinePlayers())
@@ -427,13 +423,11 @@ public enum CompParticle {
 				if (data.length > 1)
 					materialData = data[1];
 
-				data = new int[] { materialId, materialId | materialData << 12 };
+				data = new int[]{materialId, materialId | materialData << 12};
 			}
 
 			return ReflectionUtil.instantiate(this.packetConstructor, this.nmsEnumParticle, true, (float) posX, (float) posY, (float) posZ, (float) offsetX, (float) offsetY, (float) offsetZ, (float) speed, count, data);
-		}
-
-		else {
+		} else {
 			String correctedName = this.name1_7;
 
 			if (this == BLOCK_CRACK || this == ITEM_CRACK || this == BLOCK_DUST) {

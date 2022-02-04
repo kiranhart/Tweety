@@ -1,13 +1,13 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompBarColor;
 import ca.tweetzy.tweety.remain.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -62,23 +62,7 @@ public final class BossBarInternals implements Listener {
 	// Singleton
 	private BossBarInternals() {
 
-		if (MinecraftVersion.olderThan(V.v1_6)) {
-			this.entityClass = null;
-			this.isBelowGround = false;
-		}
-
-		else if (Remain.isProtocol18Hack()) {
-			this.entityClass = NMSDragon_v1_8Hack.class;
-			this.isBelowGround = false;
-		} else if (MinecraftVersion.equals(V.v1_6)) {
-			this.entityClass = NMSDragon_v1_6.class;
-			this.isBelowGround = true;
-
-		} else if (MinecraftVersion.equals(V.v1_7)) {
-			this.entityClass = NMSDragon_v1_7.class;
-			this.isBelowGround = true;
-
-		} else if (MinecraftVersion.equals(V.v1_8)) {
+		if (MinecraftVersion.equals(V.v1_8)) {
 			this.entityClass = NMSDragon_v1_8.class;
 			this.isBelowGround = false;
 
@@ -87,7 +71,7 @@ public final class BossBarInternals implements Listener {
 			this.isBelowGround = true;
 		}
 
-		if (MinecraftVersion.atLeast(V.v1_6)) {
+		if (MinecraftVersion.atLeast(V.v1_8)) {
 			Valid.checkNotNull(entityClass, "Compatible does not support Boss bar on MC version " + MinecraftVersion.getServerVersion() + "!");
 
 			Common.registerEvents(this);

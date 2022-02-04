@@ -1,12 +1,12 @@
 package ca.tweetzy.tweety.visual;
 
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompProperty;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Location;

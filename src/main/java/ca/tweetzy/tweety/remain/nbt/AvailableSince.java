@@ -7,7 +7,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
-@Target({ METHOD })
+@Target({METHOD})
 @interface AvailableSince {
 
 	MinecraftVersion version();

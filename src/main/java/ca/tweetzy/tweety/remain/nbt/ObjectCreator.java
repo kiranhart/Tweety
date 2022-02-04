@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.util.Common;
 
 import java.lang.reflect.Constructor;
 
@@ -9,12 +9,12 @@ import java.lang.reflect.Constructor;
  * This Enum wraps Constructors for NMS classes
  *
  * @author tr7zw
- *
  */
 enum ObjectCreator {
 	NMS_NBTTAGCOMPOUND(null, null, ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),
 	NMS_BLOCKPOSITION(null, null, ClassWrapper.NMS_BLOCKPOSITION.getClazz(), int.class, int.class, int.class),
-	NMS_COMPOUNDFROMITEM(MinecraftVersion.MC1_11_R1, null, ClassWrapper.NMS_ITEMSTACK.getClazz(), ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),;
+	NMS_COMPOUNDFROMITEM(MinecraftVersion.MC1_11_R1, null, ClassWrapper.NMS_ITEMSTACK.getClazz(), ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),
+	;
 
 	private Constructor<?> construct;
 	private Class<?> targetClass;

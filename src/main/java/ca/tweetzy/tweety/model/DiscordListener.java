@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.Common;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
@@ -451,7 +451,7 @@ public abstract class DiscordListener implements Listener {
 
 		/**
 		 * Register plugin hook
-		 *
+		 * <p>
 		 * https://github.com/kangarko/ChatControl-Red/issues/703
 		 */
 		public void registerHook() {

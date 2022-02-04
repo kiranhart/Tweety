@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.conversation;
 
-import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.Common;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

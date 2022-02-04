@@ -6,7 +6,6 @@ import ca.tweetzy.tweety.exception.TweetyException;
  * {@link NBTListCompound} implementation for NBTLists
  *
  * @author tr7zw
- *
  */
 public class NBTCompoundList extends NBTList<NBTListCompound> {
 
@@ -52,10 +51,9 @@ public class NBTCompoundList extends NBTList<NBTListCompound> {
 	/**
 	 * Adds a new Compound to the end of the List.
 	 *
-	 *
-	 * @deprecated Please use addCompound!
 	 * @param empty
 	 * @return True, if compound was added
+	 * @deprecated Please use addCompound!
 	 */
 	@Override
 	@Deprecated

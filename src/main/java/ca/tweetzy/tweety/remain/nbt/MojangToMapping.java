@@ -7,7 +7,6 @@ import java.util.Map;
  * Temporary solution to hold Mojang to unmapped Spigot mappings.
  *
  * @author tr7zw
- *
  */
 class MojangToMapping {
 

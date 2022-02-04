@@ -7,7 +7,6 @@ import com.google.gson.Gson;
  * Helper class for 1.7 servers without Gson
  *
  * @author tr7zw
- *
  */
 class GsonWrapper {
 

@@ -19,7 +19,6 @@ import java.util.Set;
  * methods are allowed to throw {@link TweetyException}
  *
  * @author tr7zw
- *
  */
 public class NBTReflectionUtil {
 
@@ -87,7 +86,7 @@ public class NBTReflectionUtil {
 	/**
 	 * Writes a Compound to an OutputStream
 	 *
-	 * @param comp Compound
+	 * @param comp   Compound
 	 * @param stream Stream to write to
 	 */
 	public static void writeApiNBT(NBTCompound comp, OutputStream stream) {

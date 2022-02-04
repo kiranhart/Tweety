@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.util.Common;
 import org.bukkit.Bukkit;
 
 /**
@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
  * correctly.
  *
  * @author tr7zw
- *
  */
 enum MinecraftVersion {
 

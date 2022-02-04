@@ -9,7 +9,6 @@ import org.bukkit.block.BlockState;
  * once.
  *
  * @author tr7zw
- *
  */
 public class NBTTileEntity extends NBTCompound {
 

@@ -1,25 +1,19 @@
 package ca.tweetzy.tweety.debug;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import org.bukkit.Bukkit;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.TimeUtil;
+import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.settings.SimpleSettings;
-
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.FileUtil;
+import ca.tweetzy.tweety.util.TimeUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.bukkit.Bukkit;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Utility class for solving problems and errors
@@ -57,19 +51,16 @@ public final class Debugger {
 	 * Prints a debug messages to the console if the given section is being debugged
 	 * <p>
 	 * You can set if the section is debugged by setting it in "Debug" key in your settings.yml,
-	 * by default your class extending {@link SimpleSettings}
 	 *
 	 * @param section
 	 * @param messages
 	 */
 	public static void debug(String section, String... messages) {
-		if (isDebugged(section)) {
-			for (final String message : messages)
-				if (TweetyPlugin.hasInstance())
-					Common.log("[" + section + "] " + message);
-				else
-					System.out.println("[" + section + "] " + message);
-		}
+		for (final String message : messages)
+			if (TweetyPlugin.hasInstance())
+				Common.log("[" + section + "] " + message);
+			else
+				System.out.println("[" + section + "] " + message);
 	}
 
 	/**
@@ -80,9 +71,6 @@ public final class Debugger {
 	 * @param message
 	 */
 	public static void put(String section, String message) {
-		if (!isDebugged(section))
-			return;
-
 		final ArrayList<String> list = pendingMessages.getOrDefault(section, new ArrayList<String>());
 		list.add(message);
 
@@ -108,9 +96,6 @@ public final class Debugger {
 	 * @param section
 	 */
 	public static void push(String section) {
-		if (!isDebugged(section))
-			return;
-
 		final List<String> parts = pendingMessages.remove(section);
 
 		if (parts == null)
@@ -122,20 +107,6 @@ public final class Debugger {
 			debug(section, message);
 	}
 
-	/**
-	 * Get if the given section is being debugged
-	 * <p>
-	 * You can set if the section is debugged by setting it in "Debug" key in your settings.yml,
-	 * by default your class extending {@link SimpleSettings}
-	 * <p>
-	 * If you set Debug to ["*"] this will always return true
-	 *
-	 * @param section
-	 * @return
-	 */
-	public static boolean isDebugged(String section) {
-		return SimpleSettings.DEBUG_SECTIONS.contains(section) || SimpleSettings.DEBUG_SECTIONS.contains("*");
-	}
 
 	// ----------------------------------------------------------------------------------------------------
 	// Saving errors to file
@@ -230,7 +201,7 @@ public final class Debugger {
 			if (line.contains("net.minecraft.server") || line.contains("org.bukkit.craftbukkit"))
 				break;
 
-			if (line.contains("org.bukkit.plugin.java.JavaPluginLoader") || line.contains("org.bukkit.plugin.TweetyPluginManager")|| line.contains("org.bukkit.plugin.SimplePluginManager") || line.contains("org.bukkit.plugin.JavaPlugin"))
+			if (line.contains("org.bukkit.plugin.java.JavaPluginLoader") || line.contains("org.bukkit.plugin.TweetyPluginManager") || line.contains("org.bukkit.plugin.SimplePluginManager") || line.contains("org.bukkit.plugin.JavaPlugin"))
 				continue;
 
 			if (!paths.contains(className))
@@ -242,22 +213,6 @@ public final class Debugger {
 			paths.remove(0);
 
 		return paths;
-	}
-
-	/**
-	 * Prints array values with their indexes on each line
-	 *
-	 * @param values
-	 */
-	public static void printValues(Object[] values) {
-		if (values != null) {
-			print(Common.consoleLine());
-			print("Enumeration of " + Common.plural(values.length, values.getClass().getSimpleName().toLowerCase().replace("[]", "")));
-
-			for (int i = 0; i < values.length; i++)
-				print("&8[" + i + "] &7" + values[i]);
-		} else
-			print("Value are null");
 	}
 
 	/**

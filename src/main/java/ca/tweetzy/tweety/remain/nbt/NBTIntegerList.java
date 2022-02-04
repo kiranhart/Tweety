@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
  * Integer implementation for NBTLists
  *
  * @author tr7zw
- *
  */
 public class NBTIntegerList extends NBTList<Integer> {
 

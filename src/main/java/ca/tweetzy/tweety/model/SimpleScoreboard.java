@@ -1,11 +1,14 @@
 package ca.tweetzy.tweety.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.TweetyPlugin;
+import ca.tweetzy.tweety.collection.StrictList;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.RandomUtil;
+import ca.tweetzy.tweety.util.Valid;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,19 +17,11 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.RandomUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.remain.Remain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class SimpleScoreboard {
 
@@ -186,7 +181,7 @@ public class SimpleScoreboard {
 	 * @param thatContains
 	 */
 	public final void removeRow(final String thatContains) {
-		for (final Iterator<String> it = rows.iterator(); it.hasNext();) {
+		for (final Iterator<String> it = rows.iterator(); it.hasNext(); ) {
 			final String row = it.next();
 
 			if (row.contains(thatContains))
@@ -367,7 +362,7 @@ public class SimpleScoreboard {
 	 * Stops this scoreboard and removes it from all viewers
 	 */
 	public final void stop() {
-		for (final Iterator<ViewedScoreboard> iterator = scoreboards.iterator(); iterator.hasNext();) {
+		for (final Iterator<ViewedScoreboard> iterator = scoreboards.iterator(); iterator.hasNext(); ) {
 			final ViewedScoreboard score = iterator.next();
 
 			score.getViewer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());

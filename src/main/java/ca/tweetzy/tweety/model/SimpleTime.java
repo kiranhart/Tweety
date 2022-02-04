@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.TimeUtil;
+import ca.tweetzy.tweety.util.TimeUtil;
 import lombok.Getter;
 import lombok.NonNull;
 

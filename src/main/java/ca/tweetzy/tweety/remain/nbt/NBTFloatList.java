@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
  * Float implementation for NBTLists
  *
  * @author tr7zw
- *
  */
 public class NBTFloatList extends NBTList<Float> {
 

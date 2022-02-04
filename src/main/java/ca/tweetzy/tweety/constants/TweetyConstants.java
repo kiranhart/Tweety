@@ -1,12 +1,12 @@
 package ca.tweetzy.tweety.constants;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.settings.YamlConfig;
-import org.bukkit.entity.Player;
+import ca.tweetzy.tweety.TweetyPlugin;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.TimeUtil;
 
 import java.util.UUID;
+
+;
 
 /**
  * Stores constants for this plugin
@@ -36,23 +36,20 @@ public final class TweetyConstants {
 		public static final String DEBUG = "debug.log";
 
 		/**
-		 * The data.db file (uses YAML) for saving various data
+		 * The data.yml file (uses YAML) for saving various data
 		 */
-		public static final String DATA = "data.db";
+		public static final String DATA = "data.yml";
 	}
 
 	public static final class Header {
 
 		/**
-		 * The header for data.db file
+		 * The header for data.yml file
 		 * <p>
-		 * Use {@link YamlConfig#setHeader()} to override this.
 		 */
 		public static final String[] DATA_FILE = new String[]{
 				"",
 				"This file stores various data you create via the plugin.",
-				"",
-				" ** THE FILE IS MACHINE GENERATED. PLEASE DO NOT EDIT **",
 				""
 		};
 
@@ -86,29 +83,5 @@ public final class TweetyConstants {
 		 */
 		public static final String TAG = TweetyPlugin.getNamed() + "_NbtTag";
 
-		/**
-		 * An internal metadata tag the player gets when he opens the menu.
-		 *
-		 * <p>
-		 * Used in {@link #getMenu(Player)}
-		 */
-		public static final String TAG_MENU_CURRENT = TweetyPlugin.getNamed() + "_Menu";
-
-		/**
-		 * An internal metadata tag the player gets when he opens another menu.
-		 *
-		 * <p>
-		 * Used in {@link #getPreviousMenu(Player)}
-		 */
-		public static final String TAG_MENU_PREVIOUS = TweetyPlugin.getNamed() + "_Previous_Menu";
-
-		/**
-		 * An internal metadata tag the player gets when he closes our menu so you can
-		 * reopen last closed menu manually.
-		 *
-		 * <p>
-		 * Used in {@link #getPreviousMenu(Player)}
-		 */
-		public static final String TAG_MENU_LAST_CLOSED = TweetyPlugin.getNamed() + "_Last_Closed_Menu";
 	}
 }

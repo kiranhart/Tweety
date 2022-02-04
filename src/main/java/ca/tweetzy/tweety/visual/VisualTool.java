@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.visual;
 
-import ca.tweetzy.tweety.menu.tool.BlockTool;
 import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.tool.BlockTool;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -48,9 +48,6 @@ public abstract class VisualTool extends BlockTool {
 	 */
 	protected abstract void handleBlockClick(Player player, ClickType click, Block block);
 
-	/**
-	 * @see org.mineacademy.arena.tool.ArenaTool#onAirClick(org.bukkit.entity.Player, org.bukkit.event.inventory.ClickType)
-	 */
 	@Override
 	protected final void onAirClick(final Player player, final ClickType click) {
 		// Remove old blocks
@@ -92,7 +89,6 @@ public abstract class VisualTool extends BlockTool {
 	 * Return a list of points we should render in this visualization
 	 *
 	 * @param player
-	 *
 	 * @return
 	 */
 	protected abstract List<Location> getVisualizedPoints(Player player);
@@ -101,7 +97,6 @@ public abstract class VisualTool extends BlockTool {
 	 * Return a region that this tool should draw particles around
 	 *
 	 * @param player
-	 *
 	 * @return
 	 */
 	protected VisualizedRegion getVisualizedRegion(Player player) {

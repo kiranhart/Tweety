@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.event;
 
-import ca.tweetzy.tweety.menu.tool.Rocket;
+import ca.tweetzy.tweety.tool.Rocket;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Projectile;

@@ -1,60 +1,34 @@
 package ca.tweetzy.tweety.remain;
 
-import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
-import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import ca.tweetzy.tweety.remain.*;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
+import ca.tweetzy.tweety.TweetyPlugin;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.UUIDToNameConverter;
+import ca.tweetzy.tweety.remain.internal.BossBarInternals;
+import ca.tweetzy.tweety.remain.internal.ChatInternals;
+import ca.tweetzy.tweety.remain.nbt.NBTEntity;
+import ca.tweetzy.tweety.util.*;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.ReflectionUtil.ReflectionException;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.*;
 import org.bukkit.Statistic.Type;
-import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.*;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -72,35 +46,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.EntityUtil;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.UUIDToNameConverter;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.internal.BossBarInternals;
-import ca.tweetzy.tweety.remain.internal.ChatInternals;
-import ca.tweetzy.tweety.remain.nbt.NBTEntity;
-import ca.tweetzy.tweety.settings.SimpleYaml;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import static ca.tweetzy.tweety.util.ReflectionUtil.getNMSClass;
+import static ca.tweetzy.tweety.util.ReflectionUtil.getOBCClass;
 
 /**
  * Our main cross-version compatibility class.
@@ -347,7 +305,7 @@ public final class Remain {
 						"&cYour server version (&f" + Bukkit.getBukkitVersion().replace("-SNAPSHOT", "") + "&c) doesn't\n" +
 								" &cinclude &elibraries required&c for this plugin to\n" +
 								" &crun. Install the following plugin for compatibility:\n" +
-								" &fhttps://mineacademy.org/plugins/#misc");
+								" &fhttps://mineacademy.org/resources/plugins/bungeechatapi/BungeeChatAPI-2.0.0.jar");
 			}
 
 			try {
@@ -741,8 +699,8 @@ public final class Remain {
 	 * Converts chat message in JSON (IChatBaseComponent) to one lined old style
 	 * message with color codes. e.g. {text:"Hello world",color="red"} converts to
 	 * &cHello world
-	 * @param json
 	 *
+	 * @param json
 	 * @param denyEvents if an exception should be thrown if hover/click event is
 	 *                   found.
 	 * @return
@@ -800,6 +758,7 @@ public final class Remain {
 	/**
 	 * Converts chat message with color codes to Json chat components e.g. &6Hello
 	 * world converts to {text:"Hello world",color="gold"}
+	 *
 	 * @param message
 	 * @return
 	 */
@@ -874,72 +833,6 @@ public final class Remain {
 					"Error: %error%");
 
 			return null;
-		}
-	}
-
-	/**
-	 * Sends JSON component to sender
-	 *
-	 * @param sender
-	 * @param json
-	 * @param placeholders
-	 */
-	public static void sendJson(final CommandSender sender, final String json, final SerializedMap placeholders) {
-		try {
-			final BaseComponent[] components = ComponentSerializer.parse(json);
-
-			if (MinecraftVersion.atLeast(V.v1_16))
-				replaceHexPlaceholders(Arrays.asList(components), placeholders);
-
-			sendComponent(sender, components);
-
-		} catch (final RuntimeException ex) {
-			Common.error(ex, "Malformed JSON when sending message to " + sender.getName() + " with JSON: " + json);
-		}
-	}
-
-	/*
-	 * A helper Method for MC 1.16+ to partially solve the issue of HEX colors in JSON
-	 *
-	 * BaseComponent does not support colors when in text, they must be set at the color level
-	 */
-	private static void replaceHexPlaceholders(final List<BaseComponent> components, final SerializedMap placeholders) {
-
-		for (final BaseComponent component : components) {
-			if (component instanceof TextComponent) {
-				final TextComponent textComponent = (TextComponent) component;
-				String text = textComponent.getText();
-
-				for (final Map.Entry<String, Object> entry : placeholders.entrySet()) {
-					String key = entry.getKey();
-					String value = Common.simplify(entry.getValue());
-
-					// Detect HEX in placeholder
-					final Matcher match = RGB_HEX_ENCODED_REGEX.matcher(text);
-
-					while (match.find()) {
-
-						// Find the color
-						final String color = "#" + match.group(2).replace(ChatColor.COLOR_CHAR + "", "");
-
-						// Remove it from chat and bind it to TextComponent instead
-						value = match.replaceAll("");
-						textComponent.setColor(net.md_5.bungee.api.ChatColor.of(color));
-					}
-
-					key = key.charAt(0) != '{' ? "{" + key : key;
-					key = key.charAt(key.length() - 1) != '}' ? key + "}" : key;
-
-					text = text.replace(key, value);
-					textComponent.setText(text);
-				}
-			}
-
-			if (component.getExtra() != null)
-				replaceHexPlaceholders(component.getExtra(), placeholders);
-
-			if (component.getHoverEvent() != null)
-				replaceHexPlaceholders(Arrays.asList(component.getHoverEvent().getValue()), placeholders);
 		}
 	}
 
@@ -1220,7 +1113,7 @@ public final class Remain {
 	 * Removes a command by its label from command map, optionally can also remove
 	 * aliases
 	 *
-	 * @param label          the label
+	 * @param label         the label
 	 * @param removeAliases also remove aliases?
 	 */
 	public static void unregisterCommand(final String label, final boolean removeAliases) {
@@ -1482,123 +1375,6 @@ public final class Remain {
 	}
 
 	/**
-	 * Update the player's inventory title without closing the window
-	 *
-	 * @param player the player
-	 * @param title  the new title
-	 * @deprecated use {@link PlayerUtil#updateInventoryTitle(Player, String)}
-	 */
-	@Deprecated
-	public static void updateInventoryTitle(final Player player, String title) {
-
-		try {
-
-			if (MinecraftVersion.atLeast(V.v1_17) || MinecraftVersion.atLeast(V.v1_18)) {
-				final boolean is1_18 = MinecraftVersion.atLeast(V.v1_18);
-
-				final Object nmsPlayer = Remain.getHandleEntity(player);
-				final Object chatComponent = toIChatBaseComponentPlain(ChatColor.translateAlternateColorCodes('&', title));
-
-				final int inventorySize = player.getOpenInventory().getTopInventory().getSize() / 9;
-				String containerName;
-
-				if (inventorySize == 1)
-					containerName = "a";
-
-				else if (inventorySize == 2)
-					containerName = "b";
-
-				else if (inventorySize == 3)
-					containerName = "c";
-
-				else if (inventorySize == 4)
-					containerName = "d";
-
-				else if (inventorySize == 5)
-					containerName = "e";
-
-				else if (inventorySize == 6)
-					containerName = "f";
-				else
-					throw new TweetyException("Cannot generate NMS container class to update inventory of size " + inventorySize);
-
-				final Object container = ReflectionUtil.getStaticFieldContent(ReflectionUtil.lookupClass("net.minecraft.world.inventory.Containers"), containerName);
-
-				final Constructor<?> packetConstructor = ReflectionUtil.getConstructor(
-						"net.minecraft.network.protocol.game.PacketPlayOutOpenWindow",
-						int.class,
-						container.getClass(),
-						ReflectionUtil.lookupClass("net.minecraft.network.chat.IChatBaseComponent"));
-
-				final Object activeContainer = ReflectionUtil.getFieldContent(nmsPlayer, is1_18 ? "bW" : "bV");
-				final int windowId = ReflectionUtil.getFieldContent(activeContainer, "j");
-
-				final Method method = is1_18 ? ReflectionUtil.getMethod(nmsPlayer.getClass(), "a", ReflectionUtil.lookupClass("net.minecraft.world.inventory.Container")) : null;
-
-				Remain.sendPacket(player, ReflectionUtil.instantiate(packetConstructor, windowId, container, chatComponent));
-
-				if (is1_18)
-					ReflectionUtil.invoke(method, nmsPlayer, activeContainer);
-
-				else
-					ReflectionUtil.invoke("initMenu", nmsPlayer, activeContainer);
-
-				return;
-			}
-
-			if (MinecraftVersion.olderThan(V.v1_9) && title.length() > 32)
-				title = title.substring(0, 32);
-
-			final Object entityPlayer = getHandleEntity(player);
-			final Object activeContainer = entityPlayer.getClass().getField("activeContainer").get(entityPlayer);
-			final Object windowId = activeContainer.getClass().getField("windowId").get(activeContainer);
-
-			final Object packetOpenWindow;
-
-			if (MinecraftVersion.atLeast(V.v1_8)) {
-				final Constructor<?> chatMessageConst = getNMSClass("ChatMessage", "net.minecraft.network.chat.ChatMessage").getConstructor(String.class, Object[].class);
-				final Object chatMessage = chatMessageConst.newInstance(ChatColor.translateAlternateColorCodes('&', title), new Object[0]);
-
-				if (MinecraftVersion.newerThan(V.v1_13)) {
-					final int inventorySize = player.getOpenInventory().getTopInventory().getSize() / 9;
-
-					if (inventorySize < 1 || inventorySize > 6) {
-						Common.log("Cannot update title for " + player.getName() + " as their inventory has non typical size: " + inventorySize + " rows");
-
-						return;
-					}
-
-					final Class<?> containersClass = getNMSClass("Containers", "net.minecraft.world.inventory.Containers");
-					final Constructor<?> packetConst = getNMSClass("PacketPlayOutOpenWindow", "net.minecraft.network.protocol.game.PacketPlayOutOpenWindow")
-							.getConstructor(/*windowID*/int.class, /*containers*/containersClass, /*msg*/getNMSClass("IChatBaseComponent", "net.minecraft.network.chat.IChatBaseComponent"));
-
-					final String containerName = "GENERIC_9X" + inventorySize;
-
-					final Object container = containersClass.getField(containerName).get(null);
-
-					packetOpenWindow = packetConst.newInstance(windowId, container, chatMessage);
-
-				} else {
-					final Constructor<?> packetConst = getNMSClass("PacketPlayOutOpenWindow", "N/A").getConstructor(int.class, String.class, getNMSClass("IChatBaseComponent", "net.minecraft.network.chat.IChatBaseComponent"), int.class);
-
-					packetOpenWindow = packetConst.newInstance(windowId, "minecraft:chest", chatMessage, player.getOpenInventory().getTopInventory().getSize());
-				}
-			} else {
-				final Constructor<?> openWindow = ReflectionUtil.getConstructor(
-						getNMSClass(MinecraftVersion.atLeast(V.v1_7) ? "PacketPlayOutOpenWindow" : "Packet100OpenWindow", "N/A"), int.class, int.class, String.class, int.class, boolean.class);
-
-				packetOpenWindow = ReflectionUtil.instantiate(openWindow, windowId, 0, ChatColor.translateAlternateColorCodes('&', title), player.getOpenInventory().getTopInventory().getSize(), true);
-			}
-
-			sendPacket(player, packetOpenWindow);
-			entityPlayer.getClass().getMethod("updateInventory", getNMSClass("Container", "net.minecraft.world.inventory.Container")).invoke(entityPlayer, activeContainer);
-
-		} catch (final ReflectiveOperationException ex) {
-			Common.error(ex, "Error updating " + player.getName() + " inventory title to '" + title + "'");
-		}
-	}
-
-	/**
 	 * Sends a fake block update to a certain location, and than reverts it back to
 	 * the real block after a while.
 	 *
@@ -1767,7 +1543,6 @@ public final class Remain {
 	 * Tries to find online player by uuid
 	 *
 	 * @param id
-	 *
 	 * @return null if offline or player
 	 */
 	public static Player getPlayerByUUID(final UUID id) {
@@ -1954,10 +1729,9 @@ public final class Remain {
 	 * Calls NMS to find out if the entity is invisible, works for any entity,
 	 * better than Bukkit since it has extreme downwards compatibility and does not require LivingEntity
 	 *
-	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
-	 *
 	 * @param entity
 	 * @return
+	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
 	 */
 	@Deprecated
 	public static boolean isInvisible(Entity entity) {
@@ -1979,7 +1753,6 @@ public final class Remain {
 	 *
 	 * @param entity
 	 * @param invisible
-	 *
 	 * @deprecated use {@link PlayerUtil#setVanished(Player, boolean)} to disable vanish for plugins also
 	 */
 	@Deprecated
@@ -2128,11 +1901,11 @@ public final class Remain {
 	/**
 	 * Send a "toast" notification to the given receivers. This is an advancement notification that cannot
 	 * be modified that much. It imposes a slight performance penalty the more players to send to.
-	 *
+	 * <p>
 	 * Each player sending is delayed by 0.1s
 	 *
 	 * @param receivers
-	 * @param message you can replace player-specific variables in the message here
+	 * @param message   you can replace player-specific variables in the message here
 	 * @param icon
 	 */
 	public static void sendToast(final List<Player> receivers, final Function<Player, String> message, final CompMaterial icon) {
@@ -2240,9 +2013,9 @@ public final class Remain {
 	/**
 	 * Return the player ping
 	 *
-	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 * @param player
 	 * @return
+	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 */
 	@Deprecated
 	public static int getPing(Player player) {

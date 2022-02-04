@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.nbt.NBTEntity;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.ReflectionUtil;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.WordUtils;

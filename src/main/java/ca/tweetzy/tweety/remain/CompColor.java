@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.ReflectionUtil;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;

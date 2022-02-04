@@ -1,19 +1,18 @@
 package ca.tweetzy.tweety.collection;
 
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.Valid;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import ca.tweetzy.tweety.collection.StrictCollection;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
-
 /**
  * Strict list that only allows to remove elements that are contained within, or add elements that are not.
  * <p>
  * Failing to do so results in an error, with optional error message.
+ *
  * @param <E>
  */
 public final class StrictList<E> extends StrictCollection implements Iterable<E> {
@@ -219,7 +218,7 @@ public final class StrictList<E> extends StrictCollection implements Iterable<E>
 
 	/**
 	 * Return true if the list contains the key
-	 *
+	 * <p>
 	 * If the key is string we return true if it contains ignore case
 	 *
 	 * @param key
@@ -314,14 +313,6 @@ public final class StrictList<E> extends StrictCollection implements Iterable<E>
 	@Override
 	public Iterator<E> iterator() {
 		return list.iterator();
-	}
-
-	/**
-	 * Serializes every value in the list so you can store it in your settings
-	 */
-	@Override
-	public Object serialize() {
-		return SerializeUtil.serialize(list);
 	}
 
 	/**

@@ -1,9 +1,10 @@
 package ca.tweetzy.tweety.exception;
 
+import ca.tweetzy.tweety.util.Common;
 import lombok.Getter;
 
 /**
- * Thrown when we check a regex, see {@link ca.tweetzy.tweety.Common#regExMatch(java.util.regex.Matcher)}
+ * Thrown when we check a regex, see {@link Common#regExMatch(java.util.regex.Matcher)}
  * and the evaluation takes over the given limit
  */
 @Getter

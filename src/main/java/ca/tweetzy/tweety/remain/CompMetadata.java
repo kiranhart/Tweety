@@ -1,15 +1,16 @@
 package ca.tweetzy.tweety.remain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import ca.tweetzy.tweety.remain.CompMaterial;
-import org.bukkit.Location;
+import ca.tweetzy.tweety.TweetyPlugin;
+import ca.tweetzy.tweety.constants.TweetyConstants;
+import ca.tweetzy.tweety.remain.nbt.NBTCompound;
+import ca.tweetzy.tweety.remain.nbt.NBTItem;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.Valid;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.TileState;
@@ -17,28 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.metadata.Metadatable;
 import org.bukkit.persistence.PersistentDataType;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.annotation.AutoRegister;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.constants.TweetyConstants;
-import ca.tweetzy.tweety.model.ConfigSerializable;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.nbt.NBTCompound;
-import ca.tweetzy.tweety.remain.nbt.NBTItem;
-import ca.tweetzy.tweety.settings.YamlSectionConfig;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Utility class for persistent metadata manipulation
@@ -104,8 +84,6 @@ public final class CompMetadata {
 
 		} else {
 			entity.setMetadata(key, new FixedMetadataValue(TweetyPlugin.getInstance(), value));
-
-			MetadataFile.getInstance().addMetadata(entity, key, value);
 		}
 	}
 
@@ -135,8 +113,6 @@ public final class CompMetadata {
 		} else {
 			tileEntity.setMetadata(key, new FixedMetadataValue(TweetyPlugin.getInstance(), value));
 			tileEntity.update();
-
-			MetadataFile.getInstance().addMetadata(tileEntity, key, value);
 		}
 	}
 
@@ -204,7 +180,7 @@ public final class CompMetadata {
 	 * Return saved tile entity metadata, or null if none
 	 *
 	 * @param tileEntity
-	 * @param key       or null if none
+	 * @param key        or null if none
 	 * @return
 	 */
 	public static String getMetadata(final BlockState tileEntity, final String key) {
@@ -365,179 +341,5 @@ public final class CompMetadata {
 	public static void removeTempMetadata(final Entity player, final String key) {
 		if (player.hasMetadata(key))
 			player.removeMetadata(key, TweetyPlugin.getInstance());
-	}
-
-	/**
-	 * Due to lack of persistent metadata implementation until Minecraft 1.14.x,
-	 * we simply store them in a file during server restart and then apply
-	 * as a temporary metadata for the Bukkit entities.
-	 * <p>
-	 * internal use only
-	 */
-	@AutoRegister
-	public static final class MetadataFile extends YamlSectionConfig {
-
-		private static volatile Object LOCK = new Object();
-
-		@Getter
-		private static volatile MetadataFile instance = new MetadataFile();
-
-		private final StrictMap<UUID, List<String>> entityMetadataMap = new StrictMap<>();
-		private final StrictMap<Location, BlockCache> blockMetadataMap = new StrictMap<>();
-
-		private MetadataFile() {
-			super("Metadata");
-
-			loadConfiguration(NO_DEFAULT, TweetyConstants.File.DATA);
-		}
-
-		@Override
-		protected void onLoadFinish() {
-			synchronized (LOCK) {
-				loadEntities();
-				loadBlockStates();
-
-				save();
-			}
-		}
-
-		private void loadEntities() {
-			synchronized (LOCK) {
-				entityMetadataMap.clear();
-
-				for (final String uuidName : getMap("Entity").keySet()) {
-					final UUID uuid = UUID.fromString(uuidName);
-
-					// Remove broken key
-					if (!(getObject("Entity." + uuidName) instanceof List)) {
-						setNoSave("Entity." + uuidName, null);
-
-						continue;
-					}
-
-					final List<String> metadata = getStringList("Entity." + uuidName);
-					final Entity entity = Remain.getEntity(uuid);
-
-					// Check if the entity is still real
-					if (!metadata.isEmpty() && entity != null && entity.isValid() && !entity.isDead()) {
-						entityMetadataMap.put(uuid, metadata);
-
-						applySavedMetadata(metadata, entity);
-					}
-				}
-
-				save("Entity", this.entityMetadataMap);
-			}
-		}
-
-		private void loadBlockStates() {
-			synchronized (LOCK) {
-				blockMetadataMap.clear();
-
-				for (final String locationRaw : getMap("Block").keySet()) {
-					final Location location = SerializeUtil.deserializeLocation(locationRaw);
-					final BlockCache blockCache = get("Block." + locationRaw, BlockCache.class);
-
-					final Block block = location.getBlock();
-
-					// Check if the block remained the same
-					if (!CompMaterial.isAir(block) && CompMaterial.fromBlock(block) == blockCache.getType()) {
-						blockMetadataMap.put(location, blockCache);
-
-						applySavedMetadata(blockCache.getMetadata(), block);
-					}
-				}
-
-				save("Block", this.blockMetadataMap);
-			}
-		}
-
-		private void applySavedMetadata(final List<String> metadata, final Metadatable entity) {
-			synchronized (LOCK) {
-				for (final String metadataLine : metadata) {
-					if (metadataLine.isEmpty())
-						continue;
-
-					final String[] lines = metadataLine.split(DELIMITER);
-					Valid.checkBoolean(lines.length == 3, "Malformed metadata line for " + entity + ". Length 3 != " + lines.length + ". Data: " + metadataLine);
-
-					final String key = lines[1];
-					final String value = lines[2];
-
-					entity.setMetadata(key, new FixedMetadataValue(TweetyPlugin.getInstance(), value));
-				}
-			}
-		}
-
-		protected void addMetadata(final Entity entity, @NonNull final String key, final String value) {
-			synchronized (LOCK) {
-				final List<String> metadata = entityMetadataMap.getOrPut(entity.getUniqueId(), new ArrayList<>());
-
-				for (final Iterator<String> i = metadata.iterator(); i.hasNext();) {
-					final String meta = i.next();
-
-					if (getTag(meta, key) != null)
-						i.remove();
-				}
-
-				if (value != null && !value.isEmpty()) {
-					final String formatted = format(key, value);
-
-					metadata.add(formatted);
-				}
-
-				save("Entity", entityMetadataMap);
-			}
-		}
-
-		protected void addMetadata(final BlockState blockState, final String key, final String value) {
-			synchronized (LOCK) {
-				final BlockCache blockCache = blockMetadataMap.getOrPut(blockState.getLocation(), new BlockCache(CompMaterial.fromBlock(blockState.getBlock()), new ArrayList<>()));
-
-				for (final Iterator<String> i = blockCache.getMetadata().iterator(); i.hasNext();) {
-					final String meta = i.next();
-
-					if (getTag(meta, key) != null)
-						i.remove();
-				}
-
-				if (value != null && !value.isEmpty()) {
-					final String formatted = format(key, value);
-
-					blockCache.getMetadata().add(formatted);
-				}
-
-				{ // Save
-					for (final Map.Entry<Location, BlockCache> entry : blockMetadataMap.entrySet())
-						setNoSave("Block." + SerializeUtil.serializeLoc(entry.getKey()), entry.getValue().serialize());
-
-					save();
-				}
-			}
-		}
-
-		@Getter
-		@RequiredArgsConstructor
-		public static final class BlockCache implements ConfigSerializable {
-			private final CompMaterial type;
-			private final List<String> metadata;
-
-			public static BlockCache deserialize(final SerializedMap map) {
-				final CompMaterial type = map.getMaterial("Type");
-				final List<String> metadata = map.getStringList("Metadata");
-
-				return new BlockCache(type, metadata);
-			}
-
-			@Override
-			public SerializedMap serialize() {
-				final SerializedMap map = new SerializedMap();
-
-				map.put("Type", type.toString());
-				map.put("Metadata", metadata);
-
-				return map;
-			}
-		}
 	}
 }

@@ -1,12 +1,11 @@
 package ca.tweetzy.tweety.visual;
 
-import ca.tweetzy.tweety.BlockUtil;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.region.Region;
 import ca.tweetzy.tweety.remain.CompParticle;
+import ca.tweetzy.tweety.util.BlockUtil;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Color;
@@ -199,19 +198,4 @@ public final class VisualizedRegion extends Region {
 		viewers.clear();
 	}
 
-	/**
-	 * Converts a saved map from your yaml/json file into a region if it contains Primary and Secondary keys
-	 *
-	 * @param map
-	 * @return
-	 */
-	public static VisualizedRegion deserialize(final SerializedMap map) {
-		Valid.checkBoolean(map.containsKey("Primary") && map.containsKey("Secondary"), "The region must have Primary and a Secondary location");
-
-		final String name = map.getString("Name");
-		final Location prim = map.getLocation("Primary");
-		final Location sec = map.getLocation("Secondary");
-
-		return new VisualizedRegion(name, prim, sec);
-	}
 }

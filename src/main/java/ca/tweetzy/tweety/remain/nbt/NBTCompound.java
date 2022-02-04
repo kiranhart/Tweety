@@ -17,7 +17,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * {@link NBTContainer}
  *
  * @author tr7zw
- *
  */
 public class NBTCompound {
 
@@ -471,11 +470,11 @@ public class NBTCompound {
 	}
 
 	/**
-	* Setter
-	*
-	* @param key
-	* @param value
-	*/
+	 * Setter
+	 *
+	 * @param key
+	 * @param value
+	 */
 	public void setUUID(String key, UUID value) {
 		try {
 			writeLock.lock();
@@ -741,9 +740,9 @@ public class NBTCompound {
 	}
 
 	/**
-	 * @deprecated Just use toString()
 	 * @param key
 	 * @return A string representation of the given key
+	 * @deprecated Just use toString()
 	 */
 	@Deprecated
 	public String toString(String key) {
@@ -758,8 +757,8 @@ public class NBTCompound {
 	}
 
 	/**
-	 * @deprecated Just use toString()
 	 * @return A {@link String} representation of the NBT in Mojang JSON. This is different from normal JSON!
+	 * @deprecated Just use toString()
 	 */
 	@Deprecated
 	public String asNBTString() {

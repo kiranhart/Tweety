@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.remain.CompSound;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -113,9 +113,7 @@ public final class SimpleSound {
 		if ("random".equals(pitchRaw)) {
 			pitch = 1.0F;
 			randomPitch = true;
-		}
-
-		else
+		} else
 			pitch = Float.parseFloat(pitchRaw);
 	}
 

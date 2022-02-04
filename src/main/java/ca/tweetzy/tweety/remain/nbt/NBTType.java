@@ -4,7 +4,6 @@ package ca.tweetzy.tweety.remain.nbt;
  * Enum of all NBT Types Minecraft contains
  *
  * @author tr7zw
- *
  */
 enum NBTType {
 	NBTTagEnd(0),

@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.util.Common;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

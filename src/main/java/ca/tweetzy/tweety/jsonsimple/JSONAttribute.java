@@ -213,7 +213,7 @@ import java.lang.annotation.*;
  * @since 1.0.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface JSONAttribute {
 
 	/**
@@ -230,7 +230,7 @@ public @interface JSONAttribute {
 	 * @return the attribute type
 	 * @since 1.0.0
 	 */
-	public Type[] type() default { Type.GETTER, Type.SETTER };
+	public Type[] type() default {Type.GETTER, Type.SETTER};
 
 	/**
 	 * Represents the type of an attribute. Not the data type but more if it's read only or not.

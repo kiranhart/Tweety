@@ -7,7 +7,6 @@ package ca.tweetzy.tweety.remain.nbt;
  * future
  *
  * @author tr7zw
- *
  */
 public class NBTListCompound extends NBTCompound {
 

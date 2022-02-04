@@ -8,7 +8,6 @@ import org.bukkit.entity.Entity;
  * to the Entity, use the merge method to do many things at once.
  *
  * @author tr7zw
- *
  */
 public class NBTEntity extends NBTCompound {
 

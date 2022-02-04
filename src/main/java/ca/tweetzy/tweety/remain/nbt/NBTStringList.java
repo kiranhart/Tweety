@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
  * String implementation for NBTLists
  *
  * @author tr7zw
- *
  */
 public class NBTStringList extends NBTList<String> {
 

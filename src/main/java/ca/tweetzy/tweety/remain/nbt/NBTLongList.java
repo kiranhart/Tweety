@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
  * Long implementation for NBTLists
  *
  * @author tr7zw
- *
  */
 public class NBTLongList extends NBTList<Long> {
 

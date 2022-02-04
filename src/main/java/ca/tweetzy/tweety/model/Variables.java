@@ -1,19 +1,15 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.*;
-import ca.tweetzy.tweety.GeoAPI.GeoResponse;
-import ca.tweetzy.tweety.collection.StrictList;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleSettings;
+import ca.tweetzy.tweety.util.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -25,11 +21,6 @@ import java.util.regex.Pattern;
  * A simple engine that replaces variables in a message.
  */
 public final class Variables {
-
-	/**
-	 * The pattern to find singular [syntax_name] variables
-	 */
-	public static final Pattern MESSAGE_PLACEHOLDER_PATTERN = Pattern.compile("[\\[]([^\\[\\]]+)[\\]]");
 
 	/**
 	 * The pattern to find simple {} placeholders
@@ -58,22 +49,11 @@ public final class Variables {
 
 	/**
 	 * Variables added to Tweety by you or other plugins
-	 *
+	 * <p>
 	 * You take in a command sender (may/may not be a player) and output a replaced string.
 	 * The variable name (the key) is automatically surrounded by {} brackets
 	 */
 	private static final StrictMap<String, Function<CommandSender, String>> customVariables = new StrictMap<>();
-
-	/**
-	 * Variables added to Tweety by you or other plugins
-	 *
-	 * This is used to dynamically replace the variable based on its content, like
-	 * PlaceholderAPI.
-	 *
-	 * We also hook into PlaceholderAPI, however, you'll have to use your plugin's prefix before
-	 * all variables when called from there.
-	 */
-	private static final StrictList<SimpleExpansion> customExpansions = new StrictList<>();
 
 	/**
 	 * Return the variable for the given key that is a function of replacing
@@ -121,43 +101,6 @@ public final class Variables {
 		return customVariables.containsKey(variable);
 	}
 
-	/**
-	 * Return an immutable list of all currently loaded expansions
-	 *
-	 * @return
-	 */
-	public static List<SimpleExpansion> getExpansions() {
-		return Collections.unmodifiableList(customExpansions.getSource());
-	}
-
-	/**
-	 * Registers a new expansion if it was not already registered
-	 *
-	 * @param expansion
-	 */
-	public static void addExpansion(SimpleExpansion expansion) {
-		customExpansions.addIfNotExist(expansion);
-	}
-
-	/**
-	 * Unregisters an expansion if it was registered already
-	 *
-	 * @param expansion
-	 */
-	public static void removeExpansion(SimpleExpansion expansion) {
-		customExpansions.remove(expansion);
-	}
-
-	/**
-	 * Return true if the expansion has already been registered
-	 *
-	 * @param expansion
-	 * @return
-	 */
-	public static boolean hasExpansion(SimpleExpansion expansion) {
-		return customExpansions.contains(expansion);
-	}
-
 	// ------------------------------------------------------------------------------------------------------------
 	// Replacing
 	// ------------------------------------------------------------------------------------------------------------
@@ -165,7 +108,7 @@ public final class Variables {
 	/**
 	 * Replaces variables in the messages using the message sender as an object to replace
 	 * player-related placeholders.
-	 *
+	 * <p>
 	 * We also support PlaceholderAPI and MvdvPlaceholderAPI (only if sender is a Player).
 	 *
 	 * @param messages
@@ -183,7 +126,7 @@ public final class Variables {
 	/**
 	 * Replaces variables in the message using the message sender as an object to replace
 	 * player-related placeholders.
-	 *
+	 * <p>
 	 * We also support PlaceholderAPI and MvdvPlaceholderAPI (only if sender is a Player).
 	 *
 	 * @param message
@@ -197,7 +140,7 @@ public final class Variables {
 	/**
 	 * Replaces variables in the message using the message sender as an object to replace
 	 * player-related placeholders.
-	 *
+	 * <p>
 	 * We also support PlaceholderAPI and MvdvPlaceholderAPI (only if sender is a Player).
 	 *
 	 * @param message
@@ -211,7 +154,7 @@ public final class Variables {
 	/**
 	 * Replaces variables in the message using the message sender as an object to replace
 	 * player-related placeholders.
-	 *
+	 * <p>
 	 * We also support PlaceholderAPI and MvdvPlaceholderAPI (only if sender is a Player).
 	 *
 	 * @param message
@@ -240,18 +183,6 @@ public final class Variables {
 				return cachedVar;
 		}
 
-		// Custom placeholders
-		if (REPLACE_JAVASCRIPT) {
-			REPLACE_JAVASCRIPT = false;
-
-			try {
-				message = replaceJavascriptVariables0(message, sender, replacements);
-
-			} finally {
-				REPLACE_JAVASCRIPT = true;
-			}
-		}
-
 		if (senderIsPlayer) {
 
 			// PlaceholderAPI and MvdvPlaceholderAPI
@@ -272,37 +203,6 @@ public final class Variables {
 				map.put(original, message);
 			else
 				cache.put(sender.getName(), Common.newHashMap(original, message));
-		}
-
-		return message;
-	}
-
-	/*
-	 * Replaces JavaScript variables in the message
-	 */
-	private static String replaceJavascriptVariables0(String message, CommandSender sender, Map<String, Object> replacements) {
-
-		final Matcher matcher = BRACKET_PLACEHOLDER_PATTERN.matcher(message);
-
-		while (matcher.find()) {
-			final String variableKey = matcher.group();
-
-			// Find the variable key without []
-			final Variable variable = Variable.findVariable(variableKey.substring(1, variableKey.length() - 1));
-
-			if (variable != null && variable.getType() == Variable.Type.FORMAT) {
-				final SimpleComponent component = variable.build(sender, SimpleComponent.empty(), replacements);
-
-				// We do not support interact chat elements in format variables,
-				// so we just flatten the variable. Use formatting or chat variables instead.
-				String plain = component.getPlainMessage();
-
-				// And we remove the white prefix that is by default added in every component
-				if (plain.startsWith(ChatColor.COLOR_CHAR + "f" + ChatColor.COLOR_CHAR + "f"))
-					plain = plain.substring(4);
-
-				message = message.replace(variableKey, plain);
-			}
 		}
 
 		return message;
@@ -351,21 +251,7 @@ public final class Variables {
 	 * Replaces the given variable with a few hardcoded within the plugin, see below
 	 */
 	private static String lookupVariable0(Player player, CommandSender console, String variable) {
-		GeoResponse geoResponse = null;
-
-		if (player != null && Arrays.asList("country_code", "country_name", "region_name", "isp").contains(variable))
-			geoResponse = GeoAPI.getCountry(player.getAddress());
-
 		if (console != null) {
-
-			// Replace custom expansions
-			for (final SimpleExpansion expansion : customExpansions) {
-				final String value = expansion.replacePlaceholders(console, variable);
-
-				if (value != null)
-					return value;
-			}
-
 			// Replace custom variables
 			final Function<CommandSender, String> customReplacer = customVariables.get(variable);
 
@@ -376,8 +262,6 @@ public final class Variables {
 		switch (variable) {
 			case "nms_version":
 				return MinecraftVersion.getServerVersion();
-			case "timestamp":
-				return SimpleSettings.TIMESTAMP_FORMAT.format(System.currentTimeMillis());
 			case "timestamp_short":
 				return TimeUtil.getFormattedDateShort();
 			case "chat_line":
@@ -438,18 +322,6 @@ public final class Variables {
 
 			case "player_vanished":
 				return player == null ? "false" : String.valueOf(PlayerUtil.isVanished(player));
-
-			case "country_code":
-				return player == null ? "" : geoResponse.getCountryCode();
-			case "country_name":
-				return player == null ? "" : geoResponse.getCountryName();
-			case "region_name":
-				return player == null ? "" : geoResponse.getRegionName();
-			case "isp":
-				return player == null ? "" : geoResponse.getIsp();
-
-			case "label":
-				return SimpleSettings.MAIN_COMMAND_ALIASES.isEmpty() ? "noMainCommandLabel" : SimpleSettings.MAIN_COMMAND_ALIASES.get(0);
 			case "sender_is_player":
 				return player != null ? "true" : "false";
 			case "sender_is_discord":

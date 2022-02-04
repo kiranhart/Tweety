@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.util.Common;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.MessageChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.User;

@@ -1,9 +1,9 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.util.ItemUtil;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -175,7 +175,7 @@ public final class CompChatColor {
 		this.code = code;
 		this.name = name;
 		this.color = color;
-		this.toString = new String(new char[] { COLOR_CHAR, code });
+		this.toString = new String(new char[]{COLOR_CHAR, code});
 
 		BY_CHAR.put(code, this);
 		BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
@@ -229,6 +229,7 @@ public final class CompChatColor {
 	/**
 	 * Return the color's name such as red, or in case of hex color return
 	 * the code, colorized
+	 *
 	 * @return
 	 */
 	public String toReadableString() {

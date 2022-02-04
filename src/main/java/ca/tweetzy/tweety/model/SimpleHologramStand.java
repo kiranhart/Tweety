@@ -1,6 +1,5 @@
 package ca.tweetzy.tweety.model;
 
-import ca.tweetzy.tweety.menu.model.ItemCreator;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -56,7 +55,6 @@ public class SimpleHologramStand extends SimpleHologram {
 	}
 
 	/**
-	 *
 	 * @param glowing
 	 * @return
 	 */

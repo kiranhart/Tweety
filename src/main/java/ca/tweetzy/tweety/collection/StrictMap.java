@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.collection;
 
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.util.Valid;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -11,6 +10,7 @@ import java.util.function.BiConsumer;
  * Strict map that only allows to remove elements that are contained within, or add elements that are not.
  * <p>
  * Failing to do so results in an error, with optional error message.
+ *
  * @param <E>
  * @param <T>
  */
@@ -238,7 +238,7 @@ public final class StrictMap<E, T> extends StrictCollection {
 	 * @param consumer
 	 */
 	public void forEachIterate(BiConsumer<E, T> consumer) {
-		for (final Iterator<Map.Entry<E, T>> it = entrySet().iterator(); it.hasNext();) {
+		for (final Iterator<Map.Entry<E, T>> it = entrySet().iterator(); it.hasNext(); ) {
 			final Map.Entry<E, T> entry = it.next();
 
 			consumer.accept(entry.getKey(), entry.getValue());
@@ -304,24 +304,6 @@ public final class StrictMap<E, T> extends StrictCollection {
 	 */
 	public int size() {
 		return map.size();
-	}
-
-	@Override
-	public Object serialize() {
-		if (!map.isEmpty()) {
-			final Map<Object, Object> copy = new LinkedHashMap<>();
-
-			for (final Entry<E, T> entry : entrySet()) {
-				final T val = entry.getValue();
-
-				if (val != null)
-					copy.put(SerializeUtil.serialize(entry.getKey()), SerializeUtil.serialize(val));
-			}
-
-			return copy;
-		}
-
-		return getSource();
 	}
 
 	@Override

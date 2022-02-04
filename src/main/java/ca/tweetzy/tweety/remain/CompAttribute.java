@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.ReflectionUtil;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.attribute.Attribute;
@@ -101,7 +101,7 @@ public enum CompAttribute {
 	/**
 	 * Construct a new Attribute.
 	 *
-	 * @param name              the generic name
+	 * @param name             the generic name
 	 * @param genericFieldName see {@link #genericFieldName}
 	 */
 	CompAttribute(final String name, final String genericFieldName) {

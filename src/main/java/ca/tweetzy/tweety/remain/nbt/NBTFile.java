@@ -9,7 +9,6 @@ import java.io.IOException;
  * {@link NBTCompound} implementation backed by a {@link File}
  *
  * @author tr7zw
- *
  */
 public class NBTFile extends NBTCompound {
 

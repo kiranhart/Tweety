@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.remain;
 
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Location;
 import org.bukkit.Sound;

@@ -1,15 +1,13 @@
 package ca.tweetzy.tweety.event;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.Messenger;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.debug.LagCatcher;
+import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.exception.EventHandledException;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.Variables;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.Messenger;
+import ca.tweetzy.tweety.util.PlayerUtil;
+import ca.tweetzy.tweety.util.Valid;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -74,10 +72,6 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 		if (!event.getClass().equals(this.eventClass))
 			return;
 
-		final String logName = listener.getClass().getSimpleName() + " listening to " + event.getEventName() + " at " + priority + " priority";
-
-		LagCatcher.start(logName);
-
 		try {
 			this.event = this.eventClass.cast(event);
 
@@ -104,12 +98,6 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 
 		} catch (final Throwable t) {
 			Common.error(t, "Unhandled exception listening to " + this.eventClass.getSimpleName());
-
-		} finally {
-			LagCatcher.end(logName);
-
-			// Do not null the event since this breaks findPlayer for any scheduled tasks
-			//this.event = null;
 		}
 	}
 
@@ -137,19 +125,14 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 
 	/**
 	 * If the object is null, stop your code from further execution, cancel the event and
-	 * send the player a null message (see {@link #findPlayer(Event)})
 	 *
 	 * @param toCheck
-	 * @param falseMessages
 	 */
 	protected final void checkNotNull(Object toCheck, String... nullMessages) {
 		checkBoolean(toCheck != null, nullMessages);
 	}
 
 	/**
-	 * If the condition is false, stop your code from further execution, cancel the event and
-	 * send the player a false message (see {@link #findPlayer(Event)})
-	 *
 	 * @param condition
 	 * @param falseMessages
 	 */
@@ -159,17 +142,7 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 	}
 
 	/**
-	 * Stop code from executing and send the player a message (see {@link #findPlayer(Event)})
-	 * when he lacks the given permission
-	 *
-	 * @param permission
-	 */
-	protected final void checkPerm(String permission) {
-		checkPerm(permission, SimpleLocalization.NO_PERMISSION);
-	}
-
-	/**
-	 * Return if the {@link #findPlayer(Event)} player has the given permission;
+	 * Return if the  player has the given permission;
 	 *
 	 * @param permission
 	 * @return
@@ -179,7 +152,7 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 	}
 
 	/**
-	 * Stop code from executing and send the player a message (see {@link #findPlayer(Event)})
+	 * Stop code from executing and send the player a message (see )
 	 * when he lacks the given permission
 	 *
 	 * @param permission
@@ -194,7 +167,7 @@ public abstract class SimpleListener<T extends Event> implements Listener, Event
 	}
 
 	/**
-	 * Cancel the event and send the player a message (see {@link #findPlayer(Event)})
+	 * Cancel the event and send the player a message
 	 *
 	 * @param messages
 	 */

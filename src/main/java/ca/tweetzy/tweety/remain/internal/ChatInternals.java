@@ -1,14 +1,13 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.util.MinecraftVersion;
+import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.ReflectionUtil;
+import ca.tweetzy.tweety.util.ReflectionUtil.ReflectionException;
+import ca.tweetzy.tweety.util.Valid;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -228,7 +227,8 @@ public class ChatInternals {
 		text = removeBracketsAndColorize(text);
 
 		try {
-			return componentSerializer.invoke(null, SerializedMap.of("text", text).toJson());
+
+			return componentSerializer.invoke(null, "{ \"text\": \"" + text + "\"");
 
 		} catch (final Throwable t) {
 			throw new TweetyException(t, "Failed to serialize text: " + text);

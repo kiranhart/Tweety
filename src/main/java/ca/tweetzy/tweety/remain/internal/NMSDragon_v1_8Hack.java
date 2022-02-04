@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.util.ReflectionUtil;
 import org.bukkit.Location;
 
 import java.lang.reflect.Field;
@@ -70,7 +70,7 @@ class NMSDragon_v1_8Hack extends NMSDragon {
 			packet = PacketPlayOutEntityDestroy.newInstance();
 			final Field a = PacketPlayOutEntityDestroy.getDeclaredField("a");
 			a.setAccessible(true);
-			a.set(packet, new int[] { id });
+			a.set(packet, new int[]{id});
 		} catch (final ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
