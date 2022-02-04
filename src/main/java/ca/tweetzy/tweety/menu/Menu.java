@@ -1,29 +1,14 @@
 package ca.tweetzy.tweety.menu;
 
-import ca.tweetzy.tweety.*;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.constants.TweetyConstants;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import ca.tweetzy.tweety.event.MenuCloseEvent;
-import ca.tweetzy.tweety.event.MenuOpenEvent;
-import ca.tweetzy.tweety.exception.EventHandledException;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.menu.button.Button;
-import ca.tweetzy.tweety.menu.button.Button.DummyButton;
-import ca.tweetzy.tweety.menu.button.ButtonReturnBack;
-import ca.tweetzy.tweety.menu.button.StartPosition;
-import ca.tweetzy.tweety.menu.button.annotation.Position;
-import ca.tweetzy.tweety.menu.model.InventoryDrawer;
-import ca.tweetzy.tweety.menu.model.ItemCreator;
-import ca.tweetzy.tweety.menu.model.MenuClickLocation;
-import ca.tweetzy.tweety.model.SimpleSound;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import ca.tweetzy.tweety.remain.CompSound;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -33,13 +18,32 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.ItemUtil;
+import ca.tweetzy.tweety.Messenger;
+import ca.tweetzy.tweety.PlayerUtil;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.constants.TweetyConstants;
+import ca.tweetzy.tweety.event.MenuOpenEvent;
+import ca.tweetzy.tweety.exception.EventHandledException;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.menu.button.Button;
+import ca.tweetzy.tweety.menu.button.Button.DummyButton;
+import ca.tweetzy.tweety.menu.button.ButtonReturnBack;
+import ca.tweetzy.tweety.menu.model.InventoryDrawer;
+import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.menu.model.MenuClickLocation;
+import ca.tweetzy.tweety.model.SimpleSound;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.CompSound;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * The core class of Menu. Represents a simple menu.
@@ -68,6 +72,8 @@ public abstract class Menu {
 	@Setter
 	private static SimpleSound sound = new SimpleSound(CompSound.NOTE_STICKS.getSound(), .4F);
 
+	private boolean asyncFill = false;
+
 	/**
 	 * Should we animate menu titles?
 	 */
@@ -79,7 +85,7 @@ public abstract class Menu {
 	 * The default duration of the new animated title before
 	 * it is reverted back to the old one
 	 * <p>
-	 * Used in {@link #updateInventoryTitle(Menu, Player, String, String)}
+	 * Used in {@link #animateTitle(String)}
 	 */
 	@Setter
 	private static int titleAnimationDurationTicks = 20;
@@ -96,7 +102,7 @@ public abstract class Menu {
 	/**
 	 * Automatically registered Buttons in this menu (using reflection)
 	 */
-	private final Map<Button, Position> registeredButtons = new HashMap<>();
+	private final List<Button> registeredButtons = new ArrayList<>();
 
 	/**
 	 * The registrator responsible for scanning the class and making buttons
@@ -129,6 +135,12 @@ public abstract class Menu {
 	private Integer size = 9 * 3;
 
 	/**
+	 * The description of the menu
+	 */
+	@Getter(value = AccessLevel.PROTECTED)
+	private String[] info = null;
+
+	/**
 	 * The viewer of this menu, is null until {@link #displayTo(Player)} is called
 	 */
 	private Player viewer;
@@ -138,24 +150,15 @@ public abstract class Menu {
 	 */
 	private boolean slotNumbersVisible;
 
-	private boolean asyncFill;
-
 	/**
 	 * A one way boolean indicating this menu has been opened at least once
 	 */
 	private boolean opened = false;
 
 	/**
-	 * A one way boolean set to true in {@link #handleClose(Inventory)}
+	 * A flag indicating if this menu is closed (no one is currently viewing it)
 	 */
-	@Getter(value = AccessLevel.PACKAGE)
 	private boolean closed = false;
-
-	/**
-	 * Special case button only registered if this menu is {@link MenuQuantitable}
-	 */
-	@Nullable
-	private final Button quantityButton;
 
 	/**
 	 * Create a new menu without parent menu with the size of 9*3
@@ -207,7 +210,6 @@ public abstract class Menu {
 	protected Menu(final Menu parent, final boolean returnMakesNewInstance) {
 		this.parent = parent;
 		this.returnButton = parent != null ? new ButtonReturnBack(parent, returnMakesNewInstance) : Button.makeEmpty();
-		this.quantityButton = this instanceof MenuQuantitable ? ((MenuQuantitable) this).getQuantityButton(this) : Button.makeEmpty();
 	}
 
 	/**
@@ -230,23 +232,6 @@ public abstract class Menu {
 		return getMenu0(player, TweetyConstants.NBT.TAG_MENU_PREVIOUS);
 	}
 
-	/**
-	 * Returns the last closed menu, null if does not exist.
-	 *
-	 * @param player
-	 * @return
-	 */
-	@Nullable
-	public static final Menu getLastClosedMenu(final Player player) {
-		if (player.hasMetadata(TweetyConstants.NBT.TAG_MENU_LAST_CLOSED)) {
-			final Menu menu = (Menu) player.getMetadata(TweetyConstants.NBT.TAG_MENU_LAST_CLOSED).get(0).value();
-
-			return menu;
-		}
-
-		return null;
-	}
-
 	// Returns the menu associated with the players metadata, or null
 	private static Menu getMenu0(final Player player, final String tag) {
 		if (player.hasMetadata(tag)) {
@@ -265,22 +250,19 @@ public abstract class Menu {
 
 	/**
 	 * Scans the menu class this menu extends and registers buttons
+	 *
+	 * @deprecated internal use only
 	 */
-	final void registerButtons() {
+	@Deprecated
+	protected final void registerButtons() {
 		registeredButtons.clear();
 
 		// Register buttons explicitly given
 		{
 			final List<Button> buttons = getButtonsToAutoRegister();
 
-			if (buttons != null) {
-				final Map<Button, Position> buttonsRemapped = new HashMap<>();
-
-				for (final Button button : buttons)
-					buttonsRemapped.put(button, null);
-
-				registeredButtons.putAll(buttonsRemapped);
-			}
+			if (buttons != null)
+				registeredButtons.addAll(buttons);
 		}
 
 		// Register buttons declared as fields
@@ -304,17 +286,14 @@ public abstract class Menu {
 			final Button button = (Button) ReflectionUtil.getFieldContent(field, this);
 
 			Valid.checkNotNull(button, "Null button field named " + field.getName() + " in " + this);
-			final Position position = field.getAnnotation(Position.class);
-
-			registeredButtons.put(button, position);
+			registeredButtons.add(button);
 
 		} else if (Button[].class.isAssignableFrom(type)) {
-			/*Valid.checkBoolean(Modifier.isFinal(field.getModifiers()), "Report / Button[] field must be final: " + field);
+			Valid.checkBoolean(Modifier.isFinal(field.getModifiers()), "Report / Button[] field must be final: " + field);
 			final Button[] buttons = (Button[]) ReflectionUtil.getFieldContent(field, this);
-			
+
 			Valid.checkBoolean(buttons != null && buttons.length > 0, "Null " + field.getName() + "[] in " + this);
-			registeredButtons.addAll(Arrays.asList(buttons));*/
-			throw new TweetyException("Button[] is no longer supported in menu for " + this.getClass());
+			registeredButtons.addAll(Arrays.asList(buttons));
 		}
 	}
 
@@ -354,7 +333,7 @@ public abstract class Menu {
 		registerButtonsIfHasnt();
 
 		if (fromItem != null)
-			for (final Button button : registeredButtons.keySet()) {
+			for (final Button button : registeredButtons) {
 				Valid.checkNotNull(button, "Menu button is null at " + getClass().getSimpleName());
 				Valid.checkNotNull(button.getItem(), "Menu " + getTitle() + " contained button " + button + " with empty item!");
 
@@ -372,7 +351,7 @@ public abstract class Menu {
 	 * You must override this in certain cases
 	 *
 	 * @return the new instance, of null
-	 * @throws if new instance could not be made, for example when the menu is
+	 * @throws TweetyException if new instance could not be made, for example when the menu is
 	 *            taking constructor params
 	 */
 	public Menu newInstance() {
@@ -398,39 +377,46 @@ public abstract class Menu {
 	// --------------------------------------------------------------------------------
 
 	/**
-	 * Display this menu to the player
+	 * Display this menu to the player, automatically closing their already open inventory.
 	 *
 	 * @param player the player
 	 */
 	public final void displayTo(final Player player) {
+		displayTo(player, false);
+	}
+
+	/**
+	 * Display this menu to the player.
+	 *
+	 * @param player the player
+	 * @param closeOpenInventory if true, the player's cursor will be moved to the center on displaying, else it will stay where it was.
+	 */
+	public final void displayTo(final Player player, boolean closeOpenInventory) {
 		Valid.checkNotNull(this.size, "Size not set in " + this + " (call setSize in your constructor)");
 		Valid.checkNotNull(this.title, "Title not set in " + this + " (call setTitle in your constructor)");
-
-		if (MinecraftVersion.olderThan(V.v1_5)) {
-			final String error = "Displaying menus require Minecraft 1.5.2 or greater.";
-
-			if (Messenger.ENABLED)
-				Messenger.error(player, error);
-			else
-				Common.tell(player, error);
-
-			return;
-		}
 
 		viewer = player;
 		registerButtonsIfHasnt();
 
 		// Draw the menu
-		final InventoryDrawer drawer = InventoryDrawer.of(size, title);
+		final InventoryDrawer drawer = InventoryDrawer.of(size, title, closeOpenInventory);
 
-		// Allocate items
-		this.compileItems().forEach((slot, item) -> drawer.setItem(slot, item));
+		// Compile bottom bar
+		compileBottomBar0().forEach(drawer::setItem);
+
+		// Set items defined by classes upstream
+		for (int i = 0; i < drawer.getSize(); i++) {
+			final ItemStack item = getItemAt(i);
+
+			if (item != null && !drawer.isSet(i))
+				drawer.setItem(i, item);
+		}
 
 		// Allow last minute modifications
-		this.onDisplay(drawer);
+		onDisplay(drawer);
 
 		// Render empty slots as slot numbers if enabled
-		this.debugSlotNumbers(drawer);
+		debugSlotNumbers(drawer);
 
 		// Call event after items have been set to allow to get them
 		if (!Common.callEvent(new MenuOpenEvent(this, drawer, player)))
@@ -445,6 +431,9 @@ public abstract class Menu {
 
 		// Play the pop sound
 		sound.play(player);
+
+		// Mark as open
+		this.closed = false;
 
 		// Register previous menu if exists
 		{
@@ -484,6 +473,10 @@ public abstract class Menu {
 			}
 	}
 
+	protected void setAsyncFill() {
+		this.asyncFill = true;
+	}
+
 	/**
 	 * Called automatically before the menu is displayed but after all items have
 	 * been drawed
@@ -510,24 +503,34 @@ public abstract class Menu {
 	 * @param animatedTitle the animated title
 	 */
 	public final void restartMenu(final String animatedTitle) {
-
-		final Inventory inventory = getViewer().getOpenInventory().getTopInventory();
-		Valid.checkBoolean(inventory.getType() == InventoryType.CHEST, getViewer().getName() + "'s inventory closed in the meanwhile (now == " + inventory.getType() + ").");
-
-		this.registerButtons();
-
-		// Call before calling getItemAt
-		this.onRestart();
-
-		this.compileItems().forEach((slot, item) -> inventory.setItem(slot, item));
-		this.getViewer().updateInventory();
+		registerButtons();
+		redraw();
 
 		if (animatedTitle != null)
 			animateTitle(animatedTitle);
 	}
 
-	void onRestart() {
+	/**
+	 * Redraws the bottom bar and updates inventory
+	 */
+	protected final void redraw() {
+		final Inventory inv = getViewer().getOpenInventory().getTopInventory();
+		final InventoryDrawer drawer = InventoryDrawer.of(getViewer());
 
+		Valid.checkBoolean(inv.getType() == InventoryType.CHEST, getViewer().getName() + "'s inventory closed in the meanwhile (now == " + inv.getType() + ").");
+
+		for (int i = 0; i < size; i++) {
+			final ItemStack item = getItemAt(i);
+
+			Valid.checkBoolean(i < inv.getSize(), "Item (" + (item != null ? item.getType() : "null") + ") position (" + i + ") > inv size (" + inv.getSize() + ")");
+			drawer.setItem(i, item);
+		}
+
+		compileBottomBar0().forEach(drawer::setItem);
+
+		onDisplay(drawer);
+
+		drawer.display(getViewer(), this.asyncFill);
 	}
 
 	/**
@@ -535,69 +538,16 @@ public abstract class Menu {
 	 *
 	 * @return
 	 */
-	private Map<Integer, ItemStack> compileItems() {
+	private Map<Integer, ItemStack> compileBottomBar0() {
 		final Map<Integer, ItemStack> items = new HashMap<>();
 
-		final boolean hasReturnButton = addReturnButton() && !(returnButton instanceof DummyButton);
+		if (addInfoButton() && getInfo() != null)
+			items.put(getInfoButtonPosition(), Button.makeInfo(getInfo()).getItem());
 
-		// Begin with basic items
-		for (int slot = 0; slot < this.size; slot++) {
-			ItemStack item = this.getItemAt(slot);
-
-			if (item != null && CompMaterial.isAir(item))
-				item = null;
-
-			items.put(slot, item);
-		}
-
-		// Override by buttons
-		for (final Map.Entry<Button, Position> entry : this.registeredButtons.entrySet()) {
-			final Button button = entry.getKey();
-			final Position position = entry.getValue();
-
-			if (position == null)
-				continue;
-
-			int slot = position.value();
-			final StartPosition startPosition = position.start();
-
-			if (startPosition == StartPosition.CENTER)
-				slot += this.getCenterSlot();
-
-			else if (startPosition == StartPosition.BOTTOM_CENTER)
-				slot += this.getSize() - 5;
-
-			else if (startPosition == StartPosition.BOTTOM_LEFT)
-				slot += this.getSize() - (hasReturnButton ? 2 : 1);
-
-			else if (startPosition == StartPosition.TOP_LEFT) {
-				slot += 0;
-
-			} else
-				throw new TweetyException("Does not know how to implement button position's Slot." + startPosition);
-
-			items.put(slot, button.getItem());
-		}
-
-		// Add quantity edit button
-		if (this instanceof MenuQuantitable) {
-			final int slot = ((MenuQuantitable) this).getQuantityButtonPosition();
-
-			if (slot != -1)
-				items.put(slot, this.quantityButton.getItem());
-		}
-
-		// Override by hotbar
-		{
-			if (addInfoButton() && getInfo() != null)
-				items.put(getInfoButtonPosition(), Button.makeInfo(getInfo()).getItem());
-
-			if (hasReturnButton)
-				items.put(getReturnButtonPosition(), returnButton.getItem());
-		}
+		if (addReturnButton() && !(returnButton instanceof DummyButton))
+			items.put(getReturnButtonPosition(), returnButton.getItem());
 
 		return items;
-
 	}
 
 	// --------------------------------------------------------------------------------
@@ -684,24 +634,13 @@ public abstract class Menu {
 			PlayerUtil.updateInventoryTitle(this, getViewer(), title, getTitle(), titleAnimationDurationTicks);
 	}
 
-	/**
-	 * Start a repetitive task with the given period in ticks on the main thread,
-	 * that is automatically stopped if the viewer no longer sees this menu.
-	 *
-	 * Can impose a performance penalty. Use cancel() to cancel.
-	 *
-	 * @param periodTicks
-	 * @param task
-	 */
 	protected final void animate(int periodTicks, MenuRunnable task) {
 		Common.runTimer(2, periodTicks, this.wrapAnimation(task));
 	}
 
 	/**
-	 * Start a repetitive task with the given period in ticks ASYNC,
+	 * Start a repetitive task with the given period in ticks,
 	 * that is automatically stopped if the viewer no longer sees this menu.
-	 *
-	 * Use cancel() to cancel.
 	 *
 	 * @param periodTicks
 	 * @param task
@@ -816,26 +755,20 @@ public abstract class Menu {
 	}
 
 	/**
-	 * Return the middle slot in the last menu row (in the hotbar)
-	 *
-	 * @return
-	 */
-	protected final int getBottomCenterSlot() {
-		return this.size - 5;
-	}
-
-	/**
 	 * Should we prevent the click or drag?
 	 *
 	 * @param location the click location
 	 * @param slot     the slot
 	 * @param clicked  the clicked item
 	 * @param cursor   the cursor
-	 *
 	 * @return if the action is cancelled in the {@link InventoryClickEvent}, false
 	 * by default
+	 *
+	 * @deprecated sometimes does not work correctly due to flaws in server to
+	 * client packet communication - do not rely on this
 	 */
-	protected boolean isActionAllowed(final MenuClickLocation location, final int slot, @Nullable final ItemStack clicked, @Nullable final ItemStack cursor) {
+	@Deprecated
+	protected boolean isActionAllowed(final MenuClickLocation location, final int slot, final ItemStack clicked, final ItemStack cursor) {
 		return false;
 	}
 
@@ -859,10 +792,6 @@ public abstract class Menu {
 
 		if (this.viewer != null && this.opened)
 			PlayerUtil.updateInventoryTitle(this.viewer, title);
-	}
-
-	protected boolean allowShiftClick() {
-		return false;
 	}
 
 	/**
@@ -900,10 +829,10 @@ public abstract class Menu {
 	 * Used to create an info bottom in bottom left corner, see
 	 * {@link Button#makeInfo(String...)}
 	 *
-	 * return info the info to set
+	 * @param info the info to set
 	 */
-	protected String[] getInfo() {
-		return null;
+	protected final void setInfo(final String... info) {
+		this.info = info;
 	}
 
 	/**
@@ -978,15 +907,9 @@ public abstract class Menu {
 	 * <p>
 	 * Only takes change when used in constructor or before calling
 	 * {@link #displayTo(Player)} and cannot be updated in {@link #restartMenu()}
-	 *
-	 * @param visible
 	 */
 	protected final void setSlotNumbersVisible() {
 		this.slotNumbersVisible = true;
-	}
-
-	protected final void setAsyncFill() {
-		this.asyncFill = true;
 	}
 
 	/**

@@ -1,15 +1,18 @@
 package ca.tweetzy.tweety.menu.model;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.remain.CompMaterial;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.remain.CompMaterial;
+
+import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Represents a way to render the inventory to the player
@@ -37,16 +40,40 @@ public final class InventoryDrawer {
 	private final ItemStack[] content;
 
 	/**
+	 * The inventory with which this instance works with, used after calling {@link #of(Player)}
+	 */
+	private Inventory inventory;
+
+	/**
+	 * Close player's open inventory when displaying this inventory?
+	 */
+	private final boolean closeInventoryOnDisplay;
+
+	/**
 	 * Create a new inventory drawer, see {@link #of(int, String)}
-	 *
 	 * @param size  the size
 	 * @param title the title
+	 * @param closeInventoryOnDisplay
 	 */
-	private InventoryDrawer(int size, String title) {
+	private InventoryDrawer(int size, String title, boolean closeInventoryOnDisplay) {
 		this.size = size;
 		this.title = title;
+		this.closeInventoryOnDisplay = closeInventoryOnDisplay;
 
 		this.content = new ItemStack[size];
+	}
+
+	/**
+	 * Create a new inventory drawer from an existing inventory
+	 *
+	 * @param inventory
+	 */
+	private InventoryDrawer(@NonNull Inventory inventory) {
+		this.inventory = inventory;
+		this.size = inventory.getSize();
+		this.closeInventoryOnDisplay = false;
+
+		this.content = new ItemStack[inventory.getSize()];
 	}
 
 	/**
@@ -126,14 +153,26 @@ public final class InventoryDrawer {
 	}
 
 	/**
-	 * Display this inventory to the player, closing older inventory if already opened
+	 * Display the inventory to the player, closing already opened inventory if set in this drawer
 	 *
-	 * @param player
+	 * @param player the player
 	 */
-	public void display(Player player, boolean async) {
-		final Inventory inv = this.build(player, async);
-		HookManager.chestSortInventory(inv);
-		player.openInventory(inv);
+	public void display(final Player player, boolean async) {
+
+		// Close player's open inventory if the variable is true
+		if (closeInventoryOnDisplay)
+			player.closeInventory();
+
+		// Create new inventory if not using player's inventory
+		final boolean createNewInventory = inventory == null;
+
+		inventory = this.build(player, async);
+		HookManager.chestSortInventory(inventory);
+
+		if (createNewInventory)
+			player.openInventory(inventory);
+		else
+			player.updateInventory();
 	}
 
 	/**
@@ -143,14 +182,8 @@ public final class InventoryDrawer {
 	 * @return
 	 */
 	public Inventory build(InventoryHolder holder, boolean async) {
-
 		// Automatically append the black color in the menu, can be overriden by colors
-		if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9) && title.length() > 32) {
-			title = title.charAt(30) == '\u00A7' ? title.substring(0, 30) : title.substring(0, 31);
-		}
-
-		final Inventory inv = Bukkit.createInventory(holder, size, Common.colorize("&e" + title));
-
+		final Inventory inv = Common.getOrDefault(inventory, Bukkit.createInventory(holder, size, Common.colorize("&e" + title)));
 
 		if (async)
 			Common.runAsync(() -> inv.setContents(content));
@@ -161,13 +194,37 @@ public final class InventoryDrawer {
 	}
 
 	/**
-	 * Make a new inventory drawer
+	 * Make a new inventory drawer, closing the player's open inventory on displaying
 	 *
 	 * @param size  the size
 	 * @param title the title, colors will be replaced
 	 * @return the inventory drawer
 	 */
 	public static InventoryDrawer of(int size, String title) {
-		return new InventoryDrawer(size, title);
+		return of(size, title, true);
+	}
+
+	/**
+	 * Make a new inventory drawer
+	 *
+	 * @param size  the size
+	 * @param title the title, colors will be replaced
+	 * @param closeInventoryOnDisplay if true, the cursor will be moved to the center on displaying, else it will stay where it was
+	 * @return the inventory drawer
+	 */
+	public static InventoryDrawer of(int size, String title, boolean closeInventoryOnDisplay) {
+		return new InventoryDrawer(size, title, closeInventoryOnDisplay);
+	}
+
+	/**
+	 * Make a new inventory drawer for the player's open inventory
+	 *
+	 * @param player the player whose open inventory should be used
+	 * @return the inventory drawer
+	 */
+	public static InventoryDrawer of(Player player) {
+		Valid.checkBoolean(player.getOpenInventory().getType() != InventoryType.CRAFTING, "New InventoryDrawer from non-existing inventory!");
+
+		return new InventoryDrawer(player.getOpenInventory().getTopInventory());
 	}
 }

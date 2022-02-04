@@ -1,5 +1,14 @@
 package ca.tweetzy.tweety.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import ca.tweetzy.tweety.model.Replacer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.MathUtil;
 import ca.tweetzy.tweety.PlayerUtil;
@@ -8,20 +17,12 @@ import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.menu.button.Button;
 import ca.tweetzy.tweety.menu.model.InventoryDrawer;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
-import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An advanced menu listing items with automatic page support
@@ -29,24 +30,11 @@ import java.util.Map;
  * @param <T> the item that each page consists of
  */
 public abstract class MenuPagged<T> extends Menu {
-
 	/**
 	 * The slots the current page's items will be in
 	 */
 	@Getter
 	private final List<Integer> slots;
-
-	/**
-	 * The raw items iterated
-	 */
-	private final Iterable<T> items;
-
-	/**
-	 * The page size overriding automatic pagination system adjusting menu
-	 * size based on item count
-	 */
-	private final Integer manualPageSize;
-
 
 	@Getter
 	@Setter
@@ -86,7 +74,6 @@ public abstract class MenuPagged<T> extends Menu {
 	 * The current page
 	 */
 	@Getter
-	@Setter
 	private int currentPage = 1;
 
 	/**
@@ -131,8 +118,8 @@ public abstract class MenuPagged<T> extends Menu {
 	/**
 	 * Create a new paged menu
 	 *
-	 * @param parent                 the parent menu
-	 * @param pages                  the pages
+	 * @param parent the parent menu
+	 * @param pages  the pages
 	 * @param returnMakesNewInstance
 	 */
 	protected MenuPagged(final Menu parent, final Iterable<T> pages, final boolean returnMakesNewInstance) {
@@ -142,9 +129,9 @@ public abstract class MenuPagged<T> extends Menu {
 	/**
 	 * Create a new paged menu
 	 *
-	 * @param parent                 the parent menu
-	 * @param slots                  the slots where the items will be
-	 * @param pages                  the pages
+	 * @param parent the parent menu
+	 * @param slots  the slots where the items will be
+	 * @param pages  the pages
 	 * @param returnMakesNewInstance
 	 */
 	protected MenuPagged(final Menu parent, final List<Integer> slots, final Iterable<T> pages, final boolean returnMakesNewInstance) {
@@ -207,9 +194,6 @@ public abstract class MenuPagged<T> extends Menu {
 	private MenuPagged(final Integer pageSize, final Menu parent, final List<Integer> slots, final Iterable<T> pages, final boolean returnMakesNewInstance) {
 		super(parent, returnMakesNewInstance);
 
-		this.items = pages;
-		this.manualPageSize = pageSize;
-
 		final int items = getItemAmount(pages);
 		final int autoPageSize = pageSize != null ? pageSize : items <= 9 ? 9 * 1 : items <= 9 * 2 ? 9 * 2 : items <= 9 * 3 ? 9 * 3 : items <= 9 * 4 ? 9 * 4 : 9 * 5;
 
@@ -240,10 +224,10 @@ public abstract class MenuPagged<T> extends Menu {
 		final boolean hasPages = pages.size() > 1;
 
 		// Set previous button
-		prevButton = hasPages ? formPreviousButton() : Button.makeDummy(ItemCreator.of(backgroundItem()).name(" "));
+		prevButton = hasPages ? formPreviousButton() : Button.makeEmpty();
 
 		// Set next page button
-		nextButton = hasPages ? formNextButton() : Button.makeDummy(ItemCreator.of(backgroundItem()).name(" "));
+		nextButton = hasPages ? formNextButton() : Button.makeEmpty();
 	}
 
 	/**
@@ -309,11 +293,12 @@ public abstract class MenuPagged<T> extends Menu {
 	}
 
 	// Reinits the menu and plays the anvil sound
-	protected void updatePage() {
+	private void updatePage() {
 		setButtons();
-		restartMenu();
+		redraw();
+		registerButtons();
 
-		getSound().play(getViewer());
+		Menu.getSound().play(getViewer());
 		PlayerUtil.updateInventoryTitle(getViewer(), compileTitle0());
 	}
 
@@ -321,6 +306,7 @@ public abstract class MenuPagged<T> extends Menu {
 	private String compileTitle0() {
 		final boolean canAddNumbers = addPageNumbers() && pages.size() > 1;
 		return getTitle().replace("{current_page}", String.valueOf(currentPage)).replace("{max_pages}", String.valueOf(pages.size())) + (canAddNumbers ? " &8" + currentPage + "/" + pages.size() : "");
+
 	}
 
 	/**
@@ -333,32 +319,8 @@ public abstract class MenuPagged<T> extends Menu {
 	 * @param
 	 */
 	@Override
-	protected final void onDisplay(final InventoryDrawer drawer) {
+	protected void onDisplay(final InventoryDrawer drawer) {
 		drawer.setTitle(compileTitle0());
-		this.onPostDisplay(drawer);
-	}
-
-	/**
-	 * Reload pages when the menu is restarted
-	 */
-	@Override
-	void onRestart() {
-		final int items = getItemAmount(this.items);
-		final int autoPageSize = this.manualPageSize != null ? this.manualPageSize : items <= 9 ? 9 * 1 : items <= 9 * 2 ? 9 * 2 : items <= 9 * 3 ? 9 * 3 : items <= 9 * 4 ? 9 * 4 : 9 * 5;
-
-		this.pages.clear();
-		this.pages.putAll(Common.fillPages(this.slots.size(), this.items));
-
-		setSize(9 + autoPageSize);
-		setButtons();
-	}
-
-	/**
-	 * Called before the menu is displayed
-	 *
-	 * @param drawer
-	 */
-	protected void onPostDisplay(InventoryDrawer drawer) {
 	}
 
 	/**
@@ -379,6 +341,15 @@ public abstract class MenuPagged<T> extends Menu {
 	 * @param click  the click type
 	 */
 	protected abstract void onPageClick(Player player, T item, ClickType click);
+
+	/**
+	 * Utility: Shall we send update packet when the menu is clicked?
+	 *
+	 * @return true by default
+	 */
+	protected boolean updateButtonOnClick() {
+		return true;
+	}
 
 	/**
 	 * Return true if you want our system to add page/totalPages suffix after
@@ -428,6 +399,7 @@ public abstract class MenuPagged<T> extends Menu {
 		return CompMaterial.BLACK_STAINED_GLASS_PANE.toItem();
 	}
 
+
 	/**
 	 * Override to edit where the button to previous page is,
 	 * defaults to "size of the menu - 6"
@@ -460,7 +432,7 @@ public abstract class MenuPagged<T> extends Menu {
 				final val prevType = player.getOpenInventory().getType();
 				onPageClick(player, obj, click);
 
-				if (prevType == player.getOpenInventory().getType())
+				if (updateButtonOnClick() && prevType == player.getOpenInventory().getType())
 					player.getOpenInventory().getTopInventory().setItem(slot, getItemAt(slot));
 			}
 		}
