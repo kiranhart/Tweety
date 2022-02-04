@@ -1,9 +1,6 @@
 package ca.tweetzy.tweety.util;
 
 import ca.tweetzy.tweety.TweetyPlugin;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.jsonsimple.JSONObject;
-import ca.tweetzy.tweety.jsonsimple.JSONParser;
 import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.remain.CompAttribute;
 import ca.tweetzy.tweety.remain.CompMaterial;
@@ -13,8 +10,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
-import org.bukkit.Statistic.Type;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -27,8 +22,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -72,155 +65,6 @@ public final class PlayerUtil {
 	 */
 	public static int getPing(final Player player) {
 		return Remain.getPing(player);
-	}
-
-	/**
-	 * Return statistics of ALL offline players ever played
-	 *
-	 * @param statistic
-	 * @return
-	 */
-	public static TreeMap<Long, OfflinePlayer> getStatistics(final Statistic statistic) {
-		return getStatistics(statistic, null, null);
-	}
-
-	/**
-	 * Return statistics of ALL offline players ever played
-	 *
-	 * @param statistic
-	 * @param material
-	 * @return
-	 */
-	public static TreeMap<Long, OfflinePlayer> getStatistics(final Statistic statistic, final Material material) {
-		return getStatistics(statistic, material, null);
-	}
-
-	/**
-	 * Return statistics of ALL offline players ever played
-	 *
-	 * @param statistic
-	 * @param entityType
-	 * @return
-	 */
-	public static TreeMap<Long, OfflinePlayer> getStatistics(final Statistic statistic, final EntityType entityType) {
-		return getStatistics(statistic, null, entityType);
-	}
-
-	/**
-	 * Return statistics of ALL offline players ever played
-	 *
-	 * @param statistic
-	 * @param material
-	 * @param entityType
-	 * @return
-	 */
-	public static TreeMap<Long, OfflinePlayer> getStatistics(final Statistic statistic, final Material material, final EntityType entityType) {
-		final TreeMap<Long, OfflinePlayer> statistics = new TreeMap<>(Collections.reverseOrder());
-
-		for (final OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-			final long time = getStatistic(offline, statistic, material, entityType);
-
-			statistics.put(time, offline);
-		}
-
-		return statistics;
-	}
-
-	/**
-	 * Return a statistic of an online player
-	 *
-	 * @param player
-	 * @param statistic
-	 * @return
-	 */
-	public static long getStatistic(final OfflinePlayer player, final Statistic statistic) {
-		return getStatistic(player, statistic, null, null);
-	}
-
-	/**
-	 * Return a statistic of an online player
-	 *
-	 * @param player
-	 * @param statistic
-	 * @param material
-	 * @return
-	 */
-	public static long getStatistic(final OfflinePlayer player, final Statistic statistic, final Material material) {
-		return getStatistic(player, statistic, material, null);
-	}
-
-	/**
-	 * Return a statistic of an online player
-	 *
-	 * @param player
-	 * @param statistic
-	 * @param entityType
-	 * @return
-	 */
-	public static long getStatistic(final OfflinePlayer player, final Statistic statistic, final EntityType entityType) {
-		return getStatistic(player, statistic, null, entityType);
-	}
-
-	/**
-	 * Return a statistic of an online player
-	 *
-	 * @param player
-	 * @param statistic
-	 * @return
-	 */
-	private static long getStatistic(final OfflinePlayer player, final Statistic statistic, final Material material, final EntityType entityType) {
-		// Return live statistic for up to date data and best performance if possible
-		if (player.isOnline()) {
-			final Player online = player.getPlayer();
-
-			if (statistic.getType() == Type.UNTYPED)
-				return online.getStatistic(statistic);
-
-			else if (statistic.getType() == Type.ENTITY)
-				return online.getStatistic(statistic, entityType);
-
-			return online.getStatistic(statistic, material);
-		}
-
-		// Otherwise read his stats file
-		return getStatisticFile(player, statistic, material, entityType);
-	}
-
-	// Read json file for the statistic
-	private static long getStatisticFile(final OfflinePlayer player, final Statistic statistic, final Material material, final EntityType entityType) {
-		final File worldFolder = new File(Bukkit.getServer().getWorlds().get(0).getWorldFolder(), "stats");
-		final File statFile = new File(worldFolder, player.getUniqueId().toString() + ".json");
-
-		if (statFile.exists())
-			try {
-				final JSONObject json = (JSONObject) JSONParser.getInstance().parse(new FileReader(statFile));
-				final String name = Remain.getNMSStatisticName(statistic, material, entityType);
-
-				JSONObject section = json.getObject("stats");
-				long result = 0;
-
-				for (String part : name.split("\\:")) {
-					part = part.replace(".", ":");
-
-					if (section != null) {
-						final JSONObject nextSection = section.getObject(part);
-
-						if (nextSection == null) {
-							result = Long.parseLong(section.containsKey(part) ? section.get(part).toString() : "0");
-							break;
-						}
-
-						section = nextSection;
-					}
-				}
-
-				return result;
-
-			} catch (final Throwable t) {
-				throw new TweetyException(t);
-			}
-
-		return 0;
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
