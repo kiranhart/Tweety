@@ -224,10 +224,10 @@ public abstract class MenuPagged<T> extends Menu {
 		final boolean hasPages = pages.size() > 1;
 
 		// Set previous button
-		prevButton = hasPages ? formPreviousButton() : Button.makeEmpty();
+		prevButton = hasPages ? formPreviousButton() : Button.makeDummy(ItemCreator.of(inactivePageButton).name(" ").clearLore());
 
 		// Set next page button
-		nextButton = hasPages ? formNextButton() : Button.makeEmpty();
+		nextButton = hasPages ? formNextButton() : Button.makeDummy(ItemCreator.of(inactivePageButton).name(" ").clearLore());
 	}
 
 	/**
@@ -252,11 +252,11 @@ public abstract class MenuPagged<T> extends Menu {
 			public ItemStack getItem() {
 				final int previousPage = currentPage - 1;
 
-				return ItemCreator
-						.of(canGo ? previousPageButton : inactivePageButton)
+				return canGo ? ItemCreator
+						.of(previousPageButton)
 						.name(previousPage == 0 ? previousPageButtonName : previousPageButtonName.replace("{page}", String.valueOf(previousPage)))
 						.lore(Replacer.replaceArray(previousPageButtonLore, "{page}", previousPage))
-						.make();
+						.make() : ItemCreator.of(inactivePageButton).name(" ").clearLore().make();
 			}
 		};
 	}
@@ -283,11 +283,11 @@ public abstract class MenuPagged<T> extends Menu {
 			public ItemStack getItem() {
 				final boolean lastPage = currentPage == pages.size();
 
-				return ItemCreator
-						.of(canGo ? nextPageButton : inactivePageButton)
+				return canGo ? ItemCreator
+						.of(nextPageButton)
 						.name(lastPage ? nextPageButtonName : nextPageButtonName.replace("{page}", String.valueOf(currentPage + 1)))
 						.lore(Replacer.replaceArray(nextPageButtonLore, "{page}", String.valueOf(currentPage + 1)))
-						.make();
+						.make() : ItemCreator.of(inactivePageButton).name(" ").clearLore().make();
 			}
 		};
 	}
