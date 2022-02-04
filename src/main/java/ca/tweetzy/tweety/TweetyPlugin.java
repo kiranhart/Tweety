@@ -154,15 +154,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	public final void onLoad() {
 
 		// Set the instance
-		try {
-			getInstance();
-
-		} catch (final Throwable ex) {
-			if (MinecraftVersion.olderThan(V.v1_7))
-				instance = this; // Workaround
-			else
-				throw ex;
-		}
+		getInstance();
 
 		// Cache results for best performance
 		version = instance.getDescription().getVersion();
@@ -203,16 +195,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 
 		// Load debug mode early
 		Debugger.detectDebugMode();
-
-		// Print startup logo early before onPluginPreStart
-		// Disable logging prefix if logo is set
-		if (getStartupLogo() != null) {
-			final boolean hadLogPrefix = Common.ADD_LOG_PREFIX;
-
-			Common.ADD_LOG_PREFIX = false;
-			Common.log(getStartupLogo());
-			Common.ADD_LOG_PREFIX = hadLogPrefix;
-		}
 
 		// Load our dependency system
 		try {
@@ -694,15 +676,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------------------------------
 	// Additional features
 	// ----------------------------------------------------------------------------------------
-
-	/**
-	 * The start-up fancy logo
-	 *
-	 * @return null by default
-	 */
-	protected String[] getStartupLogo() {
-		return null;
-	}
 
 	/**
 	 * The the minimum MC version to run
