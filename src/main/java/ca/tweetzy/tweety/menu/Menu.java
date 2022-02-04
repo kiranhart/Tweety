@@ -1,30 +1,8 @@
 package ca.tweetzy.tweety.menu;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import ca.tweetzy.tweety.event.MenuCloseEvent;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.Messenger;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.*;
 import ca.tweetzy.tweety.constants.TweetyConstants;
+import ca.tweetzy.tweety.event.MenuCloseEvent;
 import ca.tweetzy.tweety.event.MenuOpenEvent;
 import ca.tweetzy.tweety.exception.EventHandledException;
 import ca.tweetzy.tweety.exception.TweetyException;
@@ -39,11 +17,23 @@ import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompSound;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * The core class of Menu. Represents a simple menu.
@@ -158,6 +148,7 @@ public abstract class Menu {
 	/**
 	 * A flag indicating if this menu is closed (no one is currently viewing it)
 	 */
+	@Getter
 	private boolean closed = false;
 
 	/**
@@ -312,7 +303,7 @@ public abstract class Menu {
 
 	/**
 	 * Returns a list of buttons that should be registered manually.
-	 *
+	 * <p>
 	 * NOTICE: Button fields in your class are registered automatically, do not add
 	 * them here
 	 *
@@ -352,7 +343,7 @@ public abstract class Menu {
 	 *
 	 * @return the new instance, of null
 	 * @throws TweetyException if new instance could not be made, for example when the menu is
-	 *            taking constructor params
+	 *                         taking constructor params
 	 */
 	public Menu newInstance() {
 		try {
@@ -388,7 +379,7 @@ public abstract class Menu {
 	/**
 	 * Display this menu to the player.
 	 *
-	 * @param player the player
+	 * @param player             the player
 	 * @param closeOpenInventory if true, the player's cursor will be moved to the center on displaying, else it will stay where it was.
 	 */
 	public final void displayTo(final Player player, boolean closeOpenInventory) {
@@ -487,6 +478,10 @@ public abstract class Menu {
 	 * @param drawer the drawer
 	 */
 	protected void onDisplay(final InventoryDrawer drawer) {
+	}
+
+	protected boolean allowShiftClick() {
+		return false;
 	}
 
 	/**
@@ -755,6 +750,15 @@ public abstract class Menu {
 	}
 
 	/**
+	 * Return the middle slot in the last menu row (in the hotbar)
+	 *
+	 * @return
+	 */
+	protected final int getBottomCenterSlot() {
+		return this.size - 5;
+	}
+
+	/**
 	 * Should we prevent the click or drag?
 	 *
 	 * @param location the click location
@@ -763,7 +767,6 @@ public abstract class Menu {
 	 * @param cursor   the cursor
 	 * @return if the action is cancelled in the {@link InventoryClickEvent}, false
 	 * by default
-	 *
 	 * @deprecated sometimes does not work correctly due to flaws in server to
 	 * client packet communication - do not rely on this
 	 */
@@ -979,8 +982,8 @@ public abstract class Menu {
 	 * Handles the menu close, this does not close the inventory, only cleans up internally,
 	 * do not use.
 	 *
-	 * @deprecated internal use only
 	 * @param inventory
+	 * @deprecated internal use only
 	 */
 	@Deprecated
 	public final void handleClose(Inventory inventory) {
