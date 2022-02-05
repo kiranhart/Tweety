@@ -4,7 +4,6 @@ import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.util.Common;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;

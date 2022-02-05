@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompBarColor;
 import ca.tweetzy.tweety.remain.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import ca.tweetzy.tweety.util.Valid;

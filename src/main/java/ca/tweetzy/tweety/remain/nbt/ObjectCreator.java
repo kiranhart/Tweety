@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.remain.nbt;
 
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 
 import java.lang.reflect.Constructor;
 

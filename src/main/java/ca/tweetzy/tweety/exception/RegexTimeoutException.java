@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.exception;
 
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import lombok.Getter;
 
 /**

@@ -12,7 +12,7 @@ import ca.tweetzy.tweety.model.SimpleScoreboard;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.tool.Tool;
 import ca.tweetzy.tweety.tool.ToolsListener;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import ca.tweetzy.tweety.util.ReflectionUtil;
@@ -20,11 +20,7 @@ import ca.tweetzy.tweety.util.Valid;
 import ca.tweetzy.tweety.visual.BlockVisualizer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -33,7 +29,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -804,84 +799,5 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	 */
 	public boolean areToolsEnabled() {
 		return true;
-	}
-
-	// ----------------------------------------------------------------------------------------
-	// Prevention
-	// ----------------------------------------------------------------------------------------
-
-	/**
-	 * Get the plugins jar file
-	 */
-	@Override
-	protected final File getFile() {
-		return super.getFile();
-	}
-
-	/**
-	 * @deprecated DO NOT USE
-	 */
-	@Deprecated
-	@Override
-	public final PluginCommand getCommand(final String name) {
-		return super.getCommand(name);
-	}
-
-	/**
-	 * @deprecated do not use
-	 */
-	@Deprecated
-	@Override
-	public final boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		throw unsupported("onCommand");
-	}
-
-	/**
-	 * @deprecated do not use
-	 */
-	@Deprecated
-	@Override
-	public final List<String> onTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
-		throw unsupported("onTabComplete");
-	}
-
-	/**
-	 * @deprecated do not use
-	 */
-	@Deprecated
-	@Override
-	public final FileConfiguration getConfig() {
-		throw unsupported("getConfig");
-	}
-
-	/**
-	 * @deprecated do not use
-	 */
-	@Deprecated
-	@Override
-	public final void saveConfig() {
-		throw unsupported("saveConfig");
-	}
-
-	/**
-	 * @deprecated do not use
-	 */
-	@Deprecated
-	@Override
-	public final void saveDefaultConfig() {
-		throw unsupported("saveDefaultConfig");
-	}
-
-	/**
-	 * @deprecated do not use
-	 */
-	@Deprecated
-	@Override
-	public final void reloadConfig() {
-		throw new TweetyException("Cannot call reloadConfig in " + getName() + ", use reload()!");
-	}
-
-	private final TweetyException unsupported(final String method) {
-		return new TweetyException("Cannot call " + method + " in " + getName() + ", use YamlConfig or SimpleCommand classes in Tweety for that!");
 	}
 }

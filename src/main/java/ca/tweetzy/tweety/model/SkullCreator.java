@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.util.Common;
 import ca.tweetzy.tweety.util.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,9 @@
-package ca.tweetzy.tweety.util;
+package ca.tweetzy.tweety.model;
 
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.ChatUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;

@@ -23,7 +23,7 @@
 package ca.tweetzy.tweety.remain;
 
 import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.ItemUtil;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;

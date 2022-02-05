@@ -1,15 +1,14 @@
-package ca.tweetzy.tweety.util;
+package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.RegexTimeoutException;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.DiscordSender;
-import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.Replacer;
 import ca.tweetzy.tweety.remain.CompChatColor;
 import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.util.*;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -598,7 +597,7 @@ public final class Common {
 			result = result.replace("\\#", "#");
 		}
 
-		return result;
+		return IridiumColorAPI.process(result);
 	}
 
 	// Remove first and last spaces from the given message

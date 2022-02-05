@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.collection;
 
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.Valid;
 
 import java.util.Arrays;

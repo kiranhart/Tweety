@@ -1,9 +1,8 @@
 package ca.tweetzy.tweety.debug;
 
 import ca.tweetzy.tweety.TweetyPlugin;
-import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.FileUtil;
 import ca.tweetzy.tweety.util.TimeUtil;
 import lombok.AccessLevel;
@@ -169,7 +168,7 @@ public final class Debugger {
 		Common.log(header + "! Please check your error.log and report this issue with the information in that file.");
 
 		// Finally, save the error file
-		FileUtil.write(TweetyConstants.File.ERRORS, lines);
+		FileUtil.write("errors.log", lines);
 	}
 
 	private static void fill(List<String> list, String... messages) {

@@ -1,6 +1,7 @@
 package ca.tweetzy.tweety.util;
 
 import ca.tweetzy.tweety.TweetyPlugin;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.remain.CompAttribute;
 import ca.tweetzy.tweety.remain.CompMaterial;

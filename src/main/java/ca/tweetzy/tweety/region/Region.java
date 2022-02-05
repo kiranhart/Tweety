@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.region;
 
 import ca.tweetzy.tweety.util.BlockUtil;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.Valid;
 import ca.tweetzy.tweety.visual.VisualizedRegion;
 import lombok.Getter;

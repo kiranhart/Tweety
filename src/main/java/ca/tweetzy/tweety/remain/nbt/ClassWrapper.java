@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.remain.nbt;
 
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 
 /**
  * Wraps NMS and CRAFT classes

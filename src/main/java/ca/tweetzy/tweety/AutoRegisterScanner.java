@@ -8,7 +8,7 @@ import ca.tweetzy.tweety.model.DiscordListener;
 import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.model.Tuple;
 import ca.tweetzy.tweety.tool.Tool;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.ReflectionUtil;
 import ca.tweetzy.tweety.util.Valid;
 import org.bukkit.Bukkit;

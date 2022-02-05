@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.remain.nbt.NBTCompound;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;
-import ca.tweetzy.tweety.util.Common;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import ca.tweetzy.tweety.util.Valid;

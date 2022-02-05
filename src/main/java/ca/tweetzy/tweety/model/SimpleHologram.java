@@ -3,7 +3,6 @@ package ca.tweetzy.tweety.model;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.CompParticle;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.util.Common;
 import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.Setter;

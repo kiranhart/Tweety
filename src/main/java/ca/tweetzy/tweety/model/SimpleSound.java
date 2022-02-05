@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.remain.CompSound;
-import ca.tweetzy.tweety.util.Common;
 import ca.tweetzy.tweety.util.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
