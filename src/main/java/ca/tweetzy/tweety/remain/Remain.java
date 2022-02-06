@@ -2518,7 +2518,7 @@ public final class Remain {
 	 * @param title  the new title
 	 */
 	@Deprecated
-	public static void ca.tweetzy.tweety(final Player player, String title) {
+	public static void updateInventoryTitle(final Player player, String title) {
 
 		try {
 
