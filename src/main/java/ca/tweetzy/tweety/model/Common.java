@@ -577,6 +577,8 @@ public final class Common {
 		// RGB colors
 		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_16)) {
 
+			result = IridiumColorAPI.process(result);
+
 			// Preserve compatibility with former systems
 			final Matcher match = HEX_COLOR_REGEX.matcher(result);
 
@@ -597,7 +599,7 @@ public final class Common {
 			result = result.replace("\\#", "#");
 		}
 
-		return IridiumColorAPI.process(result);
+		return result;
 	}
 
 	// Remove first and last spaces from the given message

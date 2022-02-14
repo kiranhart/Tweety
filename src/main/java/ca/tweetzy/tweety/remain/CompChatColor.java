@@ -1,15 +1,19 @@
 package ca.tweetzy.tweety.remain;
 
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+
 import ca.tweetzy.tweety.util.ItemUtil;
 import ca.tweetzy.tweety.util.MinecraftVersion;
-import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.NonNull;
-
-import java.awt.*;
-import java.util.List;
-import java.util.*;
 
 /**
  * Simplistic enumeration of all supported color values for chat.
@@ -34,6 +38,28 @@ public final class CompChatColor {
 	 * Colour instances keyed by their name.
 	 */
 	private static final Map<String, CompChatColor> BY_NAME = new HashMap<>();
+
+	/**
+	 * Represents colors we can use for MC before 1.16
+	 */
+	private static final Color[] LEGACY_COLORS = {
+			new Color(0, 0, 0),
+			new Color(0, 0, 170),
+			new Color(0, 170, 0),
+			new Color(0, 170, 170),
+			new Color(170, 0, 0),
+			new Color(170, 0, 170),
+			new Color(255, 170, 0),
+			new Color(170, 170, 170),
+			new Color(85, 85, 85),
+			new Color(85, 85, 255),
+			new Color(85, 255, 85),
+			new Color(85, 255, 255),
+			new Color(255, 85, 85),
+			new Color(255, 85, 255),
+			new Color(255, 255, 85),
+			new Color(255, 255, 255),
+	};
 
 	/**
 	 * Represents black.
@@ -175,7 +201,7 @@ public final class CompChatColor {
 		this.code = code;
 		this.name = name;
 		this.color = color;
-		this.toString = new String(new char[]{COLOR_CHAR, code});
+		this.toString = new String(new char[] { COLOR_CHAR, code });
 
 		BY_CHAR.put(code, this);
 		BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
@@ -229,13 +255,24 @@ public final class CompChatColor {
 	/**
 	 * Return the color's name such as red, or in case of hex color return
 	 * the code, colorized
-	 *
 	 * @return
 	 */
-	public String toReadableString() {
+	public String toEscapedString() {
 		return isHex() ? toString + "\\" + getName() : ItemUtil.bountify(getName());
 	}
 
+	/**
+	 * Return a string you can save to YAML config
+	 *
+	 * @return
+	 */
+	public String toSaveableString() {
+		return this.getName();
+	}
+
+	/**
+	 * This will translate the color into the actual color, use getName to get the saveable color!
+	 */
 	@Override
 	public String toString() {
 		return toString;
@@ -272,11 +309,14 @@ public final class CompChatColor {
 		if (string.startsWith("#") && string.length() == 7) {
 
 			// Default to white on ancient MC versions
-			if (MinecraftVersion.olderThan(V.v1_7))
+			if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_7))
 				return CompChatColor.WHITE;
 
-			if (!MinecraftVersion.atLeast(V.v1_16))
-				throw new IllegalArgumentException("Only Minecraft 1.16+ supports # HEX color codes! Got: " + string);
+			if (!MinecraftVersion.atLeast(MinecraftVersion.V.v1_16)) {
+				Color color = getColorFromHex(string);
+
+				return getClosestLegacyColor(color);
+			}
 
 			int rgb;
 
@@ -315,6 +355,74 @@ public final class CompChatColor {
 		}
 
 		throw new IllegalArgumentException("Could not parse CompChatColor " + string);
+	}
+
+	/*
+	 * Parse the given HEX into a Java Color object
+	 */
+	private static Color getColorFromHex(String hex) {
+		return new Color(Integer.valueOf(hex.substring(1, 3), 16), Integer.valueOf(hex.substring(3, 5), 16), Integer.valueOf(hex.substring(5, 7), 16));
+	}
+
+	/**
+	 * Returns the closest legacy chat color from the given color.
+	 *
+	 * Uses all the available colors before HEX was added in MC 1.16.
+	 *
+	 * @param color
+	 * @return
+	 */
+	public static CompChatColor getClosestLegacyColor(Color color) {
+		if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_16)) {
+			if (color.getAlpha() < 128)
+				return null;
+
+			int index = 0;
+			double best = -1;
+
+			for (int i = 0; i < LEGACY_COLORS.length; i++)
+				if (areSimilar(LEGACY_COLORS[i], color))
+					return CompChatColor.getColors().get(i);
+
+			for (int i = 0; i < LEGACY_COLORS.length; i++) {
+				final double distance = getDistance(color, LEGACY_COLORS[i]);
+
+				if (distance < best || best == -1) {
+					best = distance;
+					index = i;
+				}
+			}
+
+			return CompChatColor.getColors().get(index);
+		}
+
+		return CompChatColor.of(color);
+	}
+
+	/*
+	 * Return if colors are nearly identical
+	 */
+	private static boolean areSimilar(Color first, Color second) {
+		return Math.abs(first.getRed() - second.getRed()) <= 5 &&
+				Math.abs(first.getGreen() - second.getGreen()) <= 5 &&
+				Math.abs(first.getBlue() - second.getBlue()) <= 5;
+
+	}
+
+	/*
+	 * Returns how different two colors are
+	 */
+	private static double getDistance(Color first, Color second) {
+		final double rmean = (first.getRed() + second.getRed()) / 2.0;
+		final double r = first.getRed() - second.getRed();
+		final double g = first.getGreen() - second.getGreen();
+		final int b = first.getBlue() - second.getBlue();
+
+		final double weightR = 2 + rmean / 256.0;
+		final double weightG = 4.0;
+		final double weightB = 2 + (255 - rmean) / 256.0;
+
+		return weightR * r * r + weightG * g * g + weightB * b * b;
 	}
 
 	/**
