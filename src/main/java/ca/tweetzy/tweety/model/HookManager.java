@@ -6,8 +6,11 @@ import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.region.Region;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.util.*;
+import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
+import ca.tweetzy.tweety.util.PlayerUtil;
+import ca.tweetzy.tweety.util.ReflectionUtil;
+import ca.tweetzy.tweety.util.Valid;
 import com.Zrips.CMI.CMI;
 import com.Zrips.CMI.Containers.CMIUser;
 import com.Zrips.CMI.Modules.TabList.TabListManager;
@@ -111,8 +114,6 @@ public final class HookManager {
 	private static WorldEditHook worldeditHook;
 	private static WorldGuardHook worldguardHook;
 
-	private static ChestSortHook chestSortHook;
-
 	private static boolean nbtAPIDummyHook = false;
 	private static boolean nuVotifierDummyHook = false;
 	private static boolean townyChatDummyHook = false;
@@ -192,9 +193,6 @@ public final class HookManager {
 
 		if (Common.doesPluginExist("Lockette"))
 			locketteProHook = new LocketteProHook();
-
-		if (Common.doesPluginExist("ChestSort"))
-			chestSortHook = new ChestSortHook();
 
 		if (Common.doesPluginExist("LWC"))
 			lwcHook = new LWCHook();
@@ -570,10 +568,6 @@ public final class HookManager {
 		return worldguardHook != null;
 	}
 
-	public static boolean isChestSortLoaded() {
-		return chestSortHook != null;
-	}
-
 	// ------------------------------------------------------------------------------------------------------------
 	//
 	//
@@ -581,12 +575,6 @@ public final class HookManager {
 	//
 	//
 	// ------------------------------------------------------------------------------------------------------------
-
-	public static void chestSortInventory(final Inventory inventory) {
-		if (isChestSortLoaded()) {
-			chestSortHook.setSortable(inventory);
-		}
-	}
 
 	// ------------------------------------------------------------------------------------------------------------
 	// AuthMe
