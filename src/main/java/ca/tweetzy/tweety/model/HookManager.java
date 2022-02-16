@@ -36,7 +36,6 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.*;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.jeff_media.chestsort.api.ChestSortAPI;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
@@ -61,7 +60,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -1901,13 +1899,6 @@ class ProtocolLibHook {
 		} catch (final NoClassDefFoundError err) {
 			return false;
 		}
-	}
-}
-
-class ChestSortHook {
-
-	void setSortable(final Inventory inventory) {
-		ChestSortAPI.setSortable(inventory);
 	}
 }
 
