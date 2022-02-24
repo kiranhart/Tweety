@@ -4,6 +4,7 @@ import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import lombok.AllArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -23,6 +24,8 @@ public final class Replacer {
 	 * @return
 	 */
 	public static List<String> replaceArray(List<String> list, Object... replacements) {
+		if (list.isEmpty()) return Collections.emptyList();
+
 		String joined = String.join("%FLPV%", list);
 		joined = replaceArray(joined, replacements);
 
