@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-
 import ca.tweetzy.tweety.util.ItemUtil;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.Valid;

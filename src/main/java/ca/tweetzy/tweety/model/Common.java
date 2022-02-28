@@ -8,7 +8,6 @@ import ca.tweetzy.tweety.remain.CompChatColor;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.*;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
-import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -574,31 +573,24 @@ public final class Common {
 				.replace("{plugin_name}", TweetyPlugin.getNamed())
 				.replace("{plugin_version}", TweetyPlugin.getVersion()));
 
-		// RGB colors
-		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_16)) {
+		// RGB colors - return the closest color for legacy MC versions
+		final Matcher match = HEX_COLOR_REGEX.matcher(result);
 
-			result = IridiumColorAPI.process(result);
+		while (match.find()) {
+			final String matched = match.group();
+			final String colorCode = match.group(2);
+			String replacement = "";
 
-			// Preserve compatibility with former systems
-			final Matcher match = HEX_COLOR_REGEX.matcher(result);
+			try {
+				replacement = CompChatColor.of("#" + colorCode).toString();
 
-			while (match.find()) {
-				final String matched = match.group();
-				final String colorCode = match.group(2);
-				String replacement = "";
-
-				try {
-					replacement = CompChatColor.of("#" + colorCode).toString();
-
-				} catch (final IllegalArgumentException ex) {
-				}
-
-				result = result.replaceAll(Pattern.quote(matched), replacement);
+			} catch (final IllegalArgumentException ex) {
 			}
 
-			result = result.replace("\\#", "#");
+			result = result.replaceAll(Pattern.quote(matched), replacement);
 		}
 
+		result = result.replace("\\#", "#");
 		return result;
 	}
 
