@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author tr7zw
  */
-public class NBTLongList extends NBTList<Long> {
+public class NBTLongList extends ca.tweetzy.tweety.remain.nbt.NBTList<Long> {
 
 	protected NBTLongList(NBTCompound owner, String name, NBTType type, Object list) {
 		super(owner, name, type, list);
@@ -19,7 +19,7 @@ public class NBTLongList extends NBTList<Long> {
 	@Override
 	protected Object asTag(Long object) {
 		try {
-			final Constructor<?> con = ClassWrapper.NMS_NBTTAGLONG.getClazz().getDeclaredConstructor(long.class);
+			final Constructor<?> con = ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGLONG.getClazz().getDeclaredConstructor(long.class);
 			con.setAccessible(true);
 			return con.newInstance(object);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -31,7 +31,7 @@ public class NBTLongList extends NBTList<Long> {
 	@Override
 	public Long get(int index) {
 		try {
-			final Object obj = ReflectionMethod.LIST_GET.run(listObject, index);
+			final Object obj = ReflectionMethod.LIST_GET.run(this.listObject, index);
 			return Long.valueOf(obj.toString().replace("L", ""));
 		} catch (final NumberFormatException nf) {
 			return 0L;

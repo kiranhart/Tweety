@@ -1,18 +1,14 @@
 package ca.tweetzy.tweety.remain;
 
-import java.awt.Color;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-
 import ca.tweetzy.tweety.util.ItemUtil;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.NonNull;
+
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * Simplistic enumeration of all supported color values for chat.
@@ -200,7 +196,7 @@ public final class CompChatColor {
 		this.code = code;
 		this.name = name;
 		this.color = color;
-		this.toString = new String(new char[] { COLOR_CHAR, code });
+		this.toString = new String(new char[]{COLOR_CHAR, code});
 
 		BY_CHAR.put(code, this);
 		BY_NAME.put(name.toUpperCase(Locale.ROOT), this);
@@ -254,6 +250,7 @@ public final class CompChatColor {
 	/**
 	 * Return the color's name such as red, or in case of hex color return
 	 * the code, colorized
+	 *
 	 * @return
 	 */
 	public String toEscapedString() {
@@ -365,7 +362,7 @@ public final class CompChatColor {
 
 	/**
 	 * Returns the closest legacy chat color from the given color.
-	 *
+	 * <p>
 	 * Uses all the available colors before HEX was added in MC 1.16.
 	 *
 	 * @param color

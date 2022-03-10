@@ -10,22 +10,22 @@ package ca.tweetzy.tweety.remain.nbt;
  */
 public class NBTListCompound extends NBTCompound {
 
-	private final NBTList<?> owner;
+	private final ca.tweetzy.tweety.remain.nbt.NBTList<?> owner;
 	private Object compound;
 
-	protected NBTListCompound(NBTList<?> parent, Object obj) {
+	protected NBTListCompound(ca.tweetzy.tweety.remain.nbt.NBTList<?> parent, Object obj) {
 		super(null, null);
-		owner = parent;
-		compound = obj;
+		this.owner = parent;
+		this.compound = obj;
 	}
 
-	public NBTList<?> getListParent() {
-		return owner;
+	public ca.tweetzy.tweety.remain.nbt.NBTList<?> getListParent() {
+		return this.owner;
 	}
 
 	@Override
 	public Object getCompound() {
-		return compound;
+		return this.compound;
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class NBTListCompound extends NBTCompound {
 
 	@Override
 	protected void saveCompound() {
-		owner.save();
+		this.owner.save();
 	}
 
 }

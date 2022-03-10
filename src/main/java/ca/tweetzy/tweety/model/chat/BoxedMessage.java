@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.model.chat;
 
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.ChatUtil;
-import ca.tweetzy.tweety.model.Common;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

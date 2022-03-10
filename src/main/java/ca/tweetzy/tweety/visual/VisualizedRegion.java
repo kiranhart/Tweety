@@ -1,10 +1,10 @@
 package ca.tweetzy.tweety.visual;
 
 import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.region.Region;
 import ca.tweetzy.tweety.remain.CompParticle;
 import ca.tweetzy.tweety.util.BlockUtil;
-import ca.tweetzy.tweety.model.Common;
 import ca.tweetzy.tweety.util.Valid;
 import lombok.Getter;
 import lombok.Setter;

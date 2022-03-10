@@ -1,8 +1,8 @@
 package ca.tweetzy.tweety.collection;
 
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.model.Common;
+import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.Valid;
 import com.google.gson.*;
 import lombok.NonNull;
