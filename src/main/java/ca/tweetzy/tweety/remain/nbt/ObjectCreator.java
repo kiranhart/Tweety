@@ -9,12 +9,12 @@ import java.lang.reflect.Constructor;
  * This Enum wraps Constructors for NMS classes
  *
  * @author tr7zw
- *
  */
 enum ObjectCreator {
-	NMS_NBTTAGCOMPOUND(null, null, ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),
-	NMS_BLOCKPOSITION(null, null, ClassWrapper.NMS_BLOCKPOSITION.getClazz(), int.class, int.class, int.class),
-	NMS_COMPOUNDFROMITEM(MinecraftVersion.MC1_11_R1, null, ClassWrapper.NMS_ITEMSTACK.getClazz(), ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),;
+	NMS_NBTTAGCOMPOUND(null, null, ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),
+	NMS_BLOCKPOSITION(null, null, ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_BLOCKPOSITION.getClazz(), int.class, int.class, int.class),
+	NMS_COMPOUNDFROMITEM(MinecraftVersion.MC1_11_R1, null, ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_ITEMSTACK.getClazz(), ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz()),
+	;
 
 	private Constructor<?> construct;
 	private Class<?> targetClass;
@@ -26,8 +26,8 @@ enum ObjectCreator {
 			return;
 		try {
 			this.targetClass = clazz;
-			construct = clazz.getDeclaredConstructor(args);
-			construct.setAccessible(true);
+			this.construct = clazz.getDeclaredConstructor(args);
+			this.construct.setAccessible(true);
 		} catch (final Exception ex) {
 			Common.error(ex, "Unable to find the constructor for the class '" + clazz.getName() + "'");
 		}
@@ -41,9 +41,9 @@ enum ObjectCreator {
 	 */
 	public Object getInstance(Object... args) {
 		try {
-			return construct.newInstance(args);
+			return this.construct.newInstance(args);
 		} catch (final Exception ex) {
-			throw new TweetyException(ex, "Exception while creating a new instance of '" + targetClass + "'");
+			throw new TweetyException(ex, "Exception while creating a new instance of '" + this.targetClass + "'");
 		}
 	}
 

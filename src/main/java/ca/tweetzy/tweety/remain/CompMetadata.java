@@ -1,12 +1,21 @@
 package ca.tweetzy.tweety.remain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.MinecraftVersion.V;
+import ca.tweetzy.tweety.SerializeUtil;
+import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.constants.TweetyConstants;
+import ca.tweetzy.tweety.model.ConfigSerializable;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.nbt.NBTCompound;
+import ca.tweetzy.tweety.remain.nbt.NBTItem;
+import ca.tweetzy.tweety.settings.YamlSectionConfig;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -19,26 +28,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import org.bukkit.persistence.PersistentDataType;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.SerializeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.annotation.AutoRegister;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.constants.TweetyConstants;
-import ca.tweetzy.tweety.model.ConfigSerializable;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.nbt.NBTCompound;
-import ca.tweetzy.tweety.remain.nbt.NBTItem;
-import ca.tweetzy.tweety.settings.YamlSectionConfig;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import java.util.*;
 
 /**
  * Utility class for persistent metadata manipulation
@@ -46,13 +37,16 @@ import lombok.RequiredArgsConstructor;
  * We apply scoreboard tags to ensure permanent metadata storage
  * if supported, otherwise it is lost on reload
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CompMetadata {
 
 	/**
 	 * The tag delimiter
 	 */
 	private final static String DELIMITER = "%-%";
+
+	// Static access
+	private CompMetadata() {
+	}
 
 	// ----------------------------------------------------------------------------------------
 	// Setting metadata
@@ -62,6 +56,7 @@ public final class CompMetadata {
 	 * A shortcut for setting a tag with key-value pair on an item
 	 *
 	 * @param item
+	 * @param compoundTag
 	 * @param key
 	 * @param value
 	 * @return
@@ -96,9 +91,9 @@ public final class CompMetadata {
 	public static void setMetadata(final Entity entity, final String key, final String value) {
 		Valid.checkNotNull(entity);
 
-		if (Remain.hasScoreboardTags()) {
-			final String tag = format(key, value);
+		final String tag = format(key, value);
 
+		if (Remain.hasScoreboardTags()) {
 			if (!entity.getScoreboardTags().contains(tag))
 				entity.addScoreboardTag(tag);
 
@@ -152,6 +147,7 @@ public final class CompMetadata {
 	 * A shortcut from reading a certain key from an item's given compound tag
 	 *
 	 * @param item
+	 * @param compoundTag
 	 * @param key
 	 * @return
 	 */
@@ -204,7 +200,7 @@ public final class CompMetadata {
 	 * Return saved tile entity metadata, or null if none
 	 *
 	 * @param tileEntity
-	 * @param key       or null if none
+	 * @param key,       or null if none
 	 * @return
 	 */
 	public static String getMetadata(final BlockState tileEntity, final String key) {
@@ -234,7 +230,7 @@ public final class CompMetadata {
 
 	/**
 	 * Return true if the given itemstack has the given key stored at its compound
-	 * tag {@link ca.tweetzy.tweety.constants.TweetyConstants.NBT#TAG}
+	 * tag {@link TweetyConstants.NBT#TAG}
 	 *
 	 * @param item
 	 * @param key
@@ -314,7 +310,7 @@ public final class CompMetadata {
 	 * @param tag
 	 */
 	public static void setTempMetadata(final Entity entity, final String tag) {
-		entity.setMetadata(tag, new FixedMetadataValue(TweetyPlugin.getInstance(), tag));
+		entity.setMetadata(createTempMetadataKey(tag), new FixedMetadataValue(TweetyPlugin.getInstance(), tag));
 	}
 
 	/**
@@ -328,7 +324,7 @@ public final class CompMetadata {
 	 * @param key
 	 */
 	public static void setTempMetadata(final Entity entity, final String tag, final Object key) {
-		entity.setMetadata(tag, new FixedMetadataValue(TweetyPlugin.getInstance(), key));
+		entity.setMetadata(createTempMetadataKey(tag), new FixedMetadataValue(TweetyPlugin.getInstance(), key));
 	}
 
 	/**
@@ -338,33 +334,37 @@ public final class CompMetadata {
 	 * because otherwise the tag is the same as the value we return
 	 *
 	 * @param entity
-	 * @param key
-	 * @return
-	 */
-	public static MetadataValue getTempMetadata(final Entity entity, final String key) {
-		return entity.hasMetadata(key) ? entity.getMetadata(key).get(0) : null;
-	}
-
-	/**
-	 * Return true if player has the given temporary metadata
-	 *
-	 * @param player
 	 * @param tag
 	 * @return
 	 */
+	public static MetadataValue getTempMetadata(final Entity entity, final String tag) {
+		final String key = createTempMetadataKey(tag);
+
+		return entity.hasMetadata(key) ? entity.getMetadata(key).get(0) : null;
+	}
+
 	public static boolean hasTempMetadata(final Entity player, final String tag) {
-		return player.hasMetadata(tag);
+		return player.hasMetadata(createTempMetadataKey(tag));
 	}
 
 	/**
 	 * Remove temporary metadata from the entity
 	 *
 	 * @param player
-	 * @param key
+	 * @param tag
 	 */
-	public static void removeTempMetadata(final Entity player, final String key) {
+	public static void removeTempMetadata(final Entity player, final String tag) {
+		final String key = createTempMetadataKey(tag);
+
 		if (player.hasMetadata(key))
 			player.removeMetadata(key, TweetyPlugin.getInstance());
+	}
+
+	/*
+	 * Create a new temporary metadata key
+	 */
+	private static String createTempMetadataKey(final String tag) {
+		return TweetyPlugin.getNamed() + "_" + tag;
 	}
 
 	/**
@@ -374,7 +374,6 @@ public final class CompMetadata {
 	 * <p>
 	 * internal use only
 	 */
-	@AutoRegister
 	public static final class MetadataFile extends YamlSectionConfig {
 
 		private static volatile Object LOCK = new Object();
@@ -473,7 +472,7 @@ public final class CompMetadata {
 			synchronized (LOCK) {
 				final List<String> metadata = entityMetadataMap.getOrPut(entity.getUniqueId(), new ArrayList<>());
 
-				for (final Iterator<String> i = metadata.iterator(); i.hasNext();) {
+				for (final Iterator<String> i = metadata.iterator(); i.hasNext(); ) {
 					final String meta = i.next();
 
 					if (getTag(meta, key) != null)
@@ -494,7 +493,7 @@ public final class CompMetadata {
 			synchronized (LOCK) {
 				final BlockCache blockCache = blockMetadataMap.getOrPut(blockState.getLocation(), new BlockCache(CompMaterial.fromBlock(blockState.getBlock()), new ArrayList<>()));
 
-				for (final Iterator<String> i = blockCache.getMetadata().iterator(); i.hasNext();) {
+				for (final Iterator<String> i = blockCache.getMetadata().iterator(); i.hasNext(); ) {
 					final String meta = i.next();
 
 					if (getTag(meta, key) != null)
@@ -538,6 +537,10 @@ public final class CompMetadata {
 
 				return map;
 			}
+		}
+
+		public static void onReload() {
+			instance = new MetadataFile();
 		}
 	}
 }

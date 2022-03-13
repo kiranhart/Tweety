@@ -9,9 +9,8 @@ import java.lang.reflect.InvocationTargetException;
  * String implementation for NBTLists
  *
  * @author tr7zw
- *
  */
-public class NBTStringList extends NBTList<String> {
+public class NBTStringList extends ca.tweetzy.tweety.remain.nbt.NBTList<String> {
 
 	protected NBTStringList(NBTCompound owner, String name, NBTType type, Object list) {
 		super(owner, name, type, list);
@@ -20,7 +19,7 @@ public class NBTStringList extends NBTList<String> {
 	@Override
 	public String get(int index) {
 		try {
-			return (String) ReflectionMethod.LIST_GET_STRING.run(listObject, index);
+			return (String) ReflectionMethod.LIST_GET_STRING.run(this.listObject, index);
 		} catch (final Exception ex) {
 			throw new TweetyException(ex);
 		}
@@ -29,7 +28,7 @@ public class NBTStringList extends NBTList<String> {
 	@Override
 	protected Object asTag(String object) {
 		try {
-			final Constructor<?> con = ClassWrapper.NMS_NBTTAGSTRING.getClazz().getDeclaredConstructor(String.class);
+			final Constructor<?> con = ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGSTRING.getClazz().getDeclaredConstructor(String.class);
 			con.setAccessible(true);
 			return con.newInstance(object);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

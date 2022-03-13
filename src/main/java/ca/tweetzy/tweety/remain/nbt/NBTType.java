@@ -4,9 +4,8 @@ package ca.tweetzy.tweety.remain.nbt;
  * Enum of all NBT Types Minecraft contains
  *
  * @author tr7zw
- *
  */
-enum NBTType {
+public enum NBTType {
 	NBTTagEnd(0),
 	NBTTagByte(1),
 	NBTTagShort(2),
@@ -21,7 +20,7 @@ enum NBTType {
 	NBTTagCompound(10);
 
 	NBTType(int i) {
-		id = i;
+		this.id = i;
 	}
 
 	private final int id;
@@ -30,7 +29,7 @@ enum NBTType {
 	 * @return Id used by Minecraft internally
 	 */
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	/**

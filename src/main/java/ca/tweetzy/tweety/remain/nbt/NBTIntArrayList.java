@@ -6,20 +6,23 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Double implementation for NBTLists
+ * Integer implementation for NBTLists
  *
  * @author tr7zw
  */
-public class NBTDoubleList extends NBTList<Double> {
+public class NBTIntArrayList extends NBTList<int[]> {
 
-	protected NBTDoubleList(NBTCompound owner, String name, NBTType type, Object list) {
+	private final ca.tweetzy.tweety.remain.nbt.NBTContainer tmpContainer;
+
+	protected NBTIntArrayList(NBTCompound owner, String name, NBTType type, Object list) {
 		super(owner, name, type, list);
+		this.tmpContainer = new ca.tweetzy.tweety.remain.nbt.NBTContainer();
 	}
 
 	@Override
-	protected Object asTag(Double object) {
+	protected Object asTag(int[] object) {
 		try {
-			final Constructor<?> con = ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGDOUBLE.getClazz().getDeclaredConstructor(double.class);
+			final Constructor<?> con = ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGINTARRAY.getClazz().getDeclaredConstructor(int[].class);
 			con.setAccessible(true);
 			return con.newInstance(object);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -29,12 +32,15 @@ public class NBTDoubleList extends NBTList<Double> {
 	}
 
 	@Override
-	public Double get(int index) {
+	public int[] get(int index) {
 		try {
 			final Object obj = ReflectionMethod.LIST_GET.run(this.listObject, index);
-			return Double.valueOf(obj.toString());
+			ReflectionMethod.COMPOUND_SET.run(this.tmpContainer.getCompound(), "tmp", obj);
+			final int[] val = this.tmpContainer.getIntArray("tmp");
+			this.tmpContainer.removeKey("tmp");
+			return val;
 		} catch (final NumberFormatException nf) {
-			return 0d;
+			return null;
 		} catch (final Exception ex) {
 			throw new TweetyException(ex);
 		}

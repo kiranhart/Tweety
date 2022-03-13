@@ -1,60 +1,34 @@
 package ca.tweetzy.tweety.remain;
 
-import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
-import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import ca.tweetzy.tweety.remain.*;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameRule;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
+import ca.tweetzy.tweety.ReflectionUtil;
+import ca.tweetzy.tweety.*;
+import ca.tweetzy.tweety.collection.SerializedMap;
+import ca.tweetzy.tweety.collection.StrictMap;
+import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.model.UUIDToNameConverter;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.internal.BossBarInternals;
+import ca.tweetzy.tweety.remain.internal.ChatInternals;
+import ca.tweetzy.tweety.remain.nbt.NBTEntity;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.*;
 import org.bukkit.Statistic.Type;
-import org.bukkit.World;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.*;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -72,35 +46,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.EntityUtil;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.MathUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.PlayerUtil;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.collection.SerializedMap;
-import ca.tweetzy.tweety.collection.StrictMap;
-import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.model.UUIDToNameConverter;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.internal.BossBarInternals;
-import ca.tweetzy.tweety.remain.internal.ChatInternals;
-import ca.tweetzy.tweety.remain.nbt.NBTEntity;
-import ca.tweetzy.tweety.settings.SimpleYaml;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import static ca.tweetzy.tweety.ReflectionUtil.getNMSClass;
+import static ca.tweetzy.tweety.ReflectionUtil.getOBCClass;
+
 
 /**
  * Our main cross-version compatibility class.
@@ -289,7 +249,7 @@ public final class Remain {
 
 		try {
 
-			final boolean hasNMS = MinecraftVersion.atLeast(V.v1_4);
+			final boolean hasNMS = MinecraftVersion.atLeast(MinecraftVersion.V.v1_4);
 
 			// Load optional parts
 			try {
@@ -297,13 +257,13 @@ public final class Remain {
 				getHandle = getOBCClass("entity.CraftPlayer").getMethod("getHandle");
 
 				fieldPlayerConnection = getNMSClass("EntityPlayer", "net.minecraft.server.level.EntityPlayer")
-						.getField(MinecraftVersion.atLeast(V.v1_17) ? "b" : hasNMS ? "playerConnection" : "netServerHandler");
+						.getField(MinecraftVersion.atLeast(MinecraftVersion.V.v1_17) ? "b" : hasNMS ? "playerConnection" : "netServerHandler");
 
 				sendPacket = getNMSClass(hasNMS ? "PlayerConnection" : "NetServerHandler", "net.minecraft.server.network.PlayerConnection")
-						.getMethod(MinecraftVersion.atLeast(V.v1_18) ? "a" : "sendPacket", getNMSClass("Packet", "net.minecraft.network.protocol.Packet"));
+						.getMethod(MinecraftVersion.atLeast(MinecraftVersion.V.v1_18) ? "a" : "sendPacket", getNMSClass("Packet", "net.minecraft.network.protocol.Packet"));
 
-				if (MinecraftVersion.olderThan(V.v1_12)) {
-					fieldEntityInvulnerable = ReflectionUtil.getNMSClass("Entity").getDeclaredField("invulnerable");
+				if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_12)) {
+					fieldEntityInvulnerable = getNMSClass("Entity").getDeclaredField("invulnerable");
 					fieldEntityInvulnerable.setAccessible(true);
 				} else
 					fieldEntityInvulnerable = null;
@@ -312,7 +272,7 @@ public final class Remain {
 
 				t.printStackTrace();
 
-				if (MinecraftVersion.atLeast(V.v1_7)) {
+				if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_7)) {
 					Bukkit.getLogger().warning("Unable to find setup some parts of reflection. Plugin will still function.");
 					Bukkit.getLogger().warning("Error: " + t.getClass().getSimpleName() + ": " + t.getMessage());
 					Bukkit.getLogger().warning("Ignore this if using Cauldron. Otherwise check if your server is compatibble.");
@@ -330,7 +290,7 @@ public final class Remain {
 			getHealthMethod = LivingEntity.class.getMethod("getHealth");
 			isGetHealthDouble = getHealthMethod.getReturnType() == double.class;
 
-			hasExtendedPlayerTitleAPI = MinecraftVersion.atLeast(V.v1_11);
+			hasExtendedPlayerTitleAPI = MinecraftVersion.atLeast(MinecraftVersion.V.v1_11);
 
 			try {
 				World.class.getMethod("spawnParticle", org.bukkit.Particle.class, Location.class, int.class);
@@ -345,9 +305,7 @@ public final class Remain {
 
 				throw new TweetyException(
 						"&cYour server version (&f" + Bukkit.getBukkitVersion().replace("-SNAPSHOT", "") + "&c) doesn't\n" +
-								" &cinclude &elibraries required&c for this plugin to\n" +
-								" &crun. Install the following plugin for compatibility:\n" +
-								" &fhttps://mineacademy.org/plugins/#misc");
+								" &cinclude &elibraries required&c for this plugin to");
 			}
 
 			try {
@@ -412,7 +370,7 @@ public final class Remain {
 			try {
 				sectionPathDataClass = ReflectionUtil.lookupClass("org.bukkit.configuration.SectionPathData");
 
-			} catch (final ReflectionException ex) {
+			} catch (final ReflectionUtil.ReflectionException ex) {
 				// unsupported
 			}
 
@@ -467,7 +425,7 @@ public final class Remain {
 	 * @return
 	 */
 	public static boolean isProtocol18Hack() {
-		if (MinecraftVersion.newerThan(V.v1_9))
+		if (MinecraftVersion.newerThan(MinecraftVersion.V.v1_9))
 			return false;
 
 		try {
@@ -500,7 +458,7 @@ public final class Remain {
 			sendPacket.invoke(playerConnection, packet);
 
 		} catch (final ReflectiveOperationException ex) {
-			throw new ReflectionException(ex, "Error sending packet " + packet.getClass() + " to player " + player.getName());
+			throw new ReflectionUtil.ReflectionException(ex, "Error sending packet " + packet.getClass() + " to player " + player.getName());
 		}
 	}
 
@@ -555,7 +513,7 @@ public final class Remain {
 	 * @return
 	 */
 	public static FallingBlock spawnFallingBlock(final Location loc, final Block block) {
-		if (MinecraftVersion.atLeast(V.v1_13))
+		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
 			return loc.getWorld().spawnFallingBlock(loc, block.getBlockData());
 		else
 			try {
@@ -587,7 +545,7 @@ public final class Remain {
 	 * @return
 	 */
 	public static FallingBlock spawnFallingBlock(final Location loc, final Material material, final byte data) {
-		if (MinecraftVersion.atLeast(V.v1_13))
+		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
 			return loc.getWorld().spawnFallingBlock(loc, material, data);
 		else
 			try {
@@ -714,7 +672,7 @@ public final class Remain {
 	 * @param physics
 	 */
 	public static void setTypeAndData(final Block block, final Material material, final byte data, final boolean physics) {
-		if (MinecraftVersion.atLeast(V.v1_13)) {
+		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
 			block.setType(material);
 			block.setBlockData(Bukkit.getUnsafe().fromLegacy(material, data), physics);
 
@@ -741,8 +699,8 @@ public final class Remain {
 	 * Converts chat message in JSON (IChatBaseComponent) to one lined old style
 	 * message with color codes. e.g. {text:"Hello world",color="red"} converts to
 	 * &cHello world
-	 * @param json
 	 *
+	 * @param json
 	 * @param denyEvents if an exception should be thrown if hover/click event is
 	 *                   found.
 	 * @return
@@ -800,6 +758,7 @@ public final class Remain {
 	/**
 	 * Converts chat message with color codes to Json chat components e.g. &6Hello
 	 * world converts to {text:"Hello world",color="gold"}
+	 *
 	 * @param message
 	 * @return
 	 */
@@ -845,7 +804,7 @@ public final class Remain {
 		// NMS Method to serialize a net.minecraft.server.ItemStack to a valid Json string
 		final Class<?> nmsItemStack = ReflectionUtil.getNMSClass("ItemStack", "net.minecraft.world.item.ItemStack");
 		final Class<?> nbtTagCompound = ReflectionUtil.getNMSClass("NBTTagCompound", "net.minecraft.nbt.NBTTagCompound");
-		final Method saveItemstackMethod = ReflectionUtil.getMethod(nmsItemStack, MinecraftVersion.atLeast(V.v1_18) ? "b" : "save", nbtTagCompound);
+		final Method saveItemstackMethod = ReflectionUtil.getMethod(nmsItemStack, MinecraftVersion.atLeast(MinecraftVersion.V.v1_18) ? "b" : "save", nbtTagCompound);
 
 		final Object nmsNbtTagCompoundObj = ReflectionUtil.instantiate(nbtTagCompound);
 		final Object nmsItemStackObj = ReflectionUtil.invoke(asNMSCopyMethod, null, item);
@@ -888,7 +847,7 @@ public final class Remain {
 		try {
 			final BaseComponent[] components = ComponentSerializer.parse(json);
 
-			if (MinecraftVersion.atLeast(V.v1_16))
+			if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_16))
 				replaceHexPlaceholders(Arrays.asList(components), placeholders);
 
 			sendComponent(sender, components);
@@ -995,7 +954,7 @@ public final class Remain {
 	 * @param subtitle the subtitle, will be colorized
 	 */
 	public static void sendTitle(final Player player, final int fadeIn, final int stay, final int fadeOut, final String title, final String subtitle) {
-		if (MinecraftVersion.newerThan(V.v1_7))
+		if (MinecraftVersion.newerThan(MinecraftVersion.V.v1_7))
 			if (hasExtendedPlayerTitleAPI)
 				player.sendTitle(Common.colorize(title), Common.colorize(subtitle), fadeIn, stay, fadeOut);
 			else
@@ -1027,9 +986,9 @@ public final class Remain {
 	 * @param footer the footer
 	 */
 	public static void sendTablist(final Player player, final String header, final String footer) {
-		Valid.checkBoolean(MinecraftVersion.newerThan(V.v1_7), "Sending tab list requires Minecraft 1.8x or newer!");
+		Valid.checkBoolean(MinecraftVersion.newerThan(MinecraftVersion.V.v1_7), "Sending tab list requires Minecraft 1.8x or newer!");
 
-		if (MinecraftVersion.atLeast(V.v1_13))
+		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
 			player.setPlayerListHeaderFooter(Common.colorize(header), Common.colorize(footer));
 		else
 			ChatInternals.sendTablistLegacy(player, header, footer);
@@ -1043,7 +1002,7 @@ public final class Remain {
 	 * @param text   the text
 	 */
 	public static void sendActionBar(final Player player, final String text) {
-		if (!MinecraftVersion.newerThan(V.v1_7)) {
+		if (!MinecraftVersion.newerThan(MinecraftVersion.V.v1_7)) {
 			Common.tell(player, text);
 			return;
 		}
@@ -1220,7 +1179,7 @@ public final class Remain {
 	 * Removes a command by its label from command map, optionally can also remove
 	 * aliases
 	 *
-	 * @param label          the label
+	 * @param label         the label
 	 * @param removeAliases also remove aliases?
 	 */
 	public static void unregisterCommand(final String label, final boolean removeAliases) {
@@ -1286,7 +1245,7 @@ public final class Remain {
 	 */
 	public static void unregisterEnchantment(final Enchantment enchantment) {
 
-		if (MinecraftVersion.atLeast(V.v1_13)) { // Unregister by key
+		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) { // Unregister by key
 			final Map<NamespacedKey, Enchantment> byKey = ReflectionUtil.getStaticFieldContent(Enchantment.class, "byKey");
 
 			byKey.remove(enchantment.getKey());
@@ -1383,13 +1342,13 @@ public final class Remain {
 
 			Valid.checkNotNull(nmsStatistic, "Could not get NMS statistic from Bukkit's " + stat);
 
-			if (MinecraftVersion.equals(V.v1_8)) {
+			if (MinecraftVersion.equals(MinecraftVersion.V.v1_8)) {
 				final Field f = nmsStatistic.getClass().getField("name");
 				f.setAccessible(true);
 				return f.get(nmsStatistic).toString();
 			}
 
-			return (String) nmsStatistic.getClass().getMethod(MinecraftVersion.atLeast(V.v1_18) ? "d" : "getName").invoke(nmsStatistic);
+			return (String) nmsStatistic.getClass().getMethod(MinecraftVersion.atLeast(MinecraftVersion.V.v1_18) ? "d" : "getName").invoke(nmsStatistic);
 		} catch (final Throwable t) {
 			throw new TweetyException(t, "Error getting NMS statistic name from " + stat);
 		}
@@ -1444,7 +1403,7 @@ public final class Remain {
 	 * @param book
 	 */
 	public static void openBook(Player player, ItemStack book) {
-		Valid.checkBoolean(MinecraftVersion.atLeast(V.v1_8), "Opening books is only supported on MC 1.8 and greater");
+		Valid.checkBoolean(MinecraftVersion.atLeast(MinecraftVersion.V.v1_8), "Opening books is only supported on MC 1.8 and greater");
 		Valid.checkBoolean(book.getItemMeta() instanceof BookMeta, "openBook method called for not a book item: " + book);
 
 		// Fix "Invalid book tag" error when author/title is empty
@@ -1486,15 +1445,14 @@ public final class Remain {
 	 *
 	 * @param player the player
 	 * @param title  the new title
-	 * @deprecated use {@link PlayerUtil#updateInventoryTitle(Player, String)}
 	 */
 	@Deprecated
 	public static void updateInventoryTitle(final Player player, String title) {
 
 		try {
 
-			if (MinecraftVersion.atLeast(V.v1_17) || MinecraftVersion.atLeast(V.v1_18)) {
-				final boolean is1_18 = MinecraftVersion.atLeast(V.v1_18);
+			if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_17) || MinecraftVersion.atLeast(MinecraftVersion.V.v1_18)) {
+				final boolean is1_18 = MinecraftVersion.atLeast(MinecraftVersion.V.v1_18);
 
 				final Object nmsPlayer = Remain.getHandleEntity(player);
 				final Object chatComponent = toIChatBaseComponentPlain(ChatColor.translateAlternateColorCodes('&', title));
@@ -1546,7 +1504,7 @@ public final class Remain {
 				return;
 			}
 
-			if (MinecraftVersion.olderThan(V.v1_9) && title.length() > 32)
+			if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9) && title.length() > 32)
 				title = title.substring(0, 32);
 
 			final Object entityPlayer = getHandleEntity(player);
@@ -1555,11 +1513,11 @@ public final class Remain {
 
 			final Object packetOpenWindow;
 
-			if (MinecraftVersion.atLeast(V.v1_8)) {
+			if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_8)) {
 				final Constructor<?> chatMessageConst = getNMSClass("ChatMessage", "net.minecraft.network.chat.ChatMessage").getConstructor(String.class, Object[].class);
 				final Object chatMessage = chatMessageConst.newInstance(ChatColor.translateAlternateColorCodes('&', title), new Object[0]);
 
-				if (MinecraftVersion.newerThan(V.v1_13)) {
+				if (MinecraftVersion.newerThan(MinecraftVersion.V.v1_13)) {
 					final int inventorySize = player.getOpenInventory().getTopInventory().getSize() / 9;
 
 					if (inventorySize < 1 || inventorySize > 6) {
@@ -1585,7 +1543,7 @@ public final class Remain {
 				}
 			} else {
 				final Constructor<?> openWindow = ReflectionUtil.getConstructor(
-						getNMSClass(MinecraftVersion.atLeast(V.v1_7) ? "PacketPlayOutOpenWindow" : "Packet100OpenWindow", "N/A"), int.class, int.class, String.class, int.class, boolean.class);
+						getNMSClass(MinecraftVersion.atLeast(MinecraftVersion.V.v1_7) ? "PacketPlayOutOpenWindow" : "Packet100OpenWindow", "N/A"), int.class, int.class, String.class, int.class, boolean.class);
 
 				packetOpenWindow = ReflectionUtil.instantiate(openWindow, windowId, 0, ChatColor.translateAlternateColorCodes('&', title), player.getOpenInventory().getTopInventory().getSize(), true);
 			}
@@ -1608,10 +1566,7 @@ public final class Remain {
 	 * @param material   the material
 	 */
 	public static void sendBlockChange(final int delayTicks, final Player player, final Location location, final CompMaterial material) {
-		if (delayTicks > 0)
-			Common.runLater(delayTicks, () -> sendBlockChange0(player, location, material));
-		else
-			sendBlockChange0(player, location, material);
+		Common.runLater(delayTicks, () -> sendBlockChange0(player, location, material));
 	}
 
 	private static void sendBlockChange0(final Player player, final Location location, final CompMaterial material) {
@@ -1631,10 +1586,7 @@ public final class Remain {
 	 * @param block
 	 */
 	public static void sendBlockChange(final int delayTicks, final Player player, final Block block) {
-		if (delayTicks > 0)
-			Common.runLater(delayTicks, () -> sendBlockChange0(player, block));
-		else
-			sendBlockChange0(player, block);
+		Common.runLater(delayTicks, () -> sendBlockChange0(player, block));
 	}
 
 	private static void sendBlockChange0(final Player player, final Block block) {
@@ -1664,7 +1616,7 @@ public final class Remain {
 	 * @return
 	 */
 	public static Statistic getPlayTimeStatisticName() {
-		return Statistic.valueOf(MinecraftVersion.olderThan(V.v1_13) ? "PLAY_ONE_TICK" : "PLAY_ONE_MINUTE");
+		return Statistic.valueOf(MinecraftVersion.olderThan(MinecraftVersion.V.v1_13) ? "PLAY_ONE_TICK" : "PLAY_ONE_MINUTE");
 	}
 
 	/**
@@ -1673,7 +1625,7 @@ public final class Remain {
 	 * @return
 	 */
 	public static boolean isPlaytimeStatisticTicks() {
-		return MinecraftVersion.olderThan(V.v1_13);
+		return MinecraftVersion.olderThan(MinecraftVersion.V.v1_13);
 	}
 
 	/**
@@ -1687,7 +1639,7 @@ public final class Remain {
 	 */
 	public static boolean isInteractEventPrimaryHand(final PlayerInteractEvent event) {
 
-		if (MinecraftVersion.olderThan(V.v1_9))
+		if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9))
 			return true;
 
 		try {
@@ -1706,7 +1658,7 @@ public final class Remain {
 	 */
 	public static boolean isInteractEventPrimaryHand(final PlayerInteractEntityEvent e) {
 
-		if (MinecraftVersion.olderThan(V.v1_9))
+		if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9))
 			return true;
 
 		try {
@@ -1767,7 +1719,6 @@ public final class Remain {
 	 * Tries to find online player by uuid
 	 *
 	 * @param id
-	 *
 	 * @return null if offline or player
 	 */
 	public static Player getPlayerByUUID(final UUID id) {
@@ -1886,9 +1837,9 @@ public final class Remain {
 	 * @return
 	 */
 	public static Object toIChatBaseComponent(String json) {
-		Valid.checkBoolean(MinecraftVersion.atLeast(V.v1_7), "Serializing chat components requires Minecraft 1.7.10 and greater");
+		Valid.checkBoolean(MinecraftVersion.atLeast(MinecraftVersion.V.v1_7), "Serializing chat components requires Minecraft 1.7.10 and greater");
 
-		final Class<?> chatSerializer = ReflectionUtil.getNMSClass((MinecraftVersion.equals(V.v1_7) ? "" : "IChatBaseComponent$") + "ChatSerializer", "net.minecraft.network.chat.IChatBaseComponent$ChatSerializer");
+		final Class<?> chatSerializer = ReflectionUtil.getNMSClass((MinecraftVersion.equals(MinecraftVersion.V.v1_7) ? "" : "IChatBaseComponent$") + "ChatSerializer", "net.minecraft.network.chat.IChatBaseComponent$ChatSerializer");
 		final Method a = ReflectionUtil.getMethod(chatSerializer, "a", String.class);
 
 		return ReflectionUtil.invoke(a, null, json);
@@ -1921,7 +1872,7 @@ public final class Remain {
 			entity.setCustomName(Common.colorize(name));
 
 		} catch (final NoSuchMethodError er) {
-			Valid.checkBoolean(MinecraftVersion.atLeast(V.v1_7), "setCustomName requires Minecraft 1.7.10+");
+			Valid.checkBoolean(MinecraftVersion.atLeast(MinecraftVersion.V.v1_7), "setCustomName requires Minecraft 1.7.10+");
 
 			final NBTEntity nbt = new NBTEntity(entity);
 
@@ -1941,7 +1892,7 @@ public final class Remain {
 			entity.setCustomName(null);
 
 		} catch (final NoSuchMethodError er) {
-			Valid.checkBoolean(MinecraftVersion.atLeast(V.v1_7), "setCustomName requires Minecraft 1.7.10+");
+			Valid.checkBoolean(MinecraftVersion.atLeast(MinecraftVersion.V.v1_7), "setCustomName requires Minecraft 1.7.10+");
 
 			final NBTEntity nbt = new NBTEntity(entity);
 
@@ -1954,17 +1905,16 @@ public final class Remain {
 	 * Calls NMS to find out if the entity is invisible, works for any entity,
 	 * better than Bukkit since it has extreme downwards compatibility and does not require LivingEntity
 	 *
-	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
-	 *
 	 * @param entity
 	 * @return
+	 * @deprecated use {@link PlayerUtil#isVanished(Player)} to check for vanish from other plugins also
 	 */
 	@Deprecated
 	public static boolean isInvisible(Entity entity) {
-		if (entity instanceof LivingEntity && MinecraftVersion.atLeast(V.v1_16))
+		if (entity instanceof LivingEntity && MinecraftVersion.atLeast(MinecraftVersion.V.v1_16))
 			return ((LivingEntity) entity).isInvisible();
 
-		else if (MinecraftVersion.atLeast(V.v1_4)) {
+		else if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_4)) {
 			final Object nmsEntity = getHandleEntity(entity);
 
 			return (boolean) ReflectionUtil.invoke("isInvisible", nmsEntity);
@@ -1979,14 +1929,13 @@ public final class Remain {
 	 *
 	 * @param entity
 	 * @param invisible
-	 *
 	 * @deprecated use {@link PlayerUtil#setVanished(Player, boolean)} to disable vanish for plugins also
 	 */
 	@Deprecated
 	public static void setInvisible(Object entity, boolean invisible) {
-		Valid.checkBoolean(MinecraftVersion.atLeast(V.v1_4), "Entity#setInvisible requires Minecraft 1.4.7 or greater");
+		Valid.checkBoolean(MinecraftVersion.atLeast(MinecraftVersion.V.v1_4), "Entity#setInvisible requires Minecraft 1.4.7 or greater");
 
-		if (entity instanceof LivingEntity && MinecraftVersion.atLeast(V.v1_16))
+		if (entity instanceof LivingEntity && MinecraftVersion.atLeast(MinecraftVersion.V.v1_16))
 			((LivingEntity) entity).setInvisible(invisible);
 
 		else {
@@ -2128,11 +2077,11 @@ public final class Remain {
 	/**
 	 * Send a "toast" notification to the given receivers. This is an advancement notification that cannot
 	 * be modified that much. It imposes a slight performance penalty the more players to send to.
-	 *
+	 * <p>
 	 * Each player sending is delayed by 0.1s
 	 *
 	 * @param receivers
-	 * @param message you can replace player-specific variables in the message here
+	 * @param message   you can replace player-specific variables in the message here
 	 * @param icon
 	 */
 	public static void sendToast(final List<Player> receivers, final Function<Player, String> message, final CompMaterial icon) {
@@ -2240,9 +2189,9 @@ public final class Remain {
 	/**
 	 * Return the player ping
 	 *
-	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 * @param player
 	 * @return
+	 * @deprecated use {@link PlayerUtil#getPing(Player)}
 	 */
 	@Deprecated
 	public static int getPing(Player player) {
@@ -2355,14 +2304,14 @@ public final class Remain {
 	 * @param item
 	 */
 	public static void takeItemOnePiece(final Player player, final ItemStack item) {
-		if (MinecraftVersion.atLeast(V.v1_15))
+		if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_15))
 			item.setAmount(item.getAmount() - 1);
 
 		else
 			Common.runLater(() -> {
 				if (item.getAmount() > 1)
 					item.setAmount(item.getAmount() - 1);
-				else if (MinecraftVersion.atLeast(V.v1_9))
+				else if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_9))
 					item.setAmount(0);
 
 					// Explanation: For some weird reason there is a bug not removing 1 piece of ItemStack in 1.8.8
@@ -2491,7 +2440,7 @@ public final class Remain {
 	@SuppressWarnings("rawtypes")
 	public static void setGameRule(final World world, final String gameRule, final boolean value) {
 		try {
-			if (MinecraftVersion.newerThan(V.v1_13)) {
+			if (MinecraftVersion.newerThan(MinecraftVersion.V.v1_13)) {
 				final GameRule rule = GameRule.getByName(gameRule);
 
 				world.setGameRule(rule, value);
@@ -2551,7 +2500,9 @@ public final class Remain {
 	 *
 	 * @param objectOrSectionPathData
 	 * @return
+	 * @deprecated legacy code, will be removed
 	 */
+	@Deprecated
 	public static Object getRootOfSectionPathData(Object objectOrSectionPathData) {
 		if (objectOrSectionPathData != null && objectOrSectionPathData.getClass() == sectionPathDataClass)
 			objectOrSectionPathData = ReflectionUtil.invoke("getData", objectOrSectionPathData);
@@ -2672,7 +2623,7 @@ public final class Remain {
 	 * @return
 	 */
 	public static boolean hasHexColors() {
-		return MinecraftVersion.atLeast(V.v1_16);
+		return MinecraftVersion.atLeast(MinecraftVersion.V.v1_16);
 	}
 
 	/**
@@ -2777,7 +2728,7 @@ class BungeeChatProvider {
 		}
 
 		try {
-			if (MinecraftVersion.equals(V.v1_7)) {
+			if (MinecraftVersion.equals(MinecraftVersion.V.v1_7)) {
 				final Class<?> chatBaseComponentClass = getNMSClass("IChatBaseComponent", "N/A");
 				final Class<?> packetClass = getNMSClass("PacketPlayOutChat", "N/A");
 
@@ -2793,7 +2744,7 @@ class BungeeChatProvider {
 
 			// This is the minimum MC version that supports interactive chat
 			// Ignoring Cauldron
-			if (MinecraftVersion.atLeast(V.v1_7) && !Bukkit.getName().contains("Cauldron"))
+			if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_7) && !Bukkit.getName().contains("Cauldron"))
 				Common.throwError(ex, "Failed to send component: " + plainMessage.toString() + " to " + sender.getName());
 
 			tell0(sender, plainMessage.toString());
@@ -2924,7 +2875,7 @@ class PotionSetter {
 		}
 
 		// For some reason this does not get added so we have to add it manually on top of the lore
-		if (MinecraftVersion.olderThan(V.v1_9)) {
+		if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9)) {
 			final List<String> lore = new ArrayList<>();
 
 			lore.add(Common.colorize("&7" + ItemUtil.bountifyCapitalized(type) + " (" + TimeUtil.formatTimeColon(durationTicks / 20) + ")"));

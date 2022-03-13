@@ -1,9 +1,7 @@
 package ca.tweetzy.tweety.remain;
 
 import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
 import ca.tweetzy.tweety.exception.TweetyException;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -58,7 +56,7 @@ public final class NmsEntity {
 		}
 
 		this.bukkitWorld = location.getWorld();
-		this.nmsEntity = MinecraftVersion.equals(V.v1_7) ? getHandle(location, entityClass) : createEntity(location, entityClass);
+		this.nmsEntity = MinecraftVersion.equals(MinecraftVersion.V.v1_7) ? getHandle(location, entityClass) : createEntity(location, entityClass);
 	}
 
 	//
@@ -167,23 +165,23 @@ final class NmsAccessor {
 			final Class<?> nmsEntity = ReflectionUtil.getNMSClass("Entity", "net.minecraft.world.entity.Entity");
 			final Class<?> ofcWorld = ReflectionUtil.getOBCClass("CraftWorld");
 
-			olderThan18 = MinecraftVersion.olderThan(V.v1_8);
+			olderThan18 = MinecraftVersion.olderThan(MinecraftVersion.V.v1_8);
 
-			createEntity = MinecraftVersion.newerThan(V.v1_7) ? ReflectionUtil.getDeclaredMethod(ofcWorld, "createEntity", Location.class, Class.class) : null;
+			createEntity = MinecraftVersion.newerThan(MinecraftVersion.V.v1_7) ? ReflectionUtil.getDeclaredMethod(ofcWorld, "createEntity", Location.class, Class.class) : null;
 			getBukkitEntity = nmsEntity.getMethod("getBukkitEntity");
 
-			if (MinecraftVersion.newerThan(V.v1_10)) {
+			if (MinecraftVersion.newerThan(MinecraftVersion.V.v1_10)) {
 				hasEntityConsumer = true;
 
 				try {
 					addEntity = ReflectionUtil.getDeclaredMethod(ofcWorld, "addEntity", nmsEntity, SpawnReason.class, Class.forName("org.bukkit.util.Consumer"));
 
-				} catch (final ReflectionException ex) {
+				} catch (final ReflectionUtil.ReflectionException ex) {
 					addEntity = ReflectionUtil.getDeclaredMethod(ofcWorld, "addEntity", nmsEntity, SpawnReason.class, Class.forName("org.bukkit.util.Consumer"), boolean.class);
 					hasRandomizeData = true;
 				}
 
-			} else if (MinecraftVersion.newerThan(V.v1_7))
+			} else if (MinecraftVersion.newerThan(MinecraftVersion.V.v1_7))
 				addEntity = ReflectionUtil.getDeclaredMethod(ofcWorld, "addEntity", nmsEntity, SpawnReason.class);
 			else
 				addEntity = ReflectionUtil.getNMSClass("World", "net.minecraft.world.level.World").getDeclaredMethod("addEntity", nmsEntity, SpawnReason.class);

@@ -23,11 +23,11 @@
 package ca.tweetzy.tweety.remain;
 
 import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.ItemUtil;
 import ca.tweetzy.tweety.MinecraftVersion;
 import ca.tweetzy.tweety.MinecraftVersion.V;
 import ca.tweetzy.tweety.Valid;
-import ca.tweetzy.tweety.debug.Debugger;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -1454,7 +1454,7 @@ public enum CompMaterial {
 
 	/**
 	 * The data value of this material <a href="https://minecraft.gamepedia.com/Java_Edition_data_values/Pre-flattening">pre-flattening</a>.
-	 *
+	 * <p>
 	 * Can be accessed with {@link ItemStack#getData()} then {@code MaterialData#getData()}
 	 * or {@link ItemStack#getDurability()} if not damageable.
 	 */
@@ -1554,10 +1554,9 @@ public enum CompMaterial {
 	 * Parses an item from this CompMaterial.
 	 * Uses data values on older versions.
 	 *
+	 * @param amount
 	 * @return an ItemStack with the same material (and data value if in older versions.)
 	 * @see #setType(ItemStack)
-	 *
-	 * @param amount
 	 */
 
 	public ItemStack toItem(int amount) {
@@ -2162,7 +2161,6 @@ public enum CompMaterial {
 	 * if not a damageable item {@link ItemStack#getDurability()}.
 	 *
 	 * @param item the ItemStack to match.
-	 *
 	 * @return an CompMaterial if matched any.
 	 * @throws IllegalArgumentException may be thrown as an unexpected exception.
 	 * @see #fromMaterial(Material)
@@ -2215,7 +2213,6 @@ public enum CompMaterial {
 	 *
 	 * @param name the formatted name of the material.
 	 * @param data the data value of the material. Is always 0 or {@link #UNKNOWN_DATA_VALUE} when {@link Data#ISFLAT}
-	 *
 	 * @return an CompMaterial (with the same data value if specified)
 	 * @see #fromMaterial(Material)
 	 * @see #matchCompMaterial(int, byte)
@@ -2278,7 +2275,6 @@ public enum CompMaterial {
 	 *
 	 * @param id   the ID (Magic value) of the material.
 	 * @param data the data value of the material.
-	 *
 	 * @return a parsed CompMaterial with the same ID and data value.
 	 * @see #fromItem(ItemStack)
 	 * @since 2.0.0
@@ -2301,7 +2297,6 @@ public enum CompMaterial {
 	 * the normal RegEx + String Methods approach for both formatted and unformatted material names.
 	 *
 	 * @param name the material name to modify.
-	 *
 	 * @return an enum name.
 	 * @since 2.0.0
 	 */
@@ -2425,7 +2420,6 @@ public enum CompMaterial {
 	 * <p>
 	 *
 	 * @param materials the material names to check base material on.
-	 *
 	 * @return true if one of the given material names is similar to the base material.
 	 * @since 3.1.1
 	 */
@@ -2461,7 +2455,6 @@ public enum CompMaterial {
 	 * Use {@link #toItem()} instead when creating new ItemStacks.
 	 *
 	 * @param item the item to change its type.
-	 *
 	 * @see #toItem()
 	 * @since 3.0.0
 	 */

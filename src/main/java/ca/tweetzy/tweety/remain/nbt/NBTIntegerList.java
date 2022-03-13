@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
  * Integer implementation for NBTLists
  *
  * @author tr7zw
- *
  */
 public class NBTIntegerList extends NBTList<Integer> {
 
@@ -20,7 +19,7 @@ public class NBTIntegerList extends NBTList<Integer> {
 	@Override
 	protected Object asTag(Integer object) {
 		try {
-			final Constructor<?> con = ClassWrapper.NMS_NBTTAGINT.getClazz().getDeclaredConstructor(int.class);
+			final Constructor<?> con = ca.tweetzy.tweety.remain.nbt.ClassWrapper.NMS_NBTTAGINT.getClazz().getDeclaredConstructor(int.class);
 			con.setAccessible(true);
 			return con.newInstance(object);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -32,7 +31,7 @@ public class NBTIntegerList extends NBTList<Integer> {
 	@Override
 	public Integer get(int index) {
 		try {
-			final Object obj = ReflectionMethod.LIST_GET.run(listObject, index);
+			final Object obj = ReflectionMethod.LIST_GET.run(this.listObject, index);
 			return Integer.valueOf(obj.toString());
 		} catch (final NumberFormatException nf) {
 			return 0;
