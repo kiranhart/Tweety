@@ -45,7 +45,7 @@ import java.util.Set;
 /**
  * Represents a basic Java plugin using enhanced library functionality
  */
-public abstract class TweetyPlugin extends JavaPlugin {
+public abstract class TweetyPlugin extends JavaPlugin implements Listener {
 
 	// ----------------------------------------------------------------------------------------
 	// Static
@@ -147,6 +147,11 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	private boolean startingReloadables = false;
 
 	/**
+	 * Internal boolean indicating if we can proceed to loading the plugin.
+	 */
+	private final boolean canLoad = true;
+
+	/**
 	 * A temporary main command to be set in {@link #setMainCommand(SimpleCommandGroup)}
 	 * automatically by us.
 	 */
@@ -193,6 +198,13 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	@Override
 	public final void onEnable() {
 
+		// Disabled upstream
+		if (!this.canLoad) {
+			Bukkit.getLogger().severe("Not loading, the plugin is disabled (look for console errors above)");
+
+			return;
+		}
+
 		// Solve reloading issues with PlugMan
 		for (final StackTraceElement element : new Throwable().getStackTrace()) {
 			if (element.toString().contains("com.rylinaux.plugman.util.PluginUtil.load")) {
@@ -204,7 +216,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			}
 		}
 
-		// Check if Tweety is correctly moved
+		// Check if Foundation is correctly moved
 		checkShading();
 
 		if (!isEnabled())
@@ -223,11 +235,11 @@ public abstract class TweetyPlugin extends JavaPlugin {
 		// Print startup logo early before onPluginPreStart
 		// Disable logging prefix if logo is set
 		if (getStartupLogo() != null) {
-			final boolean hadLogPrefix = Common.ADD_LOG_PREFIX;
+			final String oldLogPrefix = Common.getLogPrefix();
 
-			Common.ADD_LOG_PREFIX = false;
+			Common.setLogPrefix("");
 			Common.log(getStartupLogo());
-			Common.ADD_LOG_PREFIX = hadLogPrefix;
+			Common.setLogPrefix(oldLogPrefix);
 		}
 
 		// Load our dependency system
@@ -235,7 +247,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			HookManager.loadDependencies();
 
 		} catch (final Throwable throwable) {
-			Common.throwError(throwable, "Error while loading " + getName() + " dependencies!");
+			Common.throwError(throwable, "Error while loading " + getDataFolder().getName() + " dependencies!");
 		}
 
 		// Return if plugin pre start indicated a fatal problem
@@ -243,9 +255,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			return;
 
 		try {
-
-			// Load our main static settings classes
-			YamlStaticConfig.load(getSettings());
 
 			if (!isEnabled())
 				return;
@@ -255,8 +264,8 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			// --------------------------------------------
 
 			// Hide plugin name before console messages
-			final boolean hadLogPrefix = Common.ADD_LOG_PREFIX;
-			Common.ADD_LOG_PREFIX = false;
+			final String oldLogPrefix = Common.getLogPrefix();
+			Common.setLogPrefix("");
 
 			startingReloadables = true;
 
@@ -285,6 +294,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 				getUpdateCheck().run();
 
 			// Register our listeners
+			registerEvents(this);
 			registerEvents(new MenuListener());
 			registerEvents(new TweetyListener());
 
@@ -315,7 +325,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			Common.setTellPrefix(SimpleSettings.PLUGIN_PREFIX);
 
 			// Finally, place plugin name before console messages after plugin has (re)loaded
-			Common.runLater(() -> Common.ADD_LOG_PREFIX = hadLogPrefix);
+			Common.runLater(() -> Common.setLogPrefix(oldLogPrefix));
 
 		} catch (final Throwable t) {
 			displayError0(t);
@@ -597,19 +607,18 @@ public abstract class TweetyPlugin extends JavaPlugin {
 
 			unregisterReloadables();
 
+			FileConfig.clearLoadedSections();
+
 			// Load our dependency system
 			try {
 				HookManager.loadDependencies();
 
 			} catch (final Throwable throwable) {
-				Common.throwError(throwable, "Error while loading " + getName() + " dependencies!");
+				Common.throwError(throwable, "Error while loading " + getDataFolder().getName() + " dependencies!");
 			}
 
 			onPluginPreReload();
 			reloadables.reload();
-
-			YamlStaticConfig.load(getSettings());
-			Lang.loadPrefixes();
 
 			final YamlConfig metadata = CompMetadata.MetadataFile.getInstance();
 			metadata.save();
@@ -628,6 +637,9 @@ public abstract class TweetyPlugin extends JavaPlugin {
 
 			// Register classes
 			AutoRegisterScanner.scanAndRegister();
+
+			Lang.reloadLang();
+			Lang.loadPrefixes();
 
 			onReloadablesStart();
 

@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import ca.tweetzy.tweety.collection.StrictCollection;
+import javax.annotation.Nullable;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.SerializeUtil;
 import ca.tweetzy.tweety.Valid;
@@ -149,6 +150,26 @@ public final class StrictList<E> extends StrictCollection implements Iterable<E>
 			ranged.add(list.get(i));
 
 		return ranged;
+	}
+
+	/**
+	 * Returns the first value or null if the list is empty
+	 *
+	 * @return
+	 */
+	@Nullable
+	public E first() {
+		return list.isEmpty() ? null : list.get(0);
+	}
+
+	/**
+	 * Returns the last value or null if the list is empty
+	 *
+	 * @return
+	 */
+	@Nullable
+	public E last() {
+		return list.isEmpty() ? null : list.get(list.size() - 1);
 	}
 
 	// ------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@ package ca.tweetzy.tweety;
 
 import java.awt.Color;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
@@ -15,10 +16,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import ca.tweetzy.tweety.ItemUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.ReflectionUtil;
-import ca.tweetzy.tweety.Valid;
+import ca.tweetzy.tweety.*;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,17 +26,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ca.tweetzy.tweety.MinecraftVersion.V;
-import ca.tweetzy.tweety.ReflectionUtil.ReflectionException;
 import ca.tweetzy.tweety.collection.SerializedMap;
 import ca.tweetzy.tweety.collection.StrictCollection;
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.exception.InvalidWorldException;
 import ca.tweetzy.tweety.menu.model.ItemCreator;
+import ca.tweetzy.tweety.model.BoxedMessage;
 import ca.tweetzy.tweety.model.ConfigSerializable;
 import ca.tweetzy.tweety.model.IsInList;
 import ca.tweetzy.tweety.model.RangedSimpleTime;
@@ -48,7 +48,7 @@ import ca.tweetzy.tweety.model.SimpleTime;
 import ca.tweetzy.tweety.remain.CompChatColor;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.YamlConfig;
+import ca.tweetzy.tweety.settings.ConfigSection;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -109,7 +109,7 @@ public final class SerializeUtil {
 			return ((ChatColor) object).name();
 
 		else if (object instanceof CompChatColor)
-			return ((CompChatColor) object).getName();
+			return ((CompChatColor) object).toSaveableString();
 
 		else if (object instanceof net.md_5.bungee.api.ChatColor) {
 			final net.md_5.bungee.api.ChatColor color = ((net.md_5.bungee.api.ChatColor) object);
@@ -123,7 +123,12 @@ public final class SerializeUtil {
 		else if (object instanceof Location)
 			return serializeLoc((Location) object);
 
-		else if (object instanceof UUID)
+		else if (object instanceof BoxedMessage) {
+			final String message = ((BoxedMessage) object).getMessage();
+
+			return message == null || "".equals(message) || "null".equals(message) ? null : message;
+
+		} else if (object instanceof UUID)
 			return object.toString();
 
 		else if (object instanceof Enum<?>)
@@ -142,7 +147,7 @@ public final class SerializeUtil {
 			return serializePotionEffect((PotionEffect) object);
 
 		else if (object instanceof ItemCreator)
-			return ((ItemCreator) object).make();
+			return serialize(((ItemCreator) object).make());
 
 		else if (object instanceof SimpleTime)
 			return ((SimpleTime) object).getRaw();
@@ -210,16 +215,19 @@ public final class SerializeUtil {
 				newMap.put(serialize(entry.getKey()), serialize(entry.getValue()));
 
 			return newMap;
+		}
 
-		} else if (object instanceof YamlConfig)
-			throw new SerializeFailedException("Called serialize for YamlConfig's '" + object.getClass().getSimpleName()
-					+ "' but failed, if you're trying to save it make it implement ConfigSerializable!");
+		else if (object instanceof MemorySection)
+			return serialize(Common.getMapFromSection(object));
+
+		else if (object instanceof ConfigSection)
+			return serialize(((ConfigSection) object).getValues(true));
+
+		else if (object instanceof Pattern)
+			return ((Pattern) object).pattern();
 
 		else if (object instanceof Integer || object instanceof Double || object instanceof Float || object instanceof Long || object instanceof Short
-				|| object instanceof String || object instanceof Boolean || object instanceof Map
-				|| object instanceof ItemStack
-				|| object instanceof MemorySection
-				|| object instanceof Pattern)
+				|| object instanceof String || object instanceof Boolean || object instanceof Character)
 			return object;
 
 		else if (object instanceof ConfigurationSerializable)
@@ -285,219 +293,229 @@ public final class SerializeUtil {
 	 * @param <T>
 	 * @param classOf
 	 * @param object
-	 * @param deserializeParameters
+	 * @param parameters
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T deserialize(@NonNull final Class<T> classOf, @NonNull Object object, final Object... deserializeParameters) {
-		object = Remain.getRootOfSectionPathData(object);
+	public static <T> T deserialize(@NonNull final Class<T> classOf, @NonNull Object object, final Object... parameters) {
 
-		final SerializedMap map = SerializedMap.of(object);
+		if (classOf == String.class)
+			object = object.toString();
 
-		// Step 1 - Search for basic deserialize(SerializedMap) method
-		Method deserializeMethod = ReflectionUtil.getMethod(classOf, "deserialize", SerializedMap.class);
+		else if (classOf == Integer.class)
+			object = Integer.parseInt(object.toString());
 
-		if (deserializeMethod != null && deserializeParameters == null) {
-			try {
-				return ReflectionUtil.invokeStatic(deserializeMethod, map);
+		else if (classOf == Long.class)
+			object = Long.decode(object.toString());
 
-			} catch (final ReflectionException ex) {
-				ca.tweetzy.tweety.Common.throwError(ex, "Could not deserialize " + classOf + " from data: " + map);
-			}
+		else if (classOf == Double.class)
+			object = Double.parseDouble(object.toString());
+
+		else if (classOf == Float.class)
+			object = Float.parseFloat(object.toString());
+
+		else if (classOf == Boolean.class)
+			object = Boolean.parseBoolean(object.toString());
+
+		else if (classOf == SerializedMap.class)
+			object = SerializedMap.of(object);
+
+		else if (classOf == BoxedMessage.class)
+			object = new BoxedMessage(object.toString());
+
+		else if (classOf == Location.class)
+			object = deserializeLocation(object);
+
+		else if (classOf == PotionEffectType.class)
+			object = PotionEffectType.getByName(object.toString());
+
+		else if (classOf == PotionEffect.class)
+			object = deserializePotionEffect(object);
+
+		else if (classOf == SimpleTime.class)
+			object = SimpleTime.from(object.toString());
+
+		else if (classOf == CompMaterial.class)
+			object = CompMaterial.fromStringStrict(object.toString());
+
+		else if (classOf == SimpleSound.class)
+			object = new SimpleSound(object.toString());
+
+		else if (classOf == RangedValue.class)
+			object = RangedValue.parse(object.toString());
+
+		else if (classOf == RangedSimpleTime.class)
+			object = RangedSimpleTime.parse(object.toString());
+
+		else if (classOf == net.md_5.bungee.api.ChatColor.class)
+			throw new TweetyException("Instead of net.md_5.bungee.api.ChatColor, use our CompChatColor");
+
+		else if (classOf == CompChatColor.class)
+			object = CompChatColor.of(object.toString());
+
+		else if (classOf == ItemStack.class)
+			object = deserializeItemStack(object);
+
+		else if (classOf == UUID.class)
+			object = UUID.fromString(object.toString());
+
+		else if (classOf == BaseComponent.class) {
+			final BaseComponent[] deserialized = Remain.toComponent(object.toString());
+			Valid.checkBoolean(deserialized.length == 1, "Failed to deserialize into singular BaseComponent: " + object);
+
+			object = deserialized[0];
+
+		} else if (classOf == BaseComponent[].class)
+			object = Remain.toComponent(object.toString());
+
+		else if (classOf == HoverEvent.class) {
+			final SerializedMap serialized = SerializedMap.of(object);
+			final HoverEvent.Action action = serialized.get("Action", HoverEvent.Action.class);
+			final BaseComponent[] value = serialized.get("Value", BaseComponent[].class);
+
+			object = new HoverEvent(action, value);
 		}
 
-		// Step 2 - Search for our deserialize(Params[], SerializedMap) method
-		if (deserializeParameters != null) {
-			final List<Class<?>> joinedClasses = new ArrayList<>();
+		else if (classOf == ClickEvent.class) {
+			final SerializedMap serialized = SerializedMap.of(object);
 
-			{ // Build parameters
-				joinedClasses.add(SerializedMap.class);
+			final ClickEvent.Action action = serialized.get("Action", ClickEvent.Action.class);
+			final String value = serialized.getString("Value");
 
-				for (final Object param : deserializeParameters)
-					joinedClasses.add(param.getClass());
+			object = new ClickEvent(action, value);
+		}
+
+		else if (Enchantment.class.isAssignableFrom(classOf)) {
+			String name = object.toString().toLowerCase();
+			Enchantment enchant = Enchantment.getByName(name);
+
+			if (enchant == null) {
+				name = EnchantmentWrapper.toBukkit(name);
+				enchant = Enchantment.getByName(name);
+
+				if (enchant == null)
+					enchant = Enchantment.getByName(name.toLowerCase());
 			}
 
-			deserializeMethod = ReflectionUtil.getMethod(classOf, "deserialize", joinedClasses.toArray(new Class[joinedClasses.size()]));
+			Valid.checkNotNull(enchant, "Invalid enchantment '" + name + "'! For valid names, see: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html");
+			object = enchant;
+		}
 
-			final List<Object> joinedParams = new ArrayList<>();
+		else if (PotionEffectType.class.isAssignableFrom(classOf)) {
+			final String name = PotionWrapper.getBukkitName(object.toString());
+			final PotionEffectType potion = PotionEffectType.getByName(name);
 
-			{ // Build parameter instances
-				joinedParams.add(map);
+			Valid.checkNotNull(potion, "Invalid potion '" + name + "'! For valid names, see: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
+			object = potion;
+		}
 
-				Collections.addAll(joinedParams, deserializeParameters);
+		else if (Enum.class.isAssignableFrom(classOf)) {
+			object = ReflectionUtil.lookupEnum((Class<Enum>) classOf, object.toString());
+
+			if (object == null)
+				return null;
+		}
+
+		else if (Color.class.isAssignableFrom(classOf)) {
+			object = CompChatColor.of(object.toString()).getColor();
+
+		} else if (List.class.isAssignableFrom(classOf) && object instanceof List) {
+			// Good
+
+		} else if (Map.class.isAssignableFrom(classOf)) {
+			if (object instanceof Map)
+				return (T) object;
+
+			if (object instanceof MemorySection)
+				return (T) Common.getMapFromSection(object);
+
+			if (object instanceof ConfigSection)
+				return (T) ((ConfigSection) object).getValues(false);
+
+			throw new SerializeFailedException("Does not know how to turn " + object.getClass().getSimpleName() + " into a Map! (Keep in mind we can only serialize into Map<Object/String, Object> Data: " + object);
+
+		} else if (ConfigurationSerializable.class.isAssignableFrom(classOf) && object instanceof ConfigurationSerializable) {
+			// Good
+
+		} else if (classOf.isArray()) {
+			final Class<?> arrayType = classOf.getComponentType();
+			T[] array;
+
+			if (object instanceof List) {
+				final List<?> rawList = (List<?>) object;
+				array = (T[]) Array.newInstance(classOf.getComponentType(), rawList.size());
+
+				for (int i = 0; i < rawList.size(); i++) {
+					final Object element = rawList.get(i);
+
+					array[i] = element == null ? null : (T) deserialize(arrayType, element, (Object[]) null);
+				}
 			}
 
-			if (deserializeMethod != null) {
-				Valid.checkBoolean(joinedClasses.size() == joinedParams.size(), "static deserialize method arguments length " + joinedClasses.size() + " != given params " + joinedParams.size());
+			else {
+				final Object[] rawArray = (Object[]) object;
+				array = (T[]) Array.newInstance(classOf.getComponentType(), rawArray.length);
 
-				return ReflectionUtil.invokeStatic(deserializeMethod, joinedParams.toArray());
+				for (int i = 0; i < array.length; i++)
+					array[i] = rawArray[i] == null ? null : (T) deserialize(classOf.getComponentType(), rawArray[i], (Object[]) null);
 			}
+
+			return (T) array;
+
+		}
+
+		// Try to call our own serializers
+		else if (ConfigSerializable.class.isAssignableFrom(classOf)) {
+			if (parameters != null && parameters.length > 0) {
+				final List<Class<?>> argumentClasses = new ArrayList<>();
+				final List<Object> arguments = new ArrayList<>();
+
+				// Build parameters
+				argumentClasses.add(SerializedMap.class);
+				for (final Object param : parameters)
+					argumentClasses.add(param.getClass());
+
+				// Build parameter instances
+				arguments.add(SerializedMap.of(object));
+				Collections.addAll(arguments, parameters);
+
+				// Find deserialize(SerializedMap, args[]) method
+				final Method deserialize = ReflectionUtil.getMethod(classOf, "deserialize", argumentClasses.toArray(new Class[argumentClasses.size()]));
+
+				Valid.checkNotNull(deserialize,
+						"Expected " + classOf.getSimpleName() + " to have a public static deserialize(SerializedMap, " + Common.join(argumentClasses) + ") method to deserialize: " + object + " when params were given: " + Common.join(parameters));
+
+				Valid.checkBoolean(argumentClasses.size() == arguments.size(),
+						classOf.getSimpleName() + "#deserialize(SerializedMap, " + argumentClasses.size() + " args) expected, " + arguments.size() + " given to deserialize: " + object);
+
+				return ReflectionUtil.invokeStatic(deserialize, arguments.toArray());
+			}
+
+			final Method deserialize = ReflectionUtil.getMethod(classOf, "deserialize", SerializedMap.class);
+
+			if (deserialize != null)
+				return ReflectionUtil.invokeStatic(deserialize, SerializedMap.of(object));
+
+			throw new SerializeFailedException("Unable to deserialize " + classOf.getSimpleName()
+					+ ", please write 'public static deserialize(SerializedMap map) or deserialize(SerializedMap map, X arg1, Y arg2, etc.) method to deserialize: " + object);
 		}
 
 		// Step 3 - Search for "getByName" method used by us or some Bukkit classes such as Enchantment
-		if (deserializeMethod == null && object instanceof String && (classOf != Enchantment.class && classOf != PotionEffectType.class)) {
-			deserializeMethod = ReflectionUtil.getMethod(classOf, "getByName", String.class);
+		else if (object instanceof String) {
+			final Method method = ReflectionUtil.getMethod(classOf, "getByName", String.class);
 
-			if (deserializeMethod != null)
-				return ReflectionUtil.invokeStatic(deserializeMethod, object);
+			if (method != null)
+				return ReflectionUtil.invokeStatic(method, object);
 		}
 
-		// Step 4 - If there is no deserialize method, just deserialize the given object
-		if (object != null)
+		else if (classOf == Object.class) {
+			// Good
+		}
 
-			if (classOf == String.class)
-				object = object.toString();
-
-			else if (classOf == Integer.class)
-				object = Integer.parseInt(object.toString());
-
-			else if (classOf == Long.class)
-				object = Long.decode(object.toString());
-
-			else if (classOf == Double.class)
-				object = Double.parseDouble(object.toString());
-
-			else if (classOf == Float.class)
-				object = Float.parseFloat(object.toString());
-
-			else if (classOf == Boolean.class)
-				object = Boolean.parseBoolean(object.toString());
-
-			else if (classOf == SerializedMap.class)
-				object = SerializedMap.of(object);
-
-			else if (classOf == Location.class)
-				object = deserializeLocation(object);
-
-			else if (classOf == PotionEffectType.class)
-				object = PotionEffectType.getByName(object.toString());
-
-			else if (classOf == PotionEffect.class)
-				object = deserializePotionEffect(object);
-
-			else if (classOf == SimpleTime.class)
-				object = SimpleTime.from(object.toString());
-
-			else if (classOf == SimpleSound.class)
-				object = new SimpleSound(object.toString());
-
-			else if (classOf == RangedValue.class)
-				object = RangedValue.parse(object.toString());
-
-			else if (classOf == RangedSimpleTime.class)
-				object = RangedSimpleTime.parse(object.toString());
-
-			else if (classOf == net.md_5.bungee.api.ChatColor.class)
-				throw new TweetyException("Instead of net.md_5.bungee.api.ChatColor, use our CompChatColor");
-
-			else if (classOf == CompChatColor.class)
-				object = CompChatColor.of(object.toString());
-
-			else if (classOf == UUID.class)
-				object = UUID.fromString(object.toString());
-
-			else if (classOf == BaseComponent.class) {
-				final BaseComponent[] deserialized = Remain.toComponent(object.toString());
-				Valid.checkBoolean(deserialized.length == 1, "Failed to deserialize into singular BaseComponent: " + object);
-
-				object = deserialized[0];
-
-			} else if (classOf == BaseComponent[].class)
-				object = Remain.toComponent(object.toString());
-
-			else if (classOf == HoverEvent.class) {
-				final SerializedMap serialized = SerializedMap.of(object);
-				final HoverEvent.Action action = serialized.get("Action", HoverEvent.Action.class);
-				final BaseComponent[] value = serialized.get("Value", BaseComponent[].class);
-
-				object = new HoverEvent(action, value);
-			}
-
-			else if (classOf == ClickEvent.class) {
-				final SerializedMap serialized = SerializedMap.of(object);
-
-				final ClickEvent.Action action = serialized.get("Action", ClickEvent.Action.class);
-				final String value = serialized.getString("Value");
-
-				object = new ClickEvent(action, value);
-			}
-
-			else if (Enchantment.class.isAssignableFrom(classOf)) {
-				String name = object.toString().toLowerCase();
-				Enchantment enchant = Enchantment.getByName(name);
-
-				if (enchant == null) {
-					name = EnchantmentWrapper.toBukkit(name);
-					enchant = Enchantment.getByName(name);
-
-					if (enchant == null)
-						enchant = Enchantment.getByName(name.toLowerCase());
-				}
-
-				Valid.checkNotNull(enchant, "Invalid enchantment '" + name + "'! For valid names, see: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html");
-				object = enchant;
-			}
-
-			else if (PotionEffectType.class.isAssignableFrom(classOf)) {
-				final String name = PotionWrapper.getBukkitName(object.toString());
-				final PotionEffectType potion = PotionEffectType.getByName(name);
-
-				Valid.checkNotNull(potion, "Invalid potion '" + name + "'! For valid names, see: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html");
-				object = potion;
-			}
-
-			else if (Enum.class.isAssignableFrom(classOf)) {
-				object = ReflectionUtil.lookupEnum((Class<Enum>) classOf, object.toString());
-
-				if (object == null)
-					return null;
-			}
-
-			else if (Color.class.isAssignableFrom(classOf)) {
-				object = CompChatColor.of(object.toString()).getColor();
-
-			} else if (List.class.isAssignableFrom(classOf) && object instanceof List) {
-				// Good
-
-			} else if (Map.class.isAssignableFrom(classOf) && object instanceof Map) {
-				// Good
-
-			} else if (ConfigurationSerializable.class.isAssignableFrom(classOf) && object instanceof ConfigurationSerializable) {
-				// Good
-
-			} else if (classOf.isArray()) {
-				final Class<?> arrayType = classOf.getComponentType();
-				T[] array;
-
-				if (object instanceof List) {
-					final List<?> rawList = (List<?>) object;
-					array = (T[]) Array.newInstance(classOf.getComponentType(), rawList.size());
-
-					for (int i = 0; i < rawList.size(); i++) {
-						final Object element = rawList.get(i);
-
-						array[i] = element == null ? null : (T) deserialize(arrayType, element, (Object[]) null);
-					}
-				}
-
-				else {
-					final Object[] rawArray = (Object[]) object;
-					array = (T[]) Array.newInstance(classOf.getComponentType(), rawArray.length);
-
-					for (int i = 0; i < array.length; i++)
-						array[i] = rawArray[i] == null ? null : (T) deserialize(classOf.getComponentType(), rawArray[i], (Object[]) null);
-				}
-
-				return (T) array;
-
-			} else if (classOf == Object.class) {
-				// pass through
-
-			} else
-				throw new SerializeFailedException("Unable to deserialize " + classOf.getSimpleName() + ", lacking static deserialize method! Data: " + object);
+		else
+			throw new SerializeFailedException("Does not know how to turn " + classOf + " into a serialized object from data: " + object);
 
 		return (T) object;
-
 	}
 
 	/**
@@ -633,7 +651,7 @@ public final class SerializeUtil {
 			Valid.checkBoolean(Modifier.isPublic(deserialize.getModifiers()) && Modifier.isStatic(deserialize.getModifiers()), asWhat + " is missing public 'public static T deserialize()' method");
 
 		} catch (final NoSuchMethodException ex) {
-			ca.tweetzy.tweety.Common.throwError(ex, "Class lacks a final method deserialize(SerializedMap) metoda. Tried: " + asWhat.getSimpleName());
+			Common.throwError(ex, "Class lacks a final method deserialize(SerializedMap) metoda. Tried: " + asWhat.getSimpleName());
 			return null;
 		}
 
@@ -642,12 +660,93 @@ public final class SerializeUtil {
 		try {
 			invoked = deserialize.invoke(null, SerializedMap.of(map));
 		} catch (final ReflectiveOperationException e) {
-			ca.tweetzy.tweety.Common.throwError(e, "Error calling " + deserialize.getName() + " as " + asWhat.getSimpleName() + " with data " + map);
+			Common.throwError(e, "Error calling " + deserialize.getName() + " as " + asWhat.getSimpleName() + " with data " + map);
 			return null;
 		}
 
 		Valid.checkBoolean(invoked.getClass().isAssignableFrom(asWhat), invoked.getClass().getSimpleName() + " != " + asWhat.getSimpleName());
 		return (T) invoked;
+	}
+
+	/**
+	 * Attempts to turn the given item or map into an item
+	 *
+	 * @param obj
+	 * @return
+	 */
+	public static ItemStack deserializeItemStack(@NonNull Object obj) {
+		if (obj instanceof ItemStack)
+			return (ItemStack) obj;
+
+		final SerializedMap map = SerializedMap.of(obj);
+		final ItemStack item = ItemStack.deserialize(map.asMap());
+
+		final Object raw = map.get("meta", Object.class);
+
+		if (raw != null)
+			if (raw instanceof ItemMeta)
+				item.setItemMeta((ItemMeta) raw);
+
+			else if (raw instanceof Map) {
+				final Map<String, Object> meta = (Map<String, Object>) raw;
+
+				try {
+					final Class<?> cl = ReflectionUtil.getOBCClass("inventory." + (meta.containsKey("spawnedType") ? "CraftMetaSpawnEgg" : "CraftMetaItem"));
+					final Constructor<?> c = cl.getDeclaredConstructor(Map.class);
+					c.setAccessible(true);
+
+					final Object craftMeta = c.newInstance((Map<String, ?>) raw);
+
+					if (craftMeta instanceof ItemMeta)
+						item.setItemMeta((ItemMeta) craftMeta);
+
+				} catch (final Throwable t) {
+
+					// We have to manually deserialize metadata :(
+					final ItemMeta itemMeta = item.getItemMeta();
+
+					final String display = meta.containsKey("display-name") ? (String) meta.get("display-name") : null;
+
+					if (display != null)
+						itemMeta.setDisplayName(display);
+
+					final List<String> lore = meta.containsKey("lore") ? (List<String>) meta.get("lore") : null;
+
+					if (lore != null)
+						itemMeta.setLore(lore);
+
+					final SerializedMap enchants = meta.containsKey("enchants") ? SerializedMap.of(meta.get("enchants")) : null;
+
+					if (enchants != null)
+						for (final Map.Entry<String, Object> entry : enchants.entrySet()) {
+							final Enchantment enchantment = Enchantment.getByName(entry.getKey());
+							final int level = (int) entry.getValue();
+
+							itemMeta.addEnchant(enchantment, level, true);
+						}
+
+					final List<String> itemFlags = meta.containsKey("ItemFlags") ? (List<String>) meta.get("ItemFlags") : null;
+
+					if (itemFlags != null)
+						for (final String flag : itemFlags)
+							try {
+								itemMeta.addItemFlags(ItemFlag.valueOf(flag));
+							} catch (final Exception ex) {
+								// Likely not MC compatible, ignore
+							}
+
+					/*Common.log(
+							"**************** NOTICE ****************",
+							SimplePlugin.getNamed() + " manually deserialized your item.",
+							"Item: " + item,
+							"This is ONLY supported for basic items, items having",
+							"special flags like monster eggs will NOT function.");*/
+
+					item.setItemMeta(itemMeta);
+				}
+			}
+
+		return item;
 	}
 
 	/**
@@ -705,7 +804,7 @@ public final class SerializeUtil {
 		}
 
 		public String getMinecraftName() {
-			return ca.tweetzy.tweety.Common.getOrDefault(minecraftName, bukkitName);
+			return Common.getOrDefault(minecraftName, bukkitName);
 		}
 	}
 

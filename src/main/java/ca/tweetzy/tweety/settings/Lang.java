@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Represents the new way of internalization, with the greatest
  * upside of saving development time.
- *
+ * <p>
  * The downside is that keys are not checked during load so any
  * malformed or missing key will fail later and may be unnoticed.
  */
@@ -33,20 +33,12 @@ public final class Lang extends YamlConfig {
 		this.loadConfiguration(filePath);
 	}
 
-	/**
-	 * @see ca.tweetzy.tweety.settings.YamlConfig#saveComments()
-	 */
-	@Override
-	protected boolean saveComments() {
-		return true;
-	}
-
 	/*
 	 * Return a key from our localization, failing if not exists
 	 */
 	private String getStringStrict(String path) {
 		final String key = getString(path);
-		Valid.checkNotNull(key, "Missing localization key '" + path + "' from " + getFileName());
+		Valid.checkNotNull(key, "Missing localization key '" + path + "' from " + this.getFileName());
 
 		return key;
 	}
@@ -67,13 +59,29 @@ public final class Lang extends YamlConfig {
 	/**
 	 * Call this method in your onPluginPreStart to use the Lang features,
 	 * the Lang class will use the given file in the given path.
-	 *
+	 * <p>
 	 * Example: "localization/messages_" + SimpleSettings.LOCALE_PREFIX ".yml"
+	 *
+	 * @param filePath
 	 */
 	public static void init(String filePath) {
 		instance = new Lang(filePath);
 
 		loadPrefixes();
+	}
+
+	/**
+	 * Reload the language file
+	 *
+	 * @deprecated internal use only
+	 */
+	@Deprecated
+	public static void reloadLang() {
+		if (instance != null)
+			synchronized (instance) {
+				instance.reload();
+				instance.save();
+			}
 	}
 
 	/**
@@ -83,7 +91,7 @@ public final class Lang extends YamlConfig {
 	 */
 	@Deprecated
 	public static void loadPrefixes() {
-		if (instance != null) {
+		if (instance != null)
 			synchronized (instance) {
 				if (instance.isSet("Prefix.Announce"))
 					Messenger.setAnnouncePrefix(Lang.of("Prefix.Announce"));
@@ -102,8 +110,9 @@ public final class Lang extends YamlConfig {
 
 				if (instance.isSet("Prefix.Warn"))
 					Messenger.setWarnPrefix(Lang.of("Prefix.Warn"));
+
+				instance.save();
 			}
-		}
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -207,11 +216,11 @@ public final class Lang extends YamlConfig {
 	 *
 	 * @param path
 	 * @param scriptVariables
-	 * @param variables
+	 * @param stringVariables
 	 * @return
 	 */
-	public static String ofScript(String path, SerializedMap scriptVariables, Object... variables) {
-		String script = of(path, variables);
+	public static String ofScript(String path, SerializedMap scriptVariables, Object... stringVariables) {
+		String script = of(path, stringVariables);
 		Object result;
 
 		// Our best guess is that the user has removed the script completely but forgot to put the entire message in '',

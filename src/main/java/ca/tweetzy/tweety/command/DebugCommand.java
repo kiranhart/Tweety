@@ -1,17 +1,5 @@
 package ca.tweetzy.tweety.command;
 
-import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.FileUtil;
-import ca.tweetzy.tweety.MinecraftVersion;
-import ca.tweetzy.tweety.TimeUtil;
-import ca.tweetzy.tweety.plugin.TweetyPlugin;
-import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.settings.SimpleLocalization;
-import ca.tweetzy.tweety.settings.SimpleYaml;
-import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import org.bukkit.Bukkit;
+import ca.tweetzy.tweety.Common;
+import ca.tweetzy.tweety.FileUtil;
+import ca.tweetzy.tweety.MinecraftVersion;
+import ca.tweetzy.tweety.TimeUtil;
+import ca.tweetzy.tweety.plugin.TweetyPlugin;
+import ca.tweetzy.tweety.remain.Remain;
+import ca.tweetzy.tweety.settings.YamlConfig;
+import ca.tweetzy.tweety.settings.SimpleLocalization;
+
+import lombok.Setter;
 
 /**
  * A sample sub-command that you can automatically add
@@ -111,8 +111,8 @@ public final class DebugCommand extends SimpleSubCommand {
 
 				// Strip sensitive keys from .YML files
 				if (file.getName().endsWith(".yml")) {
-					final FileConfiguration config = SimpleYaml.loadConfiguration(file);
-					final FileConfiguration copyConfig = SimpleYaml.loadConfiguration(copy);
+					final YamlConfig config = YamlConfig.fromFile(file);
+					final YamlConfig copyConfig = YamlConfig.fromFile(copy);
 
 					for (final Map.Entry<String, Object> entry : config.getValues(true).entrySet()) {
 						final String key = entry.getKey();

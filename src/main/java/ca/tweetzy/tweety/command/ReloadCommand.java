@@ -3,7 +3,7 @@ package ca.tweetzy.tweety.command;
 import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.settings.SimpleLocalization;
 import ca.tweetzy.tweety.settings.SimpleLocalization.Commands;
-import ca.tweetzy.tweety.settings.SimpleYaml;
+import ca.tweetzy.tweety.settings.YamlConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public final class ReloadCommand extends SimpleSubCommand {
 
 			for (final File file : yamlFiles) {
 				try {
-					SimpleYaml.loadConfiguration(file);
+					YamlConfig.fromFile(file);
 
 				} catch (final Throwable t) {
 					t.printStackTrace();

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 /**
  * A special class that can store loaded {@link YamlConfig} files
- *
+ * <p>
  * DOES NOT INVOKE {@link YamlConfig#loadConfiguration(String, String)}
  * for you, you must invoke it by yourself as you otherwise normally would!
  *
@@ -82,7 +82,7 @@ public final class ConfigItems<T extends YamlConfig> {
 	 * @param prototypeClass
 	 * @return
 	 */
-	public static <P extends YamlConfig> ConfigItems<P> fromFolder(String folder, Class<P> prototypeClass) {
+	public static <P extends ca.tweetzy.tweety.settings.YamlConfig> ConfigItems<P> fromFolder(String folder, Class<P> prototypeClass) {
 		return new ConfigItems<>(folder.substring(0, folder.length() - (folder.endsWith("es") && !folder.contains("variable") ? 2 : folder.endsWith("s") ? 1 : 0)), folder, prototypeClass, false);
 	}
 
@@ -95,7 +95,7 @@ public final class ConfigItems<T extends YamlConfig> {
 	 * @param prototypeClass
 	 * @return
 	 */
-	public static <P extends YamlConfig> ConfigItems<P> fromFile(String path, String file, Class<P> prototypeClass) {
+	public static <P extends ca.tweetzy.tweety.settings.YamlConfig> ConfigItems<P> fromFile(String path, String file, Class<P> prototypeClass) {
 		return new ConfigItems<>(path, file, prototypeClass, true);
 	}
 
@@ -124,9 +124,7 @@ public final class ConfigItems<T extends YamlConfig> {
 			if (config.isSet(this.type))
 				for (final String name : config.getConfigurationSection(this.type).getKeys(false))
 					loadOrCreateItem(name);
-		}
-
-		else {
+		} else {
 			// Try copy items from our JAR
 			if (!FileUtil.getFile(folder).exists())
 				FileUtil.extractFolderFromJar(folder + "/", folder);
@@ -164,9 +162,8 @@ public final class ConfigItems<T extends YamlConfig> {
 	 *
 	 * @param name
 	 * @param instantiator by default we create new instances of your item by calling its constructor,
-	 * 		  which either can be a no args one or one taking a single argument, the name. If that is not
-	 * 		  sufficient, you can supply your custom instantiator here.
-	 *
+	 *                     which either can be a no args one or one taking a single argument, the name. If that is not
+	 *                     sufficient, you can supply your custom instantiator here.
 	 * @return
 	 */
 	public T loadOrCreateItem(@NonNull final String name, @Nullable Supplier<T> instantiator) {
@@ -223,14 +220,14 @@ public final class ConfigItems<T extends YamlConfig> {
 	 * @param item
 	 */
 	public void removeItem(@NonNull final T item) {
-		final String name = item.getName();
+		final String name = item.getFileName();
 		Valid.checkBoolean(isItemLoaded(name), WordUtils.capitalize(type) + " " + name + " not loaded. Available: " + getItemNames());
 
 		if (this.singleFile) {
 			item.save("", null);
 
 		} else
-			item.delete();
+			item.deleteFile();
 
 		loadedItemsMap.remove(name);
 	}

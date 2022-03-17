@@ -1,18 +1,17 @@
 package ca.tweetzy.tweety.settings;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import ca.tweetzy.tweety.Common;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.collection.StrictList;
 import ca.tweetzy.tweety.constants.TweetyConstants;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.debug.LagCatcher;
-import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.SpigotUpdater;
 import ca.tweetzy.tweety.plugin.TweetyPlugin;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 /**
  * A simple implementation of a typical main plugin settings
@@ -27,7 +26,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	/**
 	 * A flag indicating that this class has been loaded
 	 * <p>
-	 * You can place this class to {@link TweetyPlugin#getSettings()} ()} to
+	 * You can place this class to {@link ca.tweetzy.tweety.plugin.TweetyPlugin#getSettings()} ()} to
 	 * make it load automatically
 	 */
 	private static boolean settingsClassCalled;
@@ -37,8 +36,8 @@ public class SimpleSettings extends YamlStaticConfig {
 	// --------------------------------------------------------------------
 
 	@Override
-	protected final void load() throws Exception {
-		createFileAndLoad(getSettingsFileName());
+	protected final void onLoad() throws Exception {
+		loadConfiguration(getSettingsFileName());
 	}
 
 	/**
@@ -69,7 +68,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	@Override
 	protected void preLoad() {
 		// Load version first so we can use it later
-		pathPrefix(null);
+		setPathPrefix(null);
 
 		if ((VERSION = getInteger("Version")) != getConfigVersion())
 			set("Version", getConfigVersion());
@@ -110,8 +109,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	public static StrictList<String> DEBUG_SECTIONS = new StrictList<>();
 
 	/**
-	 * The plugin prefix in front of chat/console messages, added automatically unless
-	 * disabled in {@link Common#ADD_LOG_PREFIX} and {@link Common#ADD_TELL_PREFIX}.
+	 * The plugin prefix in front of chat/console messages.
 	 * <p>
 	 * Typically for ChatControl:
 	 * <p>
@@ -176,7 +174,7 @@ public class SimpleSettings extends YamlStaticConfig {
 	private static void init() {
 		Valid.checkBoolean(!settingsClassCalled, "Settings class already loaded!");
 
-		pathPrefix(null);
+		setPathPrefix(null);
 		upgradeOldSettings();
 
 		if (isSetDefault("Timestamp_Format"))
@@ -212,27 +210,18 @@ public class SimpleSettings extends YamlStaticConfig {
 		// -------------------------------------------------------------------
 
 		{ // Load localization
-			final boolean hasLocalization = hasLocalization();
 			final boolean keySet = isSetDefault("Locale");
-
-			if (hasLocalization && !keySet)
-				throw new TweetyException("Since you have your Localization class you must set the 'Locale' key in " + getFileName());
 
 			LOCALE_PREFIX = keySet ? getString("Locale") : LOCALE_PREFIX;
 		}
 
 		{ // Load main command alias
-
 			final boolean keySet = isSetDefault("Command_Aliases");
-
-			if (TweetyPlugin.getInstance().getMainCommand() != null && !keySet)
-				throw new TweetyException("Since you override getMainCommand in your main plugin class you must set the 'Command_Aliases' key in " + getFileName());
 
 			MAIN_COMMAND_ALIASES = keySet ? getCommandList("Command_Aliases") : MAIN_COMMAND_ALIASES;
 		}
 
 		{ // Load updates notifier
-
 			final boolean keySet = isSetDefault("Notify_Updates");
 
 			NOTIFY_UPDATES = keySet ? getBoolean("Notify_Updates") : NOTIFY_UPDATES;
@@ -242,50 +231,33 @@ public class SimpleSettings extends YamlStaticConfig {
 	}
 
 	/**
-	 * Inspect if some settings classes extend localization and make sure only one does, if any
-	 *
-	 * @return
-	 */
-	private static boolean hasLocalization() {
-		final TweetyPlugin plugin = TweetyPlugin.getInstance();
-		int localeClasses = 0;
-
-		if (plugin.getSettings() != null)
-			for (final Class<?> clazz : plugin.getSettings())
-				if (SimpleLocalization.class.isAssignableFrom(clazz))
-					localeClasses++;
-
-		Valid.checkBoolean(localeClasses < 2, "You cannot have more than 1 class extend SimpleLocalization!");
-		return localeClasses == 1;
-	}
-
-	/**
 	 * Upgrade some of the old and ancient settings from our premium plugins.
 	 */
 	private static void upgradeOldSettings() {
+
 		{ // Debug
-			if (isSetAbsolute("Debugger"))
+			if (isSet("Debugger"))
 				move("Debugger", "Debug");
 
-			if (isSetAbsolute("Serialization_Number"))
+			if (isSet("Serialization_Number"))
 				move("Serialization_Number", "Serialization");
 
 			// ChatControl
-			if (isSetAbsolute("Debugger.Keys")) {
+			if (isSet("Debugger.Keys")) {
 				move("Debugger.Keys", "Serialization");
 				move("Debugger.Sections", "Debug");
 			}
 
 			// Archaic
-			if (isSetAbsolute("Debug") && !(getObject("Debug") instanceof List))
+			if (isSet("Debug") && !(getObject("Debug") instanceof List))
 				set("Debug", null);
 		}
 
 		{ // Prefix
-			if (isSetAbsolute("Plugin_Prefix"))
+			if (isSet("Plugin_Prefix"))
 				move("Plugin_Prefix", "Prefix");
 
-			if (isSetAbsolute("Check_Updates"))
+			if (isSet("Check_Updates"))
 				move("Check_Updates", "Notify_Updates");
 		}
 	}

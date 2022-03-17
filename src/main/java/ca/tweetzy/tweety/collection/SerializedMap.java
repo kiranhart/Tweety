@@ -1,36 +1,46 @@
 package ca.tweetzy.tweety.collection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
+import org.bukkit.Location;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.inventory.ItemStack;
 import ca.tweetzy.tweety.Common;
-import ca.tweetzy.tweety.ReflectionUtil;
 import ca.tweetzy.tweety.SerializeUtil;
 import ca.tweetzy.tweety.Valid;
 import ca.tweetzy.tweety.exception.TweetyException;
+import ca.tweetzy.tweety.jsonsimple.JSONObject;
+import ca.tweetzy.tweety.jsonsimple.JSONParser;
 import ca.tweetzy.tweety.model.IsInList;
 import ca.tweetzy.tweety.model.Tuple;
 import ca.tweetzy.tweety.plugin.TweetyPlugin;
 import ca.tweetzy.tweety.remain.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
-import com.google.gson.*;
-import lombok.NonNull;
-import org.bukkit.Location;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import ca.tweetzy.tweety.settings.ConfigSection;
 
-import java.lang.reflect.Constructor;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.LongSerializationPolicy;
+
+import lombok.NonNull;
 
 /**
  * Serialized map enables you to save and retain values from your
  * configuration easily, such as locations, other maps or lists and
  * much more.
  */
-public final class SerializedMap extends StrictCollection {
+public final class SerializedMap extends StrictCollection implements Iterable<Map.Entry<String, Object>> {
 
 	/**
 	 * The Google Json instance
@@ -38,7 +48,7 @@ public final class SerializedMap extends StrictCollection {
 	private final static Gson gson;
 
 	static {
-		// Fix google complicating things and breaking long formatting
+		// Fix Google complicating things and breaking long formatting
 		final GsonBuilder gsonBuilder = new GsonBuilder();
 
 		gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
@@ -49,7 +59,7 @@ public final class SerializedMap extends StrictCollection {
 	/**
 	 * A fallback Json parser
 	 */
-	private final static JsonParser jsonSimple = new JsonParser();
+	private final static JSONParser jsonSimple = new JSONParser();
 
 	/**
 	 * The internal map with values
@@ -95,9 +105,10 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
+	 * @see Map#containsKey(Object)
+	 *
 	 * @param key
 	 * @return
-	 * @see Map#containsKey(Object)
 	 */
 	public boolean containsKey(final String key) {
 		return map.containsKey(key);
@@ -110,11 +121,11 @@ public final class SerializedMap extends StrictCollection {
 	 * @return
 	 */
 	public SerializedMap putArray(final Object... associativeArray) {
-		boolean string = true;
+		boolean nextIsString = true;
 		String lastKey = null;
 
 		for (final Object obj : associativeArray) {
-			if (string) {
+			if (nextIsString) {
 				Valid.checkBoolean(obj instanceof String, "Expected String, got " + obj.getClass().getSimpleName() + ": " + SerializeUtil.serialize(obj));
 
 				lastKey = (String) obj;
@@ -122,7 +133,7 @@ public final class SerializedMap extends StrictCollection {
 			} else
 				map.override(lastKey, obj);
 
-			string = !string;
+			nextIsString = !nextIsString;
 		}
 
 		return this;
@@ -164,7 +175,7 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Puts the map into this map if not null and not empty
-	 * <p>
+	 *
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -174,15 +185,15 @@ public final class SerializedMap extends StrictCollection {
 		if (value != null && !value.isEmpty())
 			put(key, value);
 
-			// This value is undesirable to save if null, so if YamlConfig is used
-			// it will remove it from the config
+		// This value is undesirable to save if null, so if YamlConfig is used
+		// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
 
 	/**
 	 * Puts the collection into map if not null and not empty
-	 * <p>
+	 *
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -192,15 +203,15 @@ public final class SerializedMap extends StrictCollection {
 		if (value != null && !value.isEmpty())
 			put(key, value);
 
-			// This value is undesirable to save if null, so if YamlConfig is used
-			// it will remove it from the config
+		// This value is undesirable to save if null, so if YamlConfig is used
+		// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
 
 	/**
 	 * Puts the boolean into map if true
-	 * <p>
+	 *
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -210,15 +221,15 @@ public final class SerializedMap extends StrictCollection {
 		if (value)
 			put(key, value);
 
-			// This value is undesirable to save if null, so if YamlConfig is used
-			// it will remove it from the config
+		// This value is undesirable to save if null, so if YamlConfig is used
+		// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
 
 	/**
 	 * Puts the value into map if not null
-	 * <p>
+	 *
 	 * This will put a NULL value into the map if the value is null
 	 *
 	 * @param key
@@ -228,8 +239,8 @@ public final class SerializedMap extends StrictCollection {
 		if (value != null)
 			put(key, value);
 
-			// This value is undesirable to save if null, so if YamlConfig is used
-			// it will remove it from the config
+		// This value is undesirable to save if null, so if YamlConfig is used
+		// it will remove it from the config
 		else
 			map.getSource().put(key, null);
 	}
@@ -255,7 +266,7 @@ public final class SerializedMap extends StrictCollection {
 	 * @param value
 	 */
 	public void override(final String key, final Object value) {
-		Valid.checkNotNull(value, "Value with key '" + key + "' is null!");
+		//Valid.checkNotNull(value, "Cannot put null values into SerializedMap! Value with key '" + key + "' is null!");
 
 		map.override(key, value);
 	}
@@ -486,7 +497,7 @@ public final class SerializedMap extends StrictCollection {
 	 * @param key
 	 * @return
 	 */
-	public ItemStack getItem(final String key) {
+	public ItemStack getItemStack(final String key) {
 		return getItem(key, null);
 	}
 
@@ -503,78 +514,7 @@ public final class SerializedMap extends StrictCollection {
 		if (obj == null)
 			return def;
 
-		if (obj instanceof ItemStack)
-			return (ItemStack) obj;
-
-		final Map<String, Object> map = (Map<String, Object>) obj;
-		final ItemStack item = ItemStack.deserialize(map);
-
-		final Object raw = map.get("meta");
-
-		if (raw != null)
-			if (raw instanceof ItemMeta)
-				item.setItemMeta((ItemMeta) raw);
-
-			else if (raw instanceof Map) {
-				final Map<String, Object> meta = (Map<String, Object>) raw;
-
-				try {
-					final Class<?> cl = ReflectionUtil.getOBCClass("inventory." + (meta.containsKey("spawnedType") ? "CraftMetaSpawnEgg" : "CraftMetaItem"));
-					final Constructor<?> c = cl.getDeclaredConstructor(Map.class);
-					c.setAccessible(true);
-
-					final Object craftMeta = c.newInstance((Map<String, ?>) raw);
-
-					if (craftMeta instanceof ItemMeta)
-						item.setItemMeta((ItemMeta) craftMeta);
-
-				} catch (final Throwable t) {
-
-					// We have to manually deserialize metadata :(
-					final ItemMeta itemMeta = item.getItemMeta();
-
-					final String display = meta.containsKey("display-name") ? (String) meta.get("display-name") : null;
-
-					if (display != null)
-						itemMeta.setDisplayName(display);
-
-					final List<String> lore = meta.containsKey("lore") ? (List<String>) meta.get("lore") : null;
-
-					if (lore != null)
-						itemMeta.setLore(lore);
-
-					final SerializedMap enchants = meta.containsKey("enchants") ? SerializedMap.of(meta.get("enchants")) : null;
-
-					if (enchants != null)
-						for (final Map.Entry<String, Object> entry : enchants.entrySet()) {
-							final Enchantment enchantment = Enchantment.getByName(entry.getKey());
-							final int level = (int) entry.getValue();
-
-							itemMeta.addEnchant(enchantment, level, true);
-						}
-
-					final List<String> itemFlags = meta.containsKey("ItemFlags") ? (List<String>) meta.get("ItemFlags") : null;
-
-					if (itemFlags != null)
-						for (final String flag : itemFlags)
-							try {
-								itemMeta.addItemFlags(ItemFlag.valueOf(flag));
-							} catch (final Exception ex) {
-								// Likely not MC compatible, ignore
-							}
-
-					Common.log(
-							"**************** NOTICE ****************",
-							TweetyPlugin.getNamed() + " manually deserialized your item.",
-							"Item: " + item,
-							"This is ONLY supported for basic items, items having",
-							"special flags like monster eggs will NOT function.");
-
-					item.setItemMeta(itemMeta);
-				}
-			}
-
-		return item;
+		return SerializeUtil.deserializeItemStack(obj);
 	}
 
 	/**
@@ -696,7 +636,7 @@ public final class SerializedMap extends StrictCollection {
 			list.add((T) rawList);
 
 		} else {
-			Valid.checkBoolean(rawList instanceof List, "Key '" + key + "' expected to have a list, got " + rawList.getClass().getSimpleName() + " instead! Try putting '' quotes around the message!");
+			Valid.checkBoolean(rawList instanceof List, "Key '" + key + "' expected to have a list, got " + rawList.getClass().getSimpleName() + " instead! Try putting '' quotes around the message: " + rawList);
 
 			for (final Object object : (List<Object>) rawList)
 				list.add(object == null ? null : SerializeUtil.deserialize(type, object));
@@ -714,7 +654,7 @@ public final class SerializedMap extends StrictCollection {
 	public SerializedMap getMap(final String key) {
 		final Object raw = get(key, Object.class);
 
-		return raw != null ? SerializedMap.of(Common.getMapFromSection(raw)) : new SerializedMap();
+		return raw != null ? SerializedMap.of(raw) : new SerializedMap();
 	}
 
 	/**
@@ -736,7 +676,7 @@ public final class SerializedMap extends StrictCollection {
 		final Object raw = this.map.get(path);
 
 		if (raw != null)
-			for (final Entry<?, ?> entry : Common.getMapFromSection(raw).entrySet()) {
+			for (final Entry<?, ?> entry : SerializedMap.of(raw).entrySet()) {
 				final Key key = SerializeUtil.deserialize(keyType, entry.getKey());
 				final Value value = SerializeUtil.deserialize(valueType, entry.getValue());
 
@@ -766,13 +706,9 @@ public final class SerializedMap extends StrictCollection {
 		Object raw = this.map.get(path);
 
 		if (raw != null) {
+			raw = SerializedMap.of(raw);
 
-			if (raw instanceof MemorySection || Remain.isMemorySection(raw))
-				raw = Common.getMapFromSection(raw);
-
-			Valid.checkBoolean(raw instanceof Map, "Expected Map<" + keyType.getSimpleName() + ", Set<" + setType.getSimpleName() + ">> at " + path + ", got " + raw.getClass());
-
-			for (final Entry<?, ?> entry : ((Map<?, ?>) raw).entrySet()) {
+			for (final Entry<String, Object> entry : ((SerializedMap) raw).entrySet()) {
 				final Key key = SerializeUtil.deserialize(keyType, entry.getKey());
 				final List<Value> value = SerializeUtil.deserialize(List.class, entry.getValue());
 
@@ -870,8 +806,9 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @param consumer
 	 * @see Map#forEach(BiConsumer)
+	 *
+	 * @param consumer
 	 */
 	public void forEach(final BiConsumer<String, Object> consumer) {
 		for (final Entry<String, Object> e : map.entrySet())
@@ -888,32 +825,36 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @return
 	 * @see Map#keySet()
+	 *
+	 * @return
 	 */
 	public Set<String> keySet() {
 		return map.keySet();
 	}
 
 	/**
-	 * @return
 	 * @see Map#values()
+	 *
+	 * @return
 	 */
 	public Collection<Object> values() {
 		return map.values();
 	}
 
 	/**
-	 * @return
 	 * @see Map#entrySet()
+	 *
+	 * @return
 	 */
 	public Set<Entry<String, Object>> entrySet() {
 		return map.entrySet();
 	}
 
 	/**
-	 * @return
 	 * @see Map#size()
+	 *
+	 * @return
 	 */
 	public int size() {
 		return map.size();
@@ -955,8 +896,9 @@ public final class SerializedMap extends StrictCollection {
 	}
 
 	/**
-	 * @return
 	 * @see Map#isEmpty()
+	 *
+	 * @return
 	 */
 	public boolean isEmpty() {
 		return map.isEmpty();
@@ -1001,9 +943,9 @@ public final class SerializedMap extends StrictCollection {
 
 	/**
 	 * Convert the key pairs into formatted string such as {
-	 * "key" = "value"
-	 * "another" = "value2"
-	 * ...
+	 * 	"key" = "value"
+	 *  "another" = "value2"
+	 *  ...
 	 * }
 	 *
 	 * @return
@@ -1031,6 +973,11 @@ public final class SerializedMap extends StrictCollection {
 	 */
 	public void setRemoveOnGet(boolean removeOnGet) {
 		this.removeOnGet = removeOnGet;
+	}
+
+	@Override
+	public Iterator<Entry<String, Object>> iterator() {
+		return this.map.entrySet().iterator();
 	}
 
 	@Override
@@ -1076,7 +1023,7 @@ public final class SerializedMap extends StrictCollection {
 				return (SerializedMap) firstArgument;
 
 			if (firstArgument instanceof Map)
-				return SerializedMap.of((Map<String, Object>) firstArgument);
+				return SerializedMap.of(firstArgument);
 
 			if (firstArgument instanceof StrictMap)
 				return SerializedMap.of(((StrictMap<String, Object>) firstArgument).getSource());
@@ -1094,33 +1041,52 @@ public final class SerializedMap extends StrictCollection {
 	 * @param object
 	 * @return the serialized map, or an empty map if object could not be parsed
 	 */
-	public static SerializedMap of(Object object) {
-
-		if (object != null)
-			object = Remain.getRootOfSectionPathData(object);
+	public static SerializedMap of(@NonNull Object object) {
 
 		if (object instanceof SerializedMap)
 			return (SerializedMap) object;
 
-		if (object instanceof Map || object instanceof MemorySection)
+		if (object instanceof MemorySection)
 			return of(Common.getMapFromSection(object));
 
-		return new SerializedMap();
-	}
+		if (object instanceof ConfigSection)
+			return of(((ConfigSection) object).getValues(false));
 
-	/**
-	 * Converts the given Map into a serializable map
-	 *
-	 * @param map
-	 * @return
-	 */
-	public static SerializedMap of(final Map<String, Object> map) {
-		final SerializedMap serialized = new SerializedMap();
+		if (object instanceof Map) {
+			final Map<String, Object> copyOf = new LinkedHashMap<>();
 
-		serialized.map.clear();
-		serialized.map.putAll(map);
+			for (final Map.Entry<?, ?> entry : ((Map<String, Object>) object).entrySet()) {
+				final Object key = entry.getKey();
 
-		return serialized;
+				if (key == null)
+					copyOf.put(null, entry.getValue());
+
+				else {
+					final String stringKey = key.toString();
+					final Object value = entry.getValue();
+
+					final String[] split = stringKey.split("\\=");
+
+					// Spigot's special way of storing maps 'key=value'
+					if (split.length == 2 && value == null) {
+						final String actualKey = split[0];
+						final String actualValue = split[1];
+
+						copyOf.put(actualKey, actualValue);
+					}
+
+					else
+						copyOf.put(stringKey, value);
+				}
+			}
+
+			final SerializedMap serialized = new SerializedMap();
+			serialized.map.putAll(copyOf);
+
+			return serialized;
+		}
+
+		throw new TweetyException("SerializedMap does not know how to convert " + object.getClass().getSimpleName() + ": " + object);
 	}
 
 	/**
@@ -1142,7 +1108,7 @@ public final class SerializedMap extends StrictCollection {
 			try {
 				final Object parsed = jsonSimple.parse(json);
 
-				if (parsed instanceof JsonObject)
+				if (parsed instanceof JSONObject)
 					return SerializedMap.of(parsed);
 
 				throw new TweetyException("Unable to deserialize " + (parsed != null ? parsed.getClass() : "unknown class") + " from: " + json);
