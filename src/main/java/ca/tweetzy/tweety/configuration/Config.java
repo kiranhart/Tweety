@@ -1,5 +1,6 @@
 package ca.tweetzy.tweety.configuration;
 
+import ca.tweetzy.tweety.util.ReflectionUtil;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.representer.Representer;
@@ -38,7 +40,7 @@ public class Config extends ConfigSection {
 	final Plugin plugin;
 	final DumperOptions yamlOptions = new DumperOptions();
 	final Representer yamlRepresenter = new YamlRepresenter();
-	final Yaml yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
+	Yaml yaml;
 	Charset defaultCharset = StandardCharsets.UTF_8;
 	SaveTask saveTask;
 	Timer autosaveTimer;
@@ -85,20 +87,19 @@ public class Config extends ConfigSection {
 	 */
 	int commentSpacing = 1;
 
-	public Config() {
-		this.plugin = null;
-		this.file = null;
 
-		dirName = null;
-		fileName = null;
-	}
-
-	public Config(@NotNull File file) {
-		this.plugin = null;
-		this.file = file.getAbsoluteFile();
-
-		dirName = null;
-		fileName = null;
+	private void loaderOptionsInit() {
+		// Load options only if available
+		if (ReflectionUtil.isClassAvailable("org.yaml.snakeyaml.LoaderOptions")) {
+			try {
+				final LoaderOptions loaderOptions = new LoaderOptions();
+				loaderOptions.setMaxAliasesForCollections(512);
+				this.yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions, loaderOptions);
+			} catch (final NoSuchMethodError ex) {
+				this.yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
+			}
+		} else
+			this.yaml = new Yaml(new YamlConstructor(), yamlRepresenter, yamlOptions);
 	}
 
 	public Config(@NotNull Plugin plugin) {
@@ -106,6 +107,7 @@ public class Config extends ConfigSection {
 
 		dirName = null;
 		fileName = null;
+		loaderOptionsInit();
 	}
 
 	public Config(@NotNull Plugin plugin, @NotNull String file) {
@@ -113,6 +115,7 @@ public class Config extends ConfigSection {
 
 		dirName = null;
 		fileName = file;
+		loaderOptionsInit();
 	}
 
 	public Config(@NotNull Plugin plugin, @Nullable String directory, @NotNull String file) {
@@ -120,6 +123,7 @@ public class Config extends ConfigSection {
 
 		dirName = directory;
 		fileName = file;
+		loaderOptionsInit();
 	}
 
 	@NotNull
