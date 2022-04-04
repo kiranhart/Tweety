@@ -2,13 +2,11 @@ package ca.tweetzy.tweety;
 
 import ca.tweetzy.tweety.annotation.AutoRegister;
 import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.event.SimpleListener;
 import ca.tweetzy.tweety.exception.TweetyException;
 import ca.tweetzy.tweety.model.Common;
-import ca.tweetzy.tweety.model.DiscordListener;
 import ca.tweetzy.tweety.model.HookManager;
 import ca.tweetzy.tweety.model.Tuple;
-import ca.tweetzy.tweety.tool.Tool;
+import ca.tweetzy.tweety.model.discord.DiscordListener;
 import ca.tweetzy.tweety.util.ReflectionUtil;
 import ca.tweetzy.tweety.util.Valid;
 import org.bukkit.Bukkit;
@@ -33,7 +31,7 @@ final class AutoRegisterScanner {
 
 
 	/**
-	 * Scans your plugin and if your {@link Tool} or class implements {@link Listener}
+	 * Scans your plugin for implements {@link Listener}
 	 * and has "instance" method to be a singleton, your events are registered there automatically
 	 * <p>
 	 * If not, we only call the instance constructor in case there is any underlying registration going on
@@ -82,7 +80,7 @@ final class AutoRegisterScanner {
 						final AutoRegister autoRegister = clazz.getAnnotation(AutoRegister.class);
 
 						// Require our annotation to be used
-						if (autoRegister != null || Tool.class.isAssignableFrom(clazz)) {
+						if (autoRegister != null) {
 							Valid.checkBoolean(Modifier.isFinal(clazz.getModifiers()), "Please make " + clazz + " final for it to be registered automatically (or via @AutoRegister)");
 
 							try {
@@ -149,10 +147,6 @@ final class AutoRegisterScanner {
 			plugin.registerEvents((SimpleListener<?>) instance);
 			eventsRegistered = true;
 		} else if (DiscordListener.class.isAssignableFrom(clazz)) {
-
-			// Automatically registered in its constructor
-			enforceModeFor(clazz, mode, RegisterMode.SINGLETON);
-		} else if (Tool.class.isAssignableFrom(clazz)) {
 
 			// Automatically registered in its constructor
 			enforceModeFor(clazz, mode, RegisterMode.SINGLETON);

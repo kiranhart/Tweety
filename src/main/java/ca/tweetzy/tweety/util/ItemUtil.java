@@ -2,8 +2,8 @@ package ca.tweetzy.tweety.util;
 
 import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.model.Common;
-import ca.tweetzy.tweety.remain.CompChatColor;
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.comp.CompChatColor;
+import ca.tweetzy.tweety.remain.comp.CompMaterial;
 import ca.tweetzy.tweety.remain.EnchantmentWrapper;
 import ca.tweetzy.tweety.remain.PotionWrapper;
 import ca.tweetzy.tweety.remain.nbt.NBTItem;

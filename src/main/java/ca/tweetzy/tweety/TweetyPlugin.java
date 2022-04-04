@@ -2,18 +2,18 @@ package ca.tweetzy.tweety;
 
 import ca.tweetzy.tweety.annotation.AutoRegister;
 import ca.tweetzy.tweety.debug.Debugger;
-import ca.tweetzy.tweety.event.SimpleListener;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.metrics.Metrics;
-import ca.tweetzy.tweety.model.*;
+import ca.tweetzy.tweety.model.Common;
+import ca.tweetzy.tweety.model.HookManager;
+import ca.tweetzy.tweety.model.TweetyScoreboard;
+import ca.tweetzy.tweety.model.discord.DiscordListener;
+import ca.tweetzy.tweety.model.hologram.TweetyHologram;
+import ca.tweetzy.tweety.model.region.BlockVisualizer;
 import ca.tweetzy.tweety.remain.Remain;
-import ca.tweetzy.tweety.tool.Tool;
-import ca.tweetzy.tweety.tool.ToolsListener;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import ca.tweetzy.tweety.util.ReflectionUtil;
 import ca.tweetzy.tweety.util.Valid;
-import ca.tweetzy.tweety.visual.BlockVisualizer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Represents a basic Java plugin using enhanced library functionality
  */
-public abstract class TweetyPlugin extends JavaPlugin {
+public abstract class TweetyPlugin extends JavaPlugin implements Listener {
 
 	// ----------------------------------------------------------------------------------------
 	// Static
@@ -127,7 +127,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	private final Reloadables reloadables = new Reloadables();
 
 	/**
-	 * An internal flag to indicate whether we are calling the {@link #onReloadablesStart()}
+	 * An internal flag to indicate whether we are calling the {@link #onStretch()}
 	 * block. We register things using {@link #reloadables} during this block
 	 */
 	private boolean startingReloadables = false;
@@ -154,7 +154,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 		data = instance.getDataFolder();
 
 		// Call parent
-		onPluginLoad();
+		onWake();
 	}
 
 	@Override
@@ -222,11 +222,11 @@ public abstract class TweetyPlugin extends JavaPlugin {
 				return;
 			}
 
-			onReloadablesStart();
+			onStretch();
 
 			startingReloadables = false;
 
-			onPluginStart();
+			onFlight();
 			// --------------------------------------------
 
 			// Return if plugin start indicated a fatal problem
@@ -236,8 +236,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			// Register our listeners
 			registerEvents(new TweetyListener());
 
-			if (areToolsEnabled())
-				registerEvents(new ToolsListener());
 
 			// Register DiscordSRV listener
 			if (HookManager.isDiscordSRVLoaded()) {
@@ -436,7 +434,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	public final void onDisable() {
 
 		try {
-			onPluginStop();
+			onSleep();
 		} catch (final Throwable t) {
 			Common.log("&cPlugin might not shut down property. Got " + t.getClass().getSimpleName() + ": " + t.getMessage());
 		}
@@ -445,7 +443,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 
 		try {
 			for (final Player online : Remain.getOnlinePlayers())
-				SimpleScoreboard.clearBoardsFor(online);
+				TweetyScoreboard.clearBoardsFor(online);
 
 		} catch (final Throwable t) {
 			Common.log("Error clearing scoreboards for players..");
@@ -455,7 +453,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 
 		try {
 			for (final Player online : Remain.getOnlinePlayers()) {
-				// TODO CLOSE ALL INVENTORIES
+				online.closeInventory();
 			}
 		} catch (final Throwable t) {
 			Common.log("Error closing menu inventories for players..");
@@ -474,30 +472,18 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	/**
 	 * Called before the plugin is started, see {@link JavaPlugin#onLoad()}
 	 */
-	protected void onPluginLoad() {
+	protected void onWake() {
 	}
 
 	/**
 	 * The main loading method, called when we are ready to load
 	 */
-	protected abstract void onPluginStart();
+	protected abstract void onFlight();
 
 	/**
 	 * The main method called when we are about to shut down
 	 */
-	protected void onPluginStop() {
-	}
-
-	/**
-	 * Invoked before settings were reloaded.
-	 */
-	protected void onPluginPreReload() {
-	}
-
-	/**
-	 * Invoked after settings were reloaded.
-	 */
-	protected void onPluginReload() {
+	protected void onSleep() {
 	}
 
 	/**
@@ -506,7 +492,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	 * This is invoked when you start the plugin, call /reload, or the {@link #reload()}
 	 * method.
 	 */
-	protected void onReloadablesStart() {
+	protected void onStretch() {
 	}
 
 	// ----------------------------------------------------------------------------------------
@@ -540,12 +526,8 @@ public abstract class TweetyPlugin extends JavaPlugin {
 				Common.throwError(throwable, "Error while loading " + getName() + " dependencies!");
 			}
 
-			onPluginPreReload();
 			reloadables.reload();
-
-			SimpleHologram.onReload();
-
-			onPluginReload();
+			TweetyHologram.onReload();
 
 			// Something went wrong in the reload pipeline
 			if (!isEnabled())
@@ -556,7 +538,7 @@ public abstract class TweetyPlugin extends JavaPlugin {
 			// Register classes
 			AutoRegisterScanner.scanAndRegister();
 
-			onReloadablesStart();
+			onStretch();
 
 			startingReloadables = false;
 
@@ -612,7 +594,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	protected final <T extends Listener> void registerAllEvents(final Class<T> extendingClass) {
 
 		Valid.checkBoolean(!extendingClass.equals(Listener.class), "registerAllEvents does not support Listener.class due to conflicts, create your own middle class instead");
-		Valid.checkBoolean(!extendingClass.equals(SimpleListener.class), "registerAllEvents does not support SimpleListener.class due to conflicts, create your own middle class instead");
 
 		classLookup:
 		for (final Class<? extends T> pluginClass : ReflectionUtil.getClasses(instance, extendingClass)) {
@@ -783,17 +764,6 @@ public abstract class TweetyPlugin extends JavaPlugin {
 	 * @return defaults to true
 	 */
 	public boolean similarityStripAccents() {
-		return true;
-	}
-
-	/**
-	 * Should we listen for {@link Tool} in this plugin and
-	 * handle clicking events automatically? Disable to increase performance
-	 * if you do not want to use our tool system. Enabled by default.
-	 *
-	 * @return
-	 */
-	public boolean areToolsEnabled() {
 		return true;
 	}
 }

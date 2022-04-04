@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety;
 
 import ca.tweetzy.tweety.model.HookManager;
-import ca.tweetzy.tweety.model.SimpleScoreboard;
+import ca.tweetzy.tweety.model.TweetyScoreboard;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,7 +15,7 @@ public final class TweetyListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onQuit(PlayerQuitEvent event) {
-		SimpleScoreboard.clearBoardsFor(event.getPlayer());
+		TweetyScoreboard.clearBoardsFor(event.getPlayer());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

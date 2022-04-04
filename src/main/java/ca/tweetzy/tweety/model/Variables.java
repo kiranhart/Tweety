@@ -2,6 +2,7 @@ package ca.tweetzy.tweety.model;
 
 import ca.tweetzy.tweety.collection.StrictMap;
 import ca.tweetzy.tweety.collection.expiringmap.ExpiringMap;
+import ca.tweetzy.tweety.model.discord.DiscordSender;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.PlayerUtil;

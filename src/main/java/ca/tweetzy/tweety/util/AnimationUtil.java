@@ -2,9 +2,9 @@ package ca.tweetzy.tweety.util;
 
 import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.model.Common;
-import ca.tweetzy.tweety.model.SimpleScoreboard;
-import ca.tweetzy.tweety.remain.CompBarColor;
-import ca.tweetzy.tweety.remain.CompBarStyle;
+import ca.tweetzy.tweety.model.TweetyScoreboard;
+import ca.tweetzy.tweety.remain.comp.CompBarColor;
+import ca.tweetzy.tweety.remain.comp.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -311,7 +311,7 @@ public class AnimationUtil {
 	 * @return The repeating BukkitTask (Useful to cancel on reload or shutdown).
 	 */
 
-	public static BukkitTask animateScoreboardTitle(SimpleScoreboard scoreboard, List<String> animatedFrames, long delay, long period) {
+	public static BukkitTask animateScoreboardTitle(TweetyScoreboard scoreboard, List<String> animatedFrames, long delay, long period) {
 		return new BukkitRunnable() {
 			int frame = 0;
 

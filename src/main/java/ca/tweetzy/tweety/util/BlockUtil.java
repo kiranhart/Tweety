@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.util;
 
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.comp.CompMaterial;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import com.google.common.collect.Sets;

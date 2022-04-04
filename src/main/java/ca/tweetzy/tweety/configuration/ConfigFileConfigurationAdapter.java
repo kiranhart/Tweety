@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.configuration;
 
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.comp.CompMaterial;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;

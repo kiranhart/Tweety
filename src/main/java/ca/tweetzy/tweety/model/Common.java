@@ -4,7 +4,10 @@ import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.RegexTimeoutException;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.model.chat.ColorFormatter;
+import ca.tweetzy.tweety.model.chat.Gradient;
+import ca.tweetzy.tweety.model.discord.DiscordSender;
+import ca.tweetzy.tweety.remain.comp.CompChatColor;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.*;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
@@ -573,25 +576,19 @@ public final class Common {
 				.replace("{plugin_name}", TweetyPlugin.getNamed())
 				.replace("{plugin_version}", TweetyPlugin.getVersion()));
 
-		// RGB colors - return the closest color for legacy MC versions
-		final Matcher match = HEX_COLOR_REGEX.matcher(result);
+		return ColorFormatter.process(result);
+	}
 
-		while (match.find()) {
-			final String matched = match.group();
-			final String colorCode = match.group(2);
-			String replacement = "";
+	public static String gradient(String from, String to, String message, boolean bold) {
+		return colorize(String.format("<GRADIENT:%s>%s%s</GRADIENT:%s>", from, bold ? "&l" : "", message, to));
+	}
 
-			try {
-				replacement = CompChatColor.of("#" + colorCode).toString();
+	public static String gradient(final Gradient gradient, String message, boolean bold) {
+		return gradient(gradient.getFrom(), gradient.getTo(), message, bold);
+	}
 
-			} catch (final IllegalArgumentException ex) {
-			}
-
-			result = result.replaceAll(Pattern.quote(matched), replacement);
-		}
-
-		result = result.replace("\\#", "#");
-		return result;
+	public static String gradient(final Gradient gradient, String message) {
+		return gradient(gradient.getFrom(), gradient.getTo(), message, true);
 	}
 
 	// Remove first and last spaces from the given message

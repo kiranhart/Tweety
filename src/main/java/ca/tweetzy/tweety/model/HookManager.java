@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.collection.StrictSet;
 import ca.tweetzy.tweety.debug.Debugger;
 import ca.tweetzy.tweety.exception.TweetyException;
-import ca.tweetzy.tweety.region.Region;
+import ca.tweetzy.tweety.model.region.Region;
 import ca.tweetzy.tweety.remain.Remain;
 import ca.tweetzy.tweety.util.MinecraftVersion;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;

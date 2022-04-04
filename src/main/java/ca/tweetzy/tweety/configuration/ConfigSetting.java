@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.configuration;
 
 import ca.tweetzy.tweety.TweetyPlugin;
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.comp.CompMaterial;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

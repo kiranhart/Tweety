@@ -1,6 +1,6 @@
 package ca.tweetzy.tweety.gui;
 
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.comp.CompMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

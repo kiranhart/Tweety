@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.remain.internal;
 
-import ca.tweetzy.tweety.remain.CompBarColor;
-import ca.tweetzy.tweety.remain.CompBarStyle;
+import ca.tweetzy.tweety.remain.comp.CompBarColor;
+import ca.tweetzy.tweety.remain.comp.CompBarStyle;
 import ca.tweetzy.tweety.remain.Remain;
 import lombok.Getter;
 import lombok.Setter;

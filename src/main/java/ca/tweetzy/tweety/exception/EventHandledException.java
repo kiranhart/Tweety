@@ -6,9 +6,12 @@ import lombok.Getter;
  * Represents a silent exception thrown then handling events,
  * this will only send the event player a message
  */
-public final class EventHandledException extends CommandException {
+public final class EventHandledException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
+
+	@Getter
+	private final String[] messages;
 
 	/**
 	 * Should we cancel this event?
@@ -27,8 +30,8 @@ public final class EventHandledException extends CommandException {
 	 * @param messages
 	 */
 	public EventHandledException(boolean cancelled, String... messages) {
-		super(messages);
-
+		super("");
+		this.messages = messages;
 		this.cancelled = cancelled;
 	}
 }

@@ -4,7 +4,7 @@ import ca.tweetzy.tweety.gui.events.GuiClickEvent;
 import ca.tweetzy.tweety.gui.events.GuiDropItemEvent;
 import ca.tweetzy.tweety.gui.methods.*;
 import ca.tweetzy.tweety.model.ItemCreator;
-import ca.tweetzy.tweety.remain.CompMaterial;
+import ca.tweetzy.tweety.remain.comp.CompMaterial;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;

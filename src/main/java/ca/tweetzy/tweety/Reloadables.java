@@ -1,7 +1,6 @@
 package ca.tweetzy.tweety;
 
 import ca.tweetzy.tweety.collection.StrictList;
-import ca.tweetzy.tweety.event.SimpleListener;
 import ca.tweetzy.tweety.model.Common;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

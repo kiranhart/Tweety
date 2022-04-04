@@ -1,7 +1,7 @@
 package ca.tweetzy.tweety.model.chat;
 
 import ca.tweetzy.tweety.model.Variables;
-import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.comp.CompChatColor;
 import ca.tweetzy.tweety.util.Valid;
 import lombok.AccessLevel;
 import lombok.Getter;

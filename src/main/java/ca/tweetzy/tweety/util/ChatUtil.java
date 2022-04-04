@@ -2,7 +2,7 @@ package ca.tweetzy.tweety.util;
 
 import ca.tweetzy.tweety.TweetyPlugin;
 import ca.tweetzy.tweety.model.Common;
-import ca.tweetzy.tweety.remain.CompChatColor;
+import ca.tweetzy.tweety.remain.comp.CompChatColor;
 import ca.tweetzy.tweety.util.MinecraftVersion.V;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
